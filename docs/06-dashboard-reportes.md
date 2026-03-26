@@ -36,4 +36,4 @@ Dashboard con metricas del territorio, perfil detallado de negocio con score vis
 - **Depende de:** 05-frontend-mapa (layout, mapa base), 04-ia-scoring (scores)
 - **Requerido por:** 07-scanner-ui, 09-social-intelligence (radar en dashboard)
 
-## Estado: pendiente
+## Estado: completado

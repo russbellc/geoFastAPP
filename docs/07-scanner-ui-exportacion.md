@@ -39,4 +39,4 @@ Interfaz para lanzar escaneos con progress bar en tiempo real (WebSocket), histo
 - **Depende de:** 05-frontend-mapa, 06-dashboard, 02-scanner-osm (job system)
 - **Requerido por:** 10-automatizacion (triggers basados en leads)
 
-## Estado: pendiente
+## Estado: completado

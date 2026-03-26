@@ -20,9 +20,9 @@
 
 | # | Documento | Sprint | Estado |
 |---|-----------|--------|--------|
-| 05 | [05-frontend-mapa.md](05-frontend-mapa.md) | Sprint 5 — Next.js, Leaflet, mapa + panel | pendiente |
-| 06 | [06-dashboard-reportes.md](06-dashboard-reportes.md) | Sprint 6 — Metricas, perfil negocio, Recharts | pendiente |
-| 07 | [07-scanner-ui-exportacion.md](07-scanner-ui-exportacion.md) | Sprint 7 — Scanner UI, WebSocket, CSV/PDF | pendiente |
+| 05 | [05-frontend-mapa.md](05-frontend-mapa.md) | Sprint 5 — Next.js, Leaflet, mapa + panel | completado |
+| 06 | [06-dashboard-reportes.md](06-dashboard-reportes.md) | Sprint 6 — Metricas, perfil negocio, Recharts | completado |
+| 07 | [07-scanner-ui-exportacion.md](07-scanner-ui-exportacion.md) | Sprint 7 — Scanner UI, CSV export, leads | completado |
 
 ---
 

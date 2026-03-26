@@ -49,4 +49,4 @@ Setup del frontend con Next.js 14, mapa interactivo con Leaflet/OpenStreetMap, p
 - **Depende de:** 01-fundacion (auth), 02-scanner-osm (datos), 04-ia-scoring (scores)
 - **Requerido por:** 06-dashboard, 07-scanner-ui
 
-## Estado: pendiente
+## Estado: completado
