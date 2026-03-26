@@ -1,12 +1,15 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.business import Business
+from app.models.business_profile import BusinessProfile
 from app.models.user import User
 from app.schemas.business import BusinessListResponse, BusinessResponse
+from app.schemas.profile import BusinessProfileResponse
+from app.workers.enrich_tasks import enrich_business, enrich_territory
 
 router = APIRouter(prefix="/businesses", tags=["Businesses"])
 
@@ -49,3 +52,46 @@ async def list_businesses(
         page=page,
         per_page=per_page,
     )
+
+
+@router.get("/{business_id}/profile", response_model=BusinessProfileResponse)
+async def get_business_profile(
+    business_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Obtener perfil enriquecido de un negocio."""
+    result = await db.execute(
+        select(BusinessProfile).where(BusinessProfile.business_id == business_id)
+    )
+    profile = result.scalar_one_or_none()
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Perfil no encontrado. Lanza el enriquecimiento primero.",
+        )
+    return profile
+
+
+@router.post("/{business_id}/enrich", status_code=status.HTTP_202_ACCEPTED)
+async def enrich_single_business(
+    business_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Lanzar enriquecimiento de un negocio individual."""
+    result = await db.execute(select(Business).where(Business.id == business_id))
+    if not result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Negocio no encontrado")
+    enrich_business.delay(business_id)
+    return {"message": "Enriquecimiento lanzado", "business_id": business_id}
+
+
+@router.post("/enrich/territory/{territory_id}", status_code=status.HTTP_202_ACCEPTED)
+async def enrich_all_territory(
+    territory_id: int,
+    current_user: User = Depends(get_current_user),
+):
+    """Lanzar enriquecimiento masivo de todos los negocios de un territorio."""
+    enrich_territory.delay(territory_id)
+    return {"message": "Enriquecimiento masivo lanzado", "territory_id": territory_id}
