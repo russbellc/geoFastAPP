@@ -27,8 +27,8 @@ export default function DrawMap({ onPolygonDrawn, onPolygonCleared }: DrawMapPro
       zoom: 13,
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
     }).addTo(map);
 
     const drawnItems = new L.FeatureGroup();
@@ -41,7 +41,7 @@ export default function DrawMap({ onPolygonDrawn, onPolygonCleared }: DrawMapPro
         polygon: {
           allowIntersection: false,
           shapeOptions: {
-            color: "#3b82f6",
+            color: "#b4c5ff",
             weight: 2,
             fillOpacity: 0.15,
           },
@@ -94,5 +94,5 @@ export default function DrawMap({ onPolygonDrawn, onPolygonCleared }: DrawMapPro
     };
   }, [stableOnDrawn, stableOnCleared]);
 
-  return <div ref={containerRef} className="h-full w-full rounded-lg" />;
+  return <div ref={containerRef} className="h-full w-full rounded-2xl" />;
 }

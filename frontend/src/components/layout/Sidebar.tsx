@@ -1,109 +1,90 @@
 "use client";
 
-import { useMapStore } from "@/stores/map";
-import { Business } from "@/lib/api";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const CATEGORY_COLORS: Record<string, string> = {
-  salud: "bg-red-500",
-  gastronomia: "bg-orange-500",
-  comercio: "bg-blue-500",
-  educacion: "bg-purple-500",
-  servicios: "bg-cyan-500",
-  turismo: "bg-emerald-500",
-  entretenimiento: "bg-pink-500",
-  otro: "bg-gray-500",
-};
+const NAV_ITEMS = [
+  { href: "/dashboard/stats", icon: "insights", label: "Intelligence" },
+  { href: "/dashboard", icon: "map", label: "Territories" },
+  { href: "/dashboard/leads", icon: "person_add", label: "Leads" },
+  { href: "/dashboard/analytics", icon: "bar_chart", label: "Analytics" },
+  { href: "/dashboard/settings", icon: "settings", label: "Settings" },
+];
 
 export default function Sidebar() {
-  const { businesses, selectedBusiness, selectBusiness, categoryFilter, setCategoryFilter } =
-    useMapStore();
+  const pathname = usePathname();
 
-  const categories = Array.from(new Set(businesses.map((b) => b.category || "otro"))).sort();
-
-  const filtered = categoryFilter
-    ? businesses.filter((b) => b.category === categoryFilter)
-    : businesses;
+  const isActive = (href: string) => {
+    if (href === "/dashboard") return pathname === "/dashboard";
+    return pathname.startsWith(href);
+  };
 
   return (
-    <div className="w-80 bg-gray-900 border-r border-gray-800 flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-800">
-        <h2 className="text-white font-semibold">
-          Negocios ({filtered.length})
-        </h2>
-        {/* Filtros */}
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          <button
-            onClick={() => setCategoryFilter(null)}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
-              !categoryFilter
-                ? "bg-white text-gray-900"
-                : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+    <aside className="flex flex-col h-screen w-64 bg-surface-container-low p-4 space-y-8 font-headline tracking-tight font-bold shrink-0">
+      {/* Logo */}
+      <div className="flex items-center gap-3 px-2">
+        <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
+          <span
+            className="material-symbols-outlined text-on-primary-fixed"
+            style={{ fontVariationSettings: '"FILL" 1' }}
+          >
+            explore
+          </span>
+        </div>
+        <div>
+          <h1 className="text-xl font-black text-on-surface tracking-tighter">
+            GeoIntel
+          </h1>
+          <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-medium opacity-60">
+            Intelligence Core
+          </p>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1">
+        {NAV_ITEMS.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+              isActive(item.href)
+                ? "text-primary bg-surface-container-highest"
+                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest"
             }`}
           >
-            Todos
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(cat === categoryFilter ? null : cat)}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
-                cat === categoryFilter
-                  ? "bg-white text-gray-900"
-                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Lista */}
-      <div className="flex-1 overflow-y-auto">
-        {filtered.map((b) => (
-          <BusinessCard
-            key={b.id}
-            business={b}
-            isSelected={selectedBusiness?.id === b.id}
-            onClick={() => selectBusiness(b)}
-          />
+            <span className="material-symbols-outlined">{item.icon}</span>
+            {item.label}
+          </Link>
         ))}
-      </div>
-    </div>
-  );
-}
+      </nav>
 
-function BusinessCard({
-  business,
-  isSelected,
-  onClick,
-}: {
-  business: Business;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  const catColor = CATEGORY_COLORS[business.category || "otro"] || "bg-gray-500";
+      {/* New Scan Button */}
+      <Link
+        href="/dashboard/scan"
+        className="w-full gradient-primary text-on-primary-fixed py-3 rounded-xl font-bold uppercase text-xs tracking-widest shadow-lg shadow-primary-container/20 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all"
+      >
+        <span className="material-symbols-outlined text-sm">add</span>
+        New Scan
+      </Link>
 
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left px-4 py-3 border-b border-gray-800 hover:bg-gray-800/50 transition-colors ${
-        isSelected ? "bg-gray-800" : ""
-      }`}
-    >
-      <div className="flex items-start gap-2">
-        <span className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${catColor}`} />
-        <div className="min-w-0">
-          <p className="text-white text-sm font-medium truncate">{business.name}</p>
-          <p className="text-gray-500 text-xs">
-            {business.category}/{business.subcategory}
-          </p>
-          {business.address && (
-            <p className="text-gray-600 text-xs truncate mt-0.5">{business.address}</p>
-          )}
-        </div>
-      </div>
-    </button>
+      {/* Footer */}
+      <footer className="pt-4 border-t border-surface-container-highest space-y-1">
+        <a
+          href="#"
+          className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors"
+        >
+          <span className="material-symbols-outlined text-lg">help</span>
+          Support
+        </a>
+        <a
+          href="#"
+          className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors"
+        >
+          <span className="material-symbols-outlined text-lg">manage_accounts</span>
+          Account
+        </a>
+      </footer>
+    </aside>
   );
 }

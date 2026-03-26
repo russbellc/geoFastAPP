@@ -1,0 +1,2585 @@
+<!-- Design System -->
+<!doctype html>
+
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>GeoIntel Intelligence Core - Dashboard</title>
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							background: "#0b1326",
+							"surface-dim": "#0b1326",
+							error: "#ffb4ab",
+							"surface-bright": "#31394d",
+							"surface-container-high": "#222a3d",
+							"on-surface-variant": "#c4c6cf",
+							"on-secondary-fixed": "#001c3b",
+							primary: "#b4c5ff",
+							"surface-container-highest": "#2d3449",
+							"surface-variant": "#2d3449",
+							"on-secondary-container": "#9fbae6",
+							"on-primary-fixed-variant": "#003ea8",
+							"tertiary-container": "#00422b",
+							"on-primary-fixed": "#00174b",
+							"surface-container-low": "#131b2e",
+							"inverse-primary": "#0053db",
+							"secondary-fixed-dim": "#adc8f5",
+							"on-secondary": "#133155",
+							"tertiary-fixed-dim": "#4edea3",
+							"error-container": "#93000a",
+							"on-error": "#690005",
+							"on-tertiary-container": "#10b981",
+							"on-tertiary-fixed": "#002113",
+							secondary: "#adc8f5",
+							"on-background": "#dae2fd",
+							tertiary: "#4edea3",
+							outline: "#8e9199",
+							"surface-container": "#171f33",
+							"on-tertiary-fixed-variant": "#005236",
+							"primary-container": "#00328b",
+							"on-secondary-fixed-variant": "#2d486d",
+							"on-primary": "#002a78",
+							"secondary-container": "#2f4a70",
+							"on-surface": "#dae2fd",
+							"surface-tint": "#b4c5ff",
+							"on-tertiary": "#003824",
+							"on-primary-container": "#7f9fff",
+							"surface-container-lowest": "#060e20",
+							"inverse-surface": "#dae2fd",
+							"inverse-on-surface": "#283044",
+							"tertiary-fixed": "#6ffbbe",
+							"primary-fixed-dim": "#b4c5ff",
+							"secondary-fixed": "#d5e3ff",
+							surface: "#0b1326",
+							"outline-variant": "#43474e",
+							"primary-fixed": "#dbe1ff",
+							"on-error-container": "#ffdad6",
+						},
+						fontFamily: {
+							headline: ["Manrope"],
+							body: ["Inter"],
+							label: ["Inter"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					"FILL" 0,
+					"wght" 400,
+					"GRAD" 0,
+					"opsz" 24;
+			}
+			body {
+				background-color: #0b1326;
+				color: #dae2fd;
+			}
+		</style>
+	</head>
+	<body class="font-body selection:bg-primary/30">
+		<!-- SideNavBar Implementation -->
+		<aside
+			class="fixed left-0 top-0 h-full w-64 bg-[#131b2e] flex flex-col p-4 space-y-8 z-50"
+		>
+			<div class="flex items-center gap-3 px-2">
+				<div
+					class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-primary"
+				>
+					<span class="material-symbols-outlined" data-icon="insights"
+						>insights</span
+					>
+				</div>
+				<div>
+					<h1
+						class="text-xl font-black text-[#dae2fd] tracking-tighter font-headline"
+					>
+						GeoIntel
+					</h1>
+					<p
+						class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold"
+					>
+						Intelligence Core
+					</p>
+				</div>
+			</div>
+			<nav class="flex-1 space-y-2">
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#b4c5ff] bg-[#2d3449] rounded-lg transition-all font-headline font-bold tracking-tight"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="insights"
+						>insights</span
+					>
+					Intelligence
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-colors duration-200 font-headline font-bold tracking-tight"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="map">map</span>
+					Territories
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-colors duration-200 font-headline font-bold tracking-tight"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="person_add"
+						>person_add</span
+					>
+					Leads
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-colors duration-200 font-headline font-bold tracking-tight"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="bar_chart"
+						>bar_chart</span
+					>
+					Analytics
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-colors duration-200 font-headline font-bold tracking-tight"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="settings"
+						>settings</span
+					>
+					Settings
+				</a>
+			</nav>
+			<div class="pt-4 border-t border-outline-variant/10 space-y-2">
+				<button
+					class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 mb-4 hover:opacity-90 transition-opacity"
+				>
+					<span class="material-symbols-outlined text-sm" data-icon="add"
+						>add</span
+					>
+					New Scan
+				</button>
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium"
+					href="#"
+				>
+					<span class="material-symbols-outlined text-xl" data-icon="help"
+						>help</span
+					>
+					Support
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium"
+					href="#"
+				>
+					<span
+						class="material-symbols-outlined text-xl"
+						data-icon="manage_accounts"
+						>manage_accounts</span
+					>
+					Account
+				</a>
+			</div>
+		</aside>
+		<!-- TopNavBar Implementation -->
+		<header
+			class="fixed top-0 right-0 left-64 h-16 bg-[#0b1326]/80 backdrop-blur-md flex justify-between items-center px-8 z-40 shadow-sm shadow-blue-900/10"
+		>
+			<div class="flex items-center gap-6 flex-1">
+				<div class="relative w-full max-w-md group">
+					<span
+						class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg"
+						data-icon="search"
+						>search</span
+					>
+					<input
+						class="w-full bg-surface-container-lowest border-none rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/50"
+						placeholder="Search geo-intelligence..."
+						type="text"
+					/>
+				</div>
+				<nav class="flex items-center gap-8 ml-4">
+					<a
+						class="text-[#b4c5ff] border-b-2 border-[#b4c5ff] pb-1 text-sm font-medium font-body"
+						href="#"
+						>Dashboard</a
+					>
+					<a
+						class="text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium font-body transition-colors"
+						href="#"
+						>Reports</a
+					>
+					<a
+						class="text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium font-body transition-colors"
+						href="#"
+						>Archive</a
+					>
+				</nav>
+			</div>
+			<div class="flex items-center gap-5">
+				<button
+					class="text-on-surface-variant hover:text-primary transition-colors relative"
+				>
+					<span class="material-symbols-outlined" data-icon="notifications"
+						>notifications</span
+					>
+					<span
+						class="absolute top-0 right-0 w-2 h-2 bg-tertiary rounded-full border-2 border-background"
+					></span>
+				</button>
+				<button
+					class="text-on-surface-variant hover:text-primary transition-colors"
+				>
+					<span class="material-symbols-outlined" data-icon="history"
+						>history</span
+					>
+				</button>
+				<button
+					class="text-on-surface-variant hover:text-primary transition-colors"
+				>
+					<span class="material-symbols-outlined" data-icon="chat_bubble"
+						>chat_bubble</span
+					>
+				</button>
+				<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
+				<div class="flex items-center gap-3">
+					<img
+						alt="User Avatar"
+						class="w-9 h-9 rounded-full bg-surface-container-highest border border-outline-variant/30"
+						data-alt="close-up portrait of a professional male tech executive with glasses and a friendly expression"
+						src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO4NU1wUBXpy7TqIjyyWPYfO566tLzlM3R8E78k8CeQOTN4fyLNnd5aWX850f9c9alkBe3D4z-U2dqP4AcnW54mlMuJ9-Djcuflx6uihxySlpbsePan5GtHo-Eb5asVVgLDPXzcQVmbIhULdOgdpp0R1jNV0EyvdwCof6-14d5N_E_bw3ntfyvZ-AyELvQUPRTH7VDYEmD3y-RwmSCXMf-Ue2gyaIBNIRdsOCztCwSZB3Fsuh5YuKfNBHZkKEaRFZ4qmbkZseYVZM"
+					/>
+				</div>
+			</div>
+		</header>
+		<!-- Main Content Canvas -->
+		<main class="ml-64 pt-28 px-10 pb-12 min-h-screen bg-surface-dim">
+			<!-- Header Section -->
+			<div class="mb-10 flex justify-between items-end">
+				<div>
+					<h2
+						class="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2"
+					>
+						Intelligence Dashboard
+					</h2>
+					<p class="text-on-surface-variant font-body">
+						Real-time geospatial business distribution and lead generation
+						tracking.
+					</p>
+				</div>
+				<div class="flex items-center gap-3">
+					<span
+						class="text-xs font-bold text-tertiary px-3 py-1 bg-tertiary-container/30 rounded-full flex items-center gap-1"
+					>
+						<span
+							class="w-1.5 h-1.5 bg-tertiary rounded-full blur-[1px]"
+						></span>
+						Live Monitoring
+					</span>
+					<button
+						class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all"
+					>
+						<span
+							class="material-symbols-outlined text-sm"
+							data-icon="filter_list"
+							>filter_list</span
+						>
+						Filters
+					</button>
+				</div>
+			</div>
+			<!-- KPI Bento Grid -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+				<!-- KPI 1 -->
+				<div
+					class="bg-surface-container-low p-6 rounded-xl group hover:bg-surface-container/80 transition-all duration-300"
+				>
+					<div class="flex justify-between items-start mb-4">
+						<div class="p-2 bg-primary/10 rounded-lg text-primary">
+							<span class="material-symbols-outlined" data-icon="storefront"
+								>storefront</span
+							>
+						</div>
+						<span
+							class="text-tertiary text-xs font-bold flex items-center gap-1"
+						>
+							<span
+								class="material-symbols-outlined text-sm"
+								data-icon="trending_up"
+								>trending_up</span
+							>
+							+5.2%
+						</span>
+					</div>
+					<h3 class="text-on-surface-variant text-sm font-medium mb-1">
+						Total Businesses
+					</h3>
+					<div class="flex items-baseline gap-2">
+						<span class="text-3xl font-headline font-black text-on-surface"
+							>12.4k</span
+						>
+						<span class="text-on-surface-variant text-xs">active entities</span>
+					</div>
+				</div>
+				<!-- KPI 2 -->
+				<div
+					class="bg-surface-container-low p-6 rounded-xl group hover:bg-surface-container/80 transition-all duration-300"
+				>
+					<div class="flex justify-between items-start mb-4">
+						<div class="p-2 bg-secondary/10 rounded-lg text-secondary">
+							<span class="material-symbols-outlined" data-icon="ads_click"
+								>ads_click</span
+							>
+						</div>
+						<span
+							class="text-tertiary text-xs font-bold flex items-center gap-1"
+						>
+							<span
+								class="material-symbols-outlined text-sm"
+								data-icon="trending_up"
+								>trending_up</span
+							>
+							+12%
+						</span>
+					</div>
+					<h3 class="text-on-surface-variant text-sm font-medium mb-1">
+						Generated Leads
+					</h3>
+					<div class="flex items-baseline gap-2">
+						<span class="text-3xl font-headline font-black text-on-surface"
+							>3.1k</span
+						>
+						<span class="text-on-surface-variant text-xs">qualified</span>
+					</div>
+				</div>
+				<!-- KPI 3 -->
+				<div
+					class="bg-surface-container-low p-6 rounded-xl group hover:bg-surface-container/80 transition-all duration-300"
+				>
+					<div class="flex justify-between items-start mb-4">
+						<div class="p-2 bg-tertiary/10 rounded-lg text-tertiary">
+							<span class="material-symbols-outlined" data-icon="public"
+								>public</span
+							>
+						</div>
+						<span
+							class="text-tertiary text-xs font-bold flex items-center gap-1"
+						>
+							<span class="material-symbols-outlined text-sm" data-icon="add"
+								>add</span
+							>
+							2 new
+						</span>
+					</div>
+					<h3 class="text-on-surface-variant text-sm font-medium mb-1">
+						Territories Scanned
+					</h3>
+					<div class="flex items-baseline gap-2">
+						<span class="text-3xl font-headline font-black text-on-surface"
+							>42</span
+						>
+						<span class="text-on-surface-variant text-xs">regional zones</span>
+					</div>
+				</div>
+			</div>
+			<!-- Main Analytics Section -->
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				<!-- Heatmap Card (2/3 width) -->
+				<div class="lg:col-span-2 space-y-8">
+					<div class="bg-surface-container-low rounded-xl overflow-hidden">
+						<div
+							class="p-6 flex justify-between items-center bg-surface-container-high/40"
+						>
+							<div>
+								<h3 class="font-headline font-bold text-on-surface">
+									Geospatial Distribution
+								</h3>
+								<p class="text-xs text-on-surface-variant">
+									Active businesses in San Francisco Central Hub
+								</p>
+							</div>
+							<div class="flex gap-2">
+								<button
+									class="px-3 py-1.5 text-xs font-bold bg-primary text-on-primary rounded-lg transition-all"
+								>
+									Heatmap
+								</button>
+								<button
+									class="px-3 py-1.5 text-xs font-bold bg-surface-container-highest text-on-surface-variant rounded-lg hover:text-on-surface transition-all"
+								>
+									Cluster
+								</button>
+							</div>
+						</div>
+						<div class="h-[440px] relative">
+							<img
+								alt="Heatmap of San Francisco"
+								class="w-full h-full object-cover grayscale brightness-50 opacity-60"
+								data-alt="abstract satellite view of a city grid with vibrant cyan and magenta glowing heat spots overlaid on dark streets"
+								data-location="San Francisco"
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuACcHFQhKNdeJ-86ZllddyjgB_dPJCVp2Bn564Skcu14SE19Bpxh0TeZrnTAuPdpCsNjrwJmpZbekpWI6xGU953HaDtMe9ERgTc-ZHmodDFw014ld9c1wCfdH-ao02CcthTF8UdTr_BVZ8bD9C9ybZ7PKHnok5AJiuOTM7CNDeys93OIgzvPkjkv0dB8926KPJCBycInFaifNy_de2Wm6a9NVQB0lPhrTItV9Npp5-Ow9KJfG621vqPXa2K8t_TCX2dtLFMS31HDk8"
+							/>
+							<!-- Heatmap Overlay Elements -->
+							<div
+								class="absolute inset-0 bg-gradient-to-t from-surface-dim/80 to-transparent"
+							></div>
+							<div
+								class="absolute top-1/2 left-1/3 w-32 h-32 bg-primary/20 blur-[60px] rounded-full"
+							></div>
+							<div
+								class="absolute top-1/4 right-1/4 w-48 h-48 bg-tertiary/10 blur-[80px] rounded-full"
+							></div>
+							<!-- Map Legend -->
+							<div
+								class="absolute bottom-6 right-6 bg-surface-container-highest/90 backdrop-blur-md p-4 rounded-xl border border-outline-variant/10"
+							>
+								<h4
+									class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-2"
+								>
+									Density Legend
+								</h4>
+								<div class="flex flex-col gap-2">
+									<div class="flex items-center gap-2">
+										<div class="w-3 h-3 rounded-full bg-primary"></div>
+										<span class="text-[10px] text-on-surface"
+											>High Concentration</span
+										>
+									</div>
+									<div class="flex items-center gap-2">
+										<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+										<span class="text-[10px] text-on-surface"
+											>Emerging Market</span
+										>
+									</div>
+									<div class="flex items-center gap-2">
+										<div
+											class="w-3 h-3 rounded-full bg-on-surface-variant/20"
+										></div>
+										<span class="text-[10px] text-on-surface">Low Density</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Registration Timeline -->
+					<div class="bg-surface-container-low p-6 rounded-xl">
+						<div class="flex justify-between items-center mb-8">
+							<div>
+								<h3 class="font-headline font-bold text-on-surface">
+									Registration Timeline
+								</h3>
+								<p class="text-xs text-on-surface-variant">
+									New business entities registered (Last 30 days)
+								</p>
+							</div>
+							<div
+								class="flex items-center gap-4 text-xs font-medium text-on-surface-variant"
+							>
+								<span class="flex items-center gap-1.5"
+									><span class="w-2 h-2 rounded-full bg-primary"></span> Current
+									Month</span
+								>
+								<span class="flex items-center gap-1.5"
+									><span
+										class="w-2 h-2 rounded-full bg-outline-variant/30"
+									></span>
+									Previous</span
+								>
+							</div>
+						</div>
+						<div class="h-48 flex items-end justify-between gap-2 px-2">
+							<!-- Simulated Line/Bar Chart with Tailwind -->
+							<div class="w-full flex items-end gap-1.5 h-full">
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[40%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[35%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[55%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-primary/60 rounded-t-sm h-[75%] hover:bg-primary transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[60%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[45%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-primary/60 rounded-t-sm h-[85%] hover:bg-primary transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[70%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[50%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-primary/60 rounded-t-sm h-[95%] hover:bg-primary transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[65%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[55%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-primary/60 rounded-t-sm h-[80%] hover:bg-primary transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[60%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+								<div
+									class="flex-1 bg-surface-container-highest rounded-t-sm h-[40%] hover:bg-primary/40 transition-all duration-300"
+								></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Side Widgets (1/3 width) -->
+				<div class="space-y-8">
+					<!-- Donut Chart Card -->
+					<div class="bg-surface-container-low p-6 rounded-xl">
+						<h3 class="font-headline font-bold text-on-surface mb-6">
+							Market Distribution
+						</h3>
+						<div class="relative w-48 h-48 mx-auto mb-8">
+							<!-- Custom CSS Donut Visual -->
+							<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+								<circle
+									cx="18"
+									cy="18"
+									fill="none"
+									r="16"
+									stroke="#2d3449"
+									stroke-width="3.5"
+								></circle>
+								<circle
+									cx="18"
+									cy="18"
+									fill="none"
+									r="16"
+									stroke="#b4c5ff"
+									stroke-dasharray="45, 100"
+									stroke-linecap="round"
+									stroke-width="3.5"
+								></circle>
+								<circle
+									cx="18"
+									cy="18"
+									fill="none"
+									r="16"
+									stroke="#4edea3"
+									stroke-dasharray="25, 100"
+									stroke-dashoffset="-45"
+									stroke-linecap="round"
+									stroke-width="3.5"
+								></circle>
+								<circle
+									cx="18"
+									cy="18"
+									fill="none"
+									r="16"
+									stroke="#adc8f5"
+									stroke-dasharray="15, 100"
+									stroke-dashoffset="-70"
+									stroke-linecap="round"
+									stroke-width="3.5"
+								></circle>
+							</svg>
+							<div
+								class="absolute inset-0 flex flex-col items-center justify-center"
+							>
+								<span class="text-2xl font-headline font-black text-on-surface"
+									>100%</span
+								>
+								<span
+									class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider"
+									>Categorized</span
+								>
+							</div>
+						</div>
+						<div class="space-y-4">
+							<div
+								class="flex justify-between items-center group cursor-pointer"
+							>
+								<div class="flex items-center gap-3">
+									<div class="w-2 h-2 rounded-full bg-primary"></div>
+									<span
+										class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors"
+										>Technology</span
+									>
+								</div>
+								<span class="text-xs font-bold text-on-surface-variant"
+									>45%</span
+								>
+							</div>
+							<div
+								class="flex justify-between items-center group cursor-pointer"
+							>
+								<div class="flex items-center gap-3">
+									<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+									<span
+										class="text-sm font-medium text-on-surface group-hover:text-tertiary transition-colors"
+										>Retail</span
+									>
+								</div>
+								<span class="text-xs font-bold text-on-surface-variant"
+									>25%</span
+								>
+							</div>
+							<div
+								class="flex justify-between items-center group cursor-pointer"
+							>
+								<div class="flex items-center gap-3">
+									<div class="w-2 h-2 rounded-full bg-secondary"></div>
+									<span
+										class="text-sm font-medium text-on-surface group-hover:text-secondary transition-colors"
+										>Services</span
+									>
+								</div>
+								<span class="text-xs font-bold text-on-surface-variant"
+									>15%</span
+								>
+							</div>
+							<div
+								class="flex justify-between items-center group cursor-pointer"
+							>
+								<div class="flex items-center gap-3">
+									<div
+										class="w-2 h-2 rounded-full bg-surface-container-highest"
+									></div>
+									<span
+										class="text-sm font-medium text-on-surface transition-colors"
+										>Others</span
+									>
+								</div>
+								<span class="text-xs font-bold text-on-surface-variant"
+									>15%</span
+								>
+							</div>
+						</div>
+					</div>
+					<!-- Recent Activities -->
+					<div class="bg-surface-container-low p-6 rounded-xl">
+						<div class="flex justify-between items-center mb-6">
+							<h3 class="font-headline font-bold text-on-surface">
+								Recent Leads
+							</h3>
+							<a class="text-xs font-bold text-primary hover:underline" href="#"
+								>View All</a
+							>
+						</div>
+						<div class="space-y-6">
+							<div class="flex gap-4">
+								<div
+									class="w-10 h-10 rounded-lg bg-surface-container-high flex-shrink-0 flex items-center justify-center border border-outline-variant/10"
+								>
+									<span
+										class="material-symbols-outlined text-primary text-xl"
+										data-icon="restaurant"
+										>restaurant</span
+									>
+								</div>
+								<div>
+									<h4 class="text-sm font-bold text-on-surface">
+										The Golden Plate
+									</h4>
+									<p class="text-xs text-on-surface-variant mb-1">
+										San Francisco, CA
+									</p>
+									<span
+										class="text-[10px] font-bold text-tertiary uppercase tracking-tighter"
+										>High Potential</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-4">
+								<div
+									class="w-10 h-10 rounded-lg bg-surface-container-high flex-shrink-0 flex items-center justify-center border border-outline-variant/10"
+								>
+									<span
+										class="material-symbols-outlined text-secondary text-xl"
+										data-icon="medical_services"
+										>medical_services</span
+									>
+								</div>
+								<div>
+									<h4 class="text-sm font-bold text-on-surface">
+										Wellness Core Clinic
+									</h4>
+									<p class="text-xs text-on-surface-variant mb-1">
+										Oakland, CA
+									</p>
+									<span
+										class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter"
+										>Monitoring</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-4">
+								<div
+									class="w-10 h-10 rounded-lg bg-surface-container-high flex-shrink-0 flex items-center justify-center border border-outline-variant/10"
+								>
+									<span
+										class="material-symbols-outlined text-tertiary text-xl"
+										data-icon="terminal"
+										>terminal</span
+									>
+								</div>
+								<div>
+									<h4 class="text-sm font-bold text-on-surface">
+										Quant Systems
+									</h4>
+									<p class="text-xs text-on-surface-variant mb-1">
+										Palo Alto, CA
+									</p>
+									<span
+										class="text-[10px] font-bold text-primary uppercase tracking-tighter"
+										>Contacted</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-- Floating Action Button (Only for main screens) -->
+		<button
+			class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center hover:scale-105 transition-transform active:opacity-80 group"
+		>
+			<span
+				class="material-symbols-outlined text-3xl"
+				data-icon="rocket_launch"
+				style="font-variation-settings: &quot;FILL&quot; 1"
+				>rocket_launch</span
+			>
+			<span
+				class="absolute right-16 bg-surface-container-highest px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
+				>Initialize Scan</span
+			>
+		</button>
+	</body>
+</html>
+
+<!-- GeoIntel: Main Dashboard -->
+<!doctype html>
+
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>GeoIntel | Intelligence Core</title>
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							background: "#0b1326",
+							"surface-dim": "#0b1326",
+							error: "#ffb4ab",
+							"surface-bright": "#31394d",
+							"surface-container-high": "#222a3d",
+							"on-surface-variant": "#c4c6cf",
+							"on-secondary-fixed": "#001c3b",
+							primary: "#b4c5ff",
+							"surface-container-highest": "#2d3449",
+							"surface-variant": "#2d3449",
+							"on-secondary-container": "#9fbae6",
+							"on-primary-fixed-variant": "#003ea8",
+							"tertiary-container": "#00422b",
+							"on-primary-fixed": "#00174b",
+							"surface-container-low": "#131b2e",
+							"inverse-primary": "#0053db",
+							"secondary-fixed-dim": "#adc8f5",
+							"on-secondary": "#133155",
+							"tertiary-fixed-dim": "#4edea3",
+							"error-container": "#93000a",
+							"on-error": "#690005",
+							"on-tertiary-container": "#10b981",
+							"on-tertiary-fixed": "#002113",
+							secondary: "#adc8f5",
+							"on-background": "#dae2fd",
+							tertiary: "#4edea3",
+							outline: "#8e9199",
+							"surface-container": "#171f33",
+							"on-tertiary-fixed-variant": "#005236",
+							"primary-container": "#00328b",
+							"on-secondary-fixed-variant": "#2d486d",
+							"on-primary": "#002a78",
+							"secondary-container": "#2f4a70",
+							"on-surface": "#dae2fd",
+							"surface-tint": "#b4c5ff",
+							"on-tertiary": "#003824",
+							"on-primary-container": "#7f9fff",
+							"surface-container-lowest": "#060e20",
+							"inverse-surface": "#dae2fd",
+							"inverse-on-surface": "#283044",
+							"tertiary-fixed": "#6ffbbe",
+							"primary-fixed-dim": "#b4c5ff",
+							"secondary-fixed": "#d5e3ff",
+							surface: "#0b1326",
+							"outline-variant": "#43474e",
+							"primary-fixed": "#dbe1ff",
+							"on-error-container": "#ffdad6",
+						},
+						fontFamily: {
+							headline: ["Manrope"],
+							body: ["Inter"],
+							label: ["Inter"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					"FILL" 0,
+					"wght" 400,
+					"GRAD" 0,
+					"opsz" 24;
+			}
+			.custom-scrollbar::-webkit-scrollbar {
+				width: 4px;
+			}
+			.custom-scrollbar::-webkit-scrollbar-track {
+				background: transparent;
+			}
+			.custom-scrollbar::-webkit-scrollbar-thumb {
+				background: #2d3449;
+				border-radius: 10px;
+			}
+			.glow-pip {
+				box-shadow: 0 0 8px currentColor;
+			}
+			.gradient-primary {
+				background: linear-gradient(135deg, #b4c5ff 0%, #00328b 100%);
+			}
+		</style>
+	</head>
+	<body
+		class="bg-background text-on-surface font-body overflow-hidden h-screen flex"
+	>
+		<!-- SIDE NAV BAR -->
+		<aside
+			class="flex flex-col h-screen p-4 space-y-8 bg-[#131b2e] dark:bg-slate-900 font-['Manrope'] tracking-tight font-bold docked left-0 h-full w-64 border-r-0 z-50"
+		>
+			<div class="flex items-center gap-3 px-2">
+				<div
+					class="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center"
+				>
+					<span
+						class="material-symbols-outlined text-on-primary-fixed"
+						style="font-variation-settings: &quot;FILL&quot; 1"
+						>explore</span
+					>
+				</div>
+				<div>
+					<h1 class="text-xl font-black text-[#dae2fd] tracking-tighter">
+						GeoIntel
+					</h1>
+					<p
+						class="text-[10px] text-on-surface-variant uppercase tracking-widest font-medium opacity-60"
+					>
+						Intelligence Core
+					</p>
+				</div>
+			</div>
+			<nav class="flex-1 space-y-1">
+				<a
+					class="flex items-center gap-3 px-3 py-2.5 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 scale-98 active:opacity-80 transition-all"
+					href="#"
+				>
+					<span class="material-symbols-outlined">insights</span>
+					Intelligence
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2.5 text-[#b4c5ff] bg-[#2d3449] rounded-lg scale-98 active:opacity-80 transition-all"
+					href="#"
+				>
+					<span class="material-symbols-outlined">map</span>
+					Territories
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2.5 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 scale-98 active:opacity-80 transition-all"
+					href="#"
+				>
+					<span class="material-symbols-outlined">person_add</span>
+					Leads
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2.5 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 scale-98 active:opacity-80 transition-all"
+					href="#"
+				>
+					<span class="material-symbols-outlined">bar_chart</span>
+					Analytics
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2.5 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 scale-98 active:opacity-80 transition-all"
+					href="#"
+				>
+					<span class="material-symbols-outlined">settings</span>
+					Settings
+				</a>
+			</nav>
+			<button
+				class="w-full gradient-primary text-on-primary-fixed py-3 rounded-xl font-bold uppercase text-xs tracking-widest shadow-lg shadow-primary-container/20"
+			>
+				New Scan
+			</button>
+			<footer class="pt-4 border-t border-surface-container-highest space-y-1">
+				<a
+					class="flex items-center gap-3 px-3 py-2 text-[#c4c6cf] hover:text-[#dae2fd] text-sm"
+					href="#"
+				>
+					<span class="material-symbols-outlined text-lg">help</span>
+					Support
+				</a>
+				<a
+					class="flex items-center gap-3 px-3 py-2 text-[#c4c6cf] hover:text-[#dae2fd] text-sm"
+					href="#"
+				>
+					<span class="material-symbols-outlined text-lg">manage_accounts</span>
+					Account
+				</a>
+			</footer>
+		</aside>
+		<div class="flex-1 flex flex-col relative overflow-hidden">
+			<!-- TOP NAV BAR -->
+			<header
+				class="flex justify-between items-center h-16 px-8 bg-[#0b1326]/80 backdrop-blur-md shadow-sm shadow-blue-900/10 z-40"
+			>
+				<div class="flex items-center gap-8 flex-1 max-w-2xl">
+					<div class="relative w-full group">
+						<span
+							class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary"
+							>search</span
+						>
+						<input
+							class="w-full bg-surface-container-lowest border-none rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/40 transition-all"
+							placeholder="AI Semantic Search: 'Find logistics hubs in New Jersey with high growth...'"
+							type="text"
+						/>
+					</div>
+				</div>
+				<nav class="flex items-center gap-8 ml-8">
+					<div class="flex gap-6 font-['Inter'] text-sm font-medium">
+						<a class="text-[#c4c6cf] hover:text-[#dae2fd]" href="#"
+							>Dashboard</a
+						>
+						<a class="text-[#b4c5ff] border-b-2 border-[#b4c5ff] pb-1" href="#"
+							>Reports</a
+						>
+						<a class="text-[#c4c6cf] hover:text-[#dae2fd]" href="#">Archive</a>
+					</div>
+					<div class="flex items-center gap-4 text-on-surface-variant">
+						<button
+							class="material-symbols-outlined hover:text-primary transition-colors"
+						>
+							notifications
+						</button>
+						<button
+							class="material-symbols-outlined hover:text-primary transition-colors"
+						>
+							history
+						</button>
+						<button
+							class="material-symbols-outlined hover:text-primary transition-colors"
+						>
+							chat_bubble
+						</button>
+						<div
+							class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant"
+						>
+							<img
+								class="w-full h-full object-cover"
+								data-alt="professional male portrait with minimalist lighting and dark studio background suitable for high-end tech executive avatar"
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIrgchkmlCZMbrCu8LclbtOMglqdM07M4JP4B0CkQlCt9oT-5Ch8S8aoAGnPRhJHjvMnLEH7GeGn3gryHhN5NcVWdbCyE_vd3vxPsttT7dIHNr6iXpNvZ5plynGuuW5XHjr1uAYBM89sS9LT5l8IM2QxW_25fqsLX8bsz7AicDti_kWwqoi5Q8iM3zUrR55VDg705Ss2hvZyfLzdn9EnJXMDrb8_fUZODKjNDt6t_Ddm4kh-UtWOszfKNoJzMrm4QT60bRT3s78Ic"
+							/>
+						</div>
+					</div>
+				</nav>
+			</header>
+			<!-- MAIN LAYOUT -->
+			<main class="flex-1 flex overflow-hidden">
+				<!-- RESULTS SIDEBAR -->
+				<aside
+					class="w-96 bg-surface-container-low flex flex-col z-30 shadow-2xl"
+				>
+					<!-- Filters Header -->
+					<div class="p-5 space-y-4 bg-surface-container-low shadow-sm">
+						<div class="flex justify-between items-center">
+							<h2 class="font-headline font-bold text-lg">Opportunities</h2>
+							<span
+								class="text-[10px] font-bold bg-surface-container-highest px-2 py-1 rounded text-primary tracking-widest"
+								>142 RESULTS</span
+							>
+						</div>
+						<div class="flex gap-2">
+							<div class="flex-1 relative">
+								<select
+									class="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none"
+								>
+									<option>Tech &amp; SaaS</option>
+									<option>Manufacturing</option>
+									<option>Logistics</option>
+								</select>
+								<span
+									class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm"
+									>expand_more</span
+								>
+							</div>
+							<div class="flex-1 relative">
+								<select
+									class="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none"
+								>
+									<option>Score &gt; 80</option>
+									<option>Recent Only</option>
+									<option>Verified</option>
+								</select>
+								<span
+									class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm"
+									>filter_alt</span
+								>
+							</div>
+						</div>
+					</div>
+					<!-- Business List -->
+					<div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">
+						<!-- Item 1 -->
+						<div
+							class="group bg-surface-container-high hover:bg-surface-container-highest p-4 rounded-xl transition-all cursor-pointer"
+						>
+							<div class="flex justify-between items-start mb-2">
+								<div>
+									<h3
+										class="font-headline font-bold text-sm group-hover:text-primary transition-colors"
+									>
+										Neural Dynamics Lab
+									</h3>
+									<p class="text-[11px] text-on-surface-variant">
+										Silicon Valley | Tech
+									</p>
+								</div>
+								<div class="flex flex-col items-end">
+									<span class="text-tertiary font-black text-lg leading-none"
+										>94</span
+									>
+									<span
+										class="text-[8px] uppercase tracking-tighter text-on-surface-variant"
+										>OPP SCORE</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-2 mt-4">
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-error/10 text-error border border-error/20 flex items-center gap-1 uppercase"
+								>
+									<span
+										class="w-1.5 h-1.5 rounded-full bg-error glow-pip"
+									></span>
+									Hot
+								</span>
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase"
+								>
+									Series B
+								</span>
+							</div>
+						</div>
+						<!-- Item 2 -->
+						<div
+							class="group bg-surface-container-high hover:bg-surface-container-highest p-4 rounded-xl transition-all cursor-pointer"
+						>
+							<div class="flex justify-between items-start mb-2">
+								<div>
+									<h3
+										class="font-headline font-bold text-sm group-hover:text-primary transition-colors"
+									>
+										Precision Forge Inc.
+									</h3>
+									<p class="text-[11px] text-on-surface-variant">
+										Austin Metro | Manufacturing
+									</p>
+								</div>
+								<div class="flex flex-col items-end">
+									<span class="text-primary font-black text-lg leading-none"
+										>78</span
+									>
+									<span
+										class="text-[8px] uppercase tracking-tighter text-on-surface-variant"
+										>OPP SCORE</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-2 mt-4">
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 flex items-center gap-1 uppercase"
+								>
+									<span
+										class="w-1.5 h-1.5 rounded-full bg-secondary glow-pip"
+									></span>
+									Warm
+								</span>
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase"
+								>
+									ISO-9001
+								</span>
+							</div>
+						</div>
+						<!-- Item 3 -->
+						<div
+							class="group bg-surface-container-high hover:bg-surface-container-highest p-4 rounded-xl transition-all cursor-pointer"
+						>
+							<div class="flex justify-between items-start mb-2">
+								<div>
+									<h3
+										class="font-headline font-bold text-sm group-hover:text-primary transition-colors"
+									>
+										Azure Logistics Hub
+									</h3>
+									<p class="text-[11px] text-on-surface-variant">
+										Seattle | Logistics
+									</p>
+								</div>
+								<div class="flex flex-col items-end">
+									<span
+										class="text-on-surface-variant font-black text-lg leading-none"
+										>62</span
+									>
+									<span
+										class="text-[8px] uppercase tracking-tighter text-on-surface-variant"
+										>OPP SCORE</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-2 mt-4">
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-outline-variant/20 text-on-surface-variant border border-outline-variant/20 flex items-center gap-1 uppercase"
+								>
+									<span
+										class="w-1.5 h-1.5 rounded-full bg-outline-variant glow-pip"
+									></span>
+									Cold
+								</span>
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase"
+								>
+									High Vacancy
+								</span>
+							</div>
+						</div>
+						<!-- Item 4 (Duplicated for scroll) -->
+						<div
+							class="group bg-surface-container-high hover:bg-surface-container-highest p-4 rounded-xl transition-all cursor-pointer"
+						>
+							<div class="flex justify-between items-start mb-2">
+								<div>
+									<h3
+										class="font-headline font-bold text-sm group-hover:text-primary transition-colors"
+									>
+										Quantum Bio-Systems
+									</h3>
+									<p class="text-[11px] text-on-surface-variant">
+										Boston | Biotech
+									</p>
+								</div>
+								<div class="flex flex-col items-end">
+									<span class="text-tertiary font-black text-lg leading-none"
+										>88</span
+									>
+									<span
+										class="text-[8px] uppercase tracking-tighter text-on-surface-variant"
+										>OPP SCORE</span
+									>
+								</div>
+							</div>
+							<div class="flex gap-2 mt-4">
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-error/10 text-error border border-error/20 flex items-center gap-1 uppercase"
+								>
+									<span
+										class="w-1.5 h-1.5 rounded-full bg-error glow-pip"
+									></span>
+									Hot
+								</span>
+								<span
+									class="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase"
+								>
+									Seed Funding
+								</span>
+							</div>
+						</div>
+					</div>
+				</aside>
+				<!-- INTERACTIVE MAP AREA -->
+				<section class="flex-1 relative bg-surface-container-lowest">
+					<!-- Map Background Placeholder -->
+					<div class="absolute inset-0 z-0 grayscale contrast-125 opacity-40">
+						<img
+							class="w-full h-full object-cover"
+							data-alt="abstract night-time satellite view of urban sprawl with glowing blue street networks and dark geometric city blocks"
+							data-location="Global Intelligence View"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCofVky2_6YbEo7Dqq_FD0Y3gdjHGai-oLw8EOT2YIx_keOqnjek2T55VA0J6swVKRmzZGJfqrbACWYQxW_Pg7Fph-W4VKD1IS8VBW-7RC2CmUQ9vrcSY_Z-_kqQwg9FSaB6UbfjX-yin6OBiSR_uoDIcdgeyU-Nker5Wv-ykoVtPkd0vOex3OKAn0VdTojXzJe-q-NiBOtyU3WK67zsXC9Def36oHddKHK0HJHeq5zqo0pXsamCiIv87hzrrLUEEAxoWED_DQ69LE"
+						/>
+					</div>
+					<!-- Fake UI Markers -->
+					<div class="absolute inset-0 pointer-events-none z-10">
+						<!-- Marker 1 -->
+						<div
+							class="absolute top-1/4 left-1/3 flex flex-col items-center pointer-events-auto cursor-pointer group"
+						>
+							<div
+								class="bg-primary text-on-primary-fixed p-2 rounded-xl shadow-xl shadow-primary/40 transform -translate-y-2 group-hover:-translate-y-4 transition-transform duration-300"
+							>
+								<span
+									class="material-symbols-outlined text-sm"
+									style="font-variation-settings: &quot;FILL&quot; 1"
+									>precision_manufacturing</span
+								>
+							</div>
+							<div
+								class="w-6 h-6 rounded-full bg-primary/20 border-2 border-primary animate-pulse"
+							></div>
+						</div>
+						<!-- Marker 2 -->
+						<div
+							class="absolute top-1/2 left-2/3 flex flex-col items-center pointer-events-auto cursor-pointer group"
+						>
+							<div
+								class="bg-tertiary text-on-tertiary p-2 rounded-xl shadow-xl shadow-tertiary/40 transform -translate-y-2 group-hover:-translate-y-4 transition-transform duration-300"
+							>
+								<span
+									class="material-symbols-outlined text-sm"
+									style="font-variation-settings: &quot;FILL&quot; 1"
+									>science</span
+								>
+							</div>
+							<div
+								class="w-6 h-6 rounded-full bg-tertiary/20 border-2 border-tertiary animate-pulse"
+							></div>
+						</div>
+						<!-- Marker 3 -->
+						<div
+							class="absolute bottom-1/3 left-1/4 flex flex-col items-center pointer-events-auto cursor-pointer group"
+						>
+							<div
+								class="bg-secondary text-on-secondary-fixed p-2 rounded-xl shadow-xl shadow-secondary/40 transform -translate-y-2 group-hover:-translate-y-4 transition-transform duration-300"
+							>
+								<span
+									class="material-symbols-outlined text-sm"
+									style="font-variation-settings: &quot;FILL&quot; 1"
+									>warehouse</span
+								>
+							</div>
+							<div
+								class="w-6 h-6 rounded-full bg-secondary/20 border-2 border-secondary animate-pulse"
+							></div>
+						</div>
+					</div>
+					<!-- Map Overlay Controls -->
+					<div class="absolute bottom-8 right-8 flex flex-col gap-2 z-20">
+						<button
+							class="bg-surface-container-highest hover:bg-surface-bright w-12 h-12 rounded-xl flex items-center justify-center transition-colors"
+						>
+							<span class="material-symbols-outlined text-on-surface">add</span>
+						</button>
+						<button
+							class="bg-surface-container-highest hover:bg-surface-bright w-12 h-12 rounded-xl flex items-center justify-center transition-colors"
+						>
+							<span class="material-symbols-outlined text-on-surface"
+								>remove</span
+							>
+						</button>
+						<button
+							class="bg-surface-container-highest hover:bg-surface-bright w-12 h-12 rounded-xl flex items-center justify-center mt-4 transition-colors"
+						>
+							<span class="material-symbols-outlined text-on-surface"
+								>my_location</span
+							>
+						</button>
+					</div>
+					<!-- Floating Legend -->
+					<div
+						class="absolute bottom-8 left-8 bg-surface-container-low/90 backdrop-blur-md p-4 rounded-2xl z-20 shadow-2xl border border-outline-variant/10"
+					>
+						<h4
+							class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3"
+						>
+							Territory Heatmap
+						</h4>
+						<div class="space-y-2">
+							<div class="flex items-center gap-3">
+								<div
+									class="w-2.5 h-2.5 rounded-full bg-primary glow-pip"
+									style="color: #b4c5ff"
+								></div>
+								<span class="text-[11px] font-medium"
+									>High Expansion Probability</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<div
+									class="w-2.5 h-2.5 rounded-full bg-tertiary glow-pip"
+									style="color: #4edea3"
+								></div>
+								<span class="text-[11px] font-medium"
+									>Critical Tech Talent Density</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<div
+									class="w-2.5 h-2.5 rounded-full bg-error glow-pip"
+									style="color: #ffb4ab"
+								></div>
+								<span class="text-[11px] font-medium"
+									>Supply Chain Turbulence</span
+								>
+							</div>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+		<!-- GLOBAL FAB (ONLY FOR RELEVANT ACTION) -->
+		<button
+			class="fixed bottom-10 right-10 gradient-primary w-16 h-16 rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 group z-50 hover:scale-110 transition-transform active:scale-95"
+		>
+			<span
+				class="material-symbols-outlined text-on-primary-fixed text-3xl group-hover:rotate-90 transition-transform duration-300"
+				>layers</span
+			>
+		</button>
+	</body>
+</html>
+
+<!-- GeoIntel: Interactive Map View -->
+<!doctype html>
+
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							background: "#0b1326",
+							"surface-dim": "#0b1326",
+							error: "#ffb4ab",
+							"surface-bright": "#31394d",
+							"surface-container-high": "#222a3d",
+							"on-surface-variant": "#c4c6cf",
+							"on-secondary-fixed": "#001c3b",
+							primary: "#b4c5ff",
+							"surface-container-highest": "#2d3449",
+							"surface-variant": "#2d3449",
+							"on-secondary-container": "#9fbae6",
+							"on-primary-fixed-variant": "#003ea8",
+							"tertiary-container": "#00422b",
+							"on-primary-fixed": "#00174b",
+							"surface-container-low": "#131b2e",
+							"inverse-primary": "#0053db",
+							"secondary-fixed-dim": "#adc8f5",
+							"on-secondary": "#133155",
+							"tertiary-fixed-dim": "#4edea3",
+							"error-container": "#93000a",
+							"on-error": "#690005",
+							"on-tertiary-container": "#10b981",
+							"on-tertiary-fixed": "#002113",
+							secondary: "#adc8f5",
+							"on-background": "#dae2fd",
+							tertiary: "#4edea3",
+							outline: "#8e9199",
+							"surface-container": "#171f33",
+							"on-tertiary-fixed-variant": "#005236",
+							"primary-container": "#00328b",
+							"on-secondary-fixed-variant": "#2d486d",
+							"on-primary": "#002a78",
+							"secondary-container": "#2f4a70",
+							"on-surface": "#dae2fd",
+							"surface-tint": "#b4c5ff",
+							"on-tertiary": "#003824",
+							"on-primary-container": "#7f9fff",
+							"surface-container-lowest": "#060e20",
+							"inverse-surface": "#dae2fd",
+							"inverse-on-surface": "#283044",
+							"tertiary-fixed": "#6ffbbe",
+							"primary-fixed-dim": "#b4c5ff",
+							"secondary-fixed": "#d5e3ff",
+							surface: "#0b1326",
+							"outline-variant": "#43474e",
+							"primary-fixed": "#dbe1ff",
+							"on-error-container": "#ffdad6",
+						},
+						fontFamily: {
+							headline: ["Manrope"],
+							body: ["Inter"],
+							label: ["Inter"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					"FILL" 0,
+					"wght" 400,
+					"GRAD" 0,
+					"opsz" 24;
+			}
+			.circular-progress {
+				background: conic-gradient(
+					from 0deg,
+					#b4c5ff 0%,
+					#b4c5ff 88%,
+					#2d3449 88%,
+					#2d3449 100%
+				);
+			}
+		</style>
+	</head>
+	<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+		<!-- SideNavBar Component -->
+		<aside
+			class="fixed left-0 top-0 h-screen w-64 bg-[#131b2e] dark:bg-slate-900 flex flex-col p-4 space-y-8 z-50"
+		>
+			<div class="flex items-center gap-3 px-2">
+				<div
+					class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center"
+				>
+					<span
+						class="material-symbols-outlined text-primary"
+						data-icon="insights"
+						>insights</span
+					>
+				</div>
+				<div>
+					<h1
+						class="text-xl font-black text-[#dae2fd] tracking-tighter font-headline"
+					>
+						GeoIntel
+					</h1>
+					<p
+						class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold"
+					>
+						Intelligence Core
+					</p>
+				</div>
+			</div>
+			<nav class="flex-1 space-y-1">
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-all duration-200"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="intelligence"
+						>Intersect</span
+					>
+					<span class="font-headline font-bold tracking-tight"
+						>Intelligence</span
+					>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-all duration-200"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="map">map</span>
+					<span class="font-headline font-bold tracking-tight"
+						>Territories</span
+					>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#b4c5ff] bg-[#2d3449] rounded-lg transition-all duration-200"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="person_add"
+						>person_add</span
+					>
+					<span class="font-headline font-bold tracking-tight">Leads</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-all duration-200"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="bar_chart"
+						>bar_chart</span
+					>
+					<span class="font-headline font-bold tracking-tight">Analytics</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] rounded-lg transition-all duration-200"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="settings"
+						>settings</span
+					>
+					<span class="font-headline font-bold tracking-tight">Settings</span>
+				</a>
+			</nav>
+			<button
+				class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-4 py-3 rounded-xl font-bold text-sm tracking-wide uppercase flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all"
+			>
+				<span class="material-symbols-outlined text-sm" data-icon="add"
+					>add</span
+				>
+				New Scan
+			</button>
+			<div class="pt-4 border-t border-outline-variant/10 space-y-1">
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-[#c4c6cf] hover:text-[#dae2fd] transition-colors text-sm"
+					href="#"
+				>
+					<span class="material-symbols-outlined text-lg" data-icon="help"
+						>help</span
+					>
+					<span>Support</span>
+				</a>
+				<a
+					class="flex items-center gap-3 px-4 py-2 text-[#c4c6cf] hover:text-[#dae2fd] transition-colors text-sm"
+					href="#"
+				>
+					<span
+						class="material-symbols-outlined text-lg"
+						data-icon="manage_accounts"
+						>manage_accounts</span
+					>
+					<span>Account</span>
+				</a>
+			</div>
+		</aside>
+		<!-- TopNavBar Component -->
+		<header
+			class="fixed top-0 right-0 left-64 h-16 bg-[#0b1326]/80 backdrop-blur-md flex justify-between items-center px-8 z-40"
+		>
+			<div class="flex items-center flex-1">
+				<div class="relative w-full max-w-md group">
+					<span
+						class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg"
+						>search</span
+					>
+					<input
+						class="w-full bg-surface-container-lowest border-none rounded-xl pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 transition-all"
+						placeholder="Search signals, companies, or territories..."
+						type="text"
+					/>
+				</div>
+			</div>
+			<div class="flex items-center gap-6 ml-8">
+				<nav class="flex gap-6">
+					<a
+						class="text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium transition-colors"
+						href="#"
+						>Dashboard</a
+					>
+					<a
+						class="text-[#b4c5ff] border-b-2 border-[#b4c5ff] pb-1 text-sm font-medium transition-colors"
+						href="#"
+						>Reports</a
+					>
+					<a
+						class="text-[#c4c6cf] hover:text-[#dae2fd] text-sm font-medium transition-colors"
+						href="#"
+						>Archive</a
+					>
+				</nav>
+				<div class="flex items-center gap-4 text-on-surface-variant">
+					<button class="hover:text-primary transition-colors">
+						<span class="material-symbols-outlined" data-icon="notifications"
+							>notifications</span
+						>
+					</button>
+					<button class="hover:text-primary transition-colors">
+						<span class="material-symbols-outlined" data-icon="history"
+							>history</span
+						>
+					</button>
+					<button class="hover:text-primary transition-colors">
+						<span class="material-symbols-outlined" data-icon="chat_bubble"
+							>chat_bubble</span
+						>
+					</button>
+					<div
+						class="h-8 w-8 rounded-full bg-surface-container-highest overflow-hidden"
+					>
+						<img
+							alt="User Avatar"
+							class="w-full h-full object-cover"
+							data-alt="professional portrait of tech executive with clean lighting and neutral background"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-BbFQ_FTJsFyZcDZ7Fc_baYl5a6kMsd3iF3VcB8EtnNZWLwSBN_BFfeNSKXBPEPIQlAftdGyr8WUtkev2j22zGRDf0JVm8YLbhtsI4BA_xJiH6OZRfvYsCpRUn5FM-sbOeZIvMduHmLQFV4Pu_nGpehyfVz3cifgIjBWLAoNu_JUWC0eQSDOkrQykfwtnMeHNa75HMwv6cV5rpGKPgYHtZicr3J7_jAeQwVXnwXCPj74VFPbUjQVoIldOwa58lwCYyG0smjxmats"
+						/>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- Main Content Area -->
+		<main class="ml-64 pt-24 pb-12 px-12 min-h-screen bg-surface-dim">
+			<div class="max-w-5xl mx-auto space-y-8">
+				<!-- Breadcrumbs -->
+				<div
+					class="flex items-center gap-2 text-xs font-medium text-on-surface-variant tracking-wider uppercase"
+				>
+					<a class="hover:text-primary transition-colors" href="#">Leads</a>
+					<span class="material-symbols-outlined text-[10px]"
+						>chevron_right</span
+					>
+					<span class="text-on-surface">Modern Tech Solutions Inc.</span>
+				</div>
+				<!-- Profile Content Header -->
+				<div class="flex flex-col md:flex-row gap-8 items-start">
+					<!-- Main Card -->
+					<div
+						class="flex-1 bg-surface-container-low rounded-3xl p-8 shadow-sm relative overflow-hidden group"
+					>
+						<!-- Subtle Gradient Background -->
+						<div
+							class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"
+						></div>
+						<div class="relative z-10">
+							<div class="flex justify-between items-start mb-10">
+								<div class="flex gap-6">
+									<div
+										class="w-20 h-20 bg-surface-container-highest rounded-2xl flex items-center justify-center p-4"
+									>
+										<span
+											class="material-symbols-outlined text-4xl text-primary"
+											data-icon="domain"
+											style="font-variation-settings: &quot;FILL&quot; 1"
+											>domain</span
+										>
+									</div>
+									<div>
+										<div class="flex items-center gap-3 mb-1">
+											<h2
+												class="text-3xl font-headline font-extrabold tracking-tight text-on-surface"
+											>
+												Modern Tech Solutions Inc.
+											</h2>
+											<span
+												class="bg-error-container/30 text-error px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-1"
+											>
+												<span
+													class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"
+												></span>
+												Hot
+											</span>
+										</div>
+										<p class="text-on-surface-variant flex items-center gap-2">
+											<span class="material-symbols-outlined text-sm"
+												>location_on</span
+											>
+											San Francisco, CA • Enterprise Software
+										</p>
+									</div>
+								</div>
+								<div class="flex gap-2">
+									<button
+										class="p-2 rounded-xl bg-surface-container-highest text-on-surface-variant hover:text-primary transition-all active:scale-90"
+									>
+										<span class="material-symbols-outlined">share</span>
+									</button>
+									<button
+										class="p-2 rounded-xl bg-surface-container-highest text-on-surface-variant hover:text-primary transition-all active:scale-90"
+									>
+										<span class="material-symbols-outlined">star</span>
+									</button>
+								</div>
+							</div>
+							<!-- Info Grid -->
+							<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+								<!-- Left: Summary & Tech -->
+								<div class="space-y-8">
+									<section>
+										<h3
+											class="text-sm font-bold uppercase tracking-widest text-primary mb-3"
+										>
+											Intelligence Summary
+										</h3>
+										<p
+											class="text-on-surface-variant leading-relaxed font-body"
+										>
+											Modern Tech Solutions Inc. is exhibiting high-velocity
+											growth patterns in the hybrid cloud infrastructure sector.
+											Recent data ingestion indicates a 40% increase in
+											technical headcount and substantial expansion into the
+											APAC region. Their current architectural stack suggests an
+											imminent requirement for advanced security orchestration
+											layers, aligning perfectly with our core offering.
+										</p>
+									</section>
+									<section>
+										<h3
+											class="text-sm font-bold uppercase tracking-widest text-primary mb-4"
+										>
+											Technology Detected
+										</h3>
+										<div class="flex flex-wrap gap-3">
+											<div
+												class="bg-surface-container-highest px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
+											>
+												<span
+													class="material-symbols-outlined text-blue-400"
+													data-icon="cloud"
+													>cloud</span
+												>
+												AWS
+											</div>
+											<div
+												class="bg-surface-container-highest px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
+											>
+												<span
+													class="material-symbols-outlined text-cyan-400"
+													data-icon="code"
+													>code</span
+												>
+												React
+											</div>
+											<div
+												class="bg-surface-container-highest px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
+											>
+												<span
+													class="material-symbols-outlined text-sky-500"
+													data-icon="hub"
+													>hub</span
+												>
+												Salesforce
+											</div>
+											<div
+												class="bg-surface-container-highest px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium text-on-surface-variant"
+											>
+												+12 more
+											</div>
+										</div>
+									</section>
+								</div>
+								<!-- Right: Score & Social -->
+								<div class="space-y-8">
+									<div
+										class="bg-surface-container-high rounded-3xl p-6 flex items-center justify-between gap-6"
+									>
+										<div
+											class="relative w-32 h-32 flex items-center justify-center"
+										>
+											<!-- Score Circle -->
+											<div
+												class="circular-progress w-full h-full rounded-full flex items-center justify-center"
+											>
+												<div
+													class="w-[88%] h-[88%] bg-surface-container-high rounded-full flex items-center justify-center"
+												>
+													<span
+														class="text-3xl font-headline font-black text-on-surface"
+														>88</span
+													>
+												</div>
+											</div>
+											<!-- Glow Effect -->
+											<div
+												class="absolute inset-0 bg-primary/20 blur-xl rounded-full -z-10"
+											></div>
+										</div>
+										<div class="flex-1">
+											<h4
+												class="text-lg font-headline font-bold text-on-surface"
+											>
+												Opportunity Score
+											</h4>
+											<p class="text-xs text-on-surface-variant mt-1">
+												High conversion probability based on recent hiring and
+												infrastructure spikes.
+											</p>
+											<div class="mt-4 flex gap-1">
+												<div class="h-1 w-full bg-primary rounded-full"></div>
+												<div class="h-1 w-full bg-primary rounded-full"></div>
+												<div class="h-1 w-full bg-primary rounded-full"></div>
+												<div
+													class="h-1 w-2/3 bg-outline-variant/30 rounded-full"
+												></div>
+											</div>
+										</div>
+									</div>
+									<section>
+										<h3
+											class="text-sm font-bold uppercase tracking-widest text-primary mb-4"
+										>
+											Social Footprint
+										</h3>
+										<div class="grid grid-cols-3 gap-4">
+											<div
+												class="bg-surface-container-highest p-4 rounded-2xl flex flex-col items-center text-center"
+											>
+												<span
+													class="material-symbols-outlined text-[#0A66C2] mb-2"
+													data-icon="public"
+													>public</span
+												>
+												<span class="text-sm font-bold text-on-surface"
+													>12.4k</span
+												>
+												<span
+													class="text-[10px] text-on-surface-variant uppercase tracking-tighter"
+													>LinkedIn</span
+												>
+											</div>
+											<div
+												class="bg-surface-container-highest p-4 rounded-2xl flex flex-col items-center text-center"
+											>
+												<span
+													class="material-symbols-outlined text-[#1DA1F2] mb-2"
+													data-icon="chat"
+													>chat</span
+												>
+												<span class="text-sm font-bold text-on-surface"
+													>8.2k</span
+												>
+												<span
+													class="text-[10px] text-on-surface-variant uppercase tracking-tighter"
+													>Twitter</span
+												>
+											</div>
+											<div
+												class="bg-surface-container-highest p-4 rounded-2xl flex flex-col items-center text-center"
+											>
+												<span
+													class="material-symbols-outlined text-[#4267B2] mb-2"
+													data-icon="thumb_up"
+													>thumb_up</span
+												>
+												<span class="text-sm font-bold text-on-surface"
+													>4.1k</span
+												>
+												<span
+													class="text-[10px] text-on-surface-variant uppercase tracking-tighter"
+													>Facebook</span
+												>
+											</div>
+										</div>
+									</section>
+								</div>
+							</div>
+							<!-- Card Footer -->
+							<div
+								class="mt-12 flex gap-4 pt-8 border-t border-outline-variant/10"
+							>
+								<button
+									class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/10"
+								>
+									<span class="material-symbols-outlined text-sm"
+										>rocket_launch</span
+									>
+									Execute Outreach
+								</button>
+								<button
+									class="px-6 py-3 border border-outline-variant/20 rounded-xl font-bold uppercase tracking-wider text-sm text-on-surface hover:bg-surface-container-highest transition-colors"
+								>
+									Export Data
+								</button>
+							</div>
+						</div>
+					</div>
+					<!-- Side Sidebar (Contextual) -->
+					<div class="w-full md:w-80 space-y-6">
+						<div class="bg-surface-container-low rounded-3xl p-6">
+							<h3
+								class="text-sm font-bold uppercase tracking-widest text-on-surface mb-4"
+							>
+								Key Contacts
+							</h3>
+							<div class="space-y-4">
+								<div class="flex items-center gap-3">
+									<img
+										class="w-10 h-10 rounded-full object-cover"
+										data-alt="professional female corporate portrait with soft office lighting"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaoV2LZgYxC9rOsl6AXTnzYrFza8pNSvt00IrZR5lPFQjfXS7FhI6gYs7xifclAEkp8Evp9w2cD7baOQcAf3Klzj7ZyexipTnVDwdsxDeh83O1YwGYLxY_S2bWQRNqQBb2E-fxsBB4Y7FK5Jj5H_FVJTYWp6rbByR1l7FJAiCN89_SpmMJ0rKpIfwKVUGyuC0MxZcX1wHSVB0DoqgzWN24AqWC8Go-hDPFUzXbpOsbR5P-PMQd1OY6sHzKrQDVVQaMTp-5x5gz0S8"
+									/>
+									<div>
+										<p class="text-sm font-bold text-on-surface">
+											Sarah Jenkins
+										</p>
+										<p class="text-xs text-on-surface-variant">
+											CTO • 1st Connection
+										</p>
+									</div>
+								</div>
+								<div class="flex items-center gap-3">
+									<img
+										class="w-10 h-10 rounded-full object-cover"
+										data-alt="male professional in dark suit against a blue-grey studio background"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOmYohApVtQz1mfVt6f07S7-FJLtL3JQ3O6h9aIyUx9dSqrKwXd9QcFzZhtyCdK0Ql2Yem0XADdocedNvrbvJhpsZIVeiQonlCWcPrgaqwEwMFmmYHEU3zl45ZfmYfr4yXOVKH0-6jhXC1k-H7MB_AQg0-mE4NUZJ-XhSH-5L7ABopPCMfyNRrCy2E0x1_NJqseIkbc06BYCFINlTZ4P1NQB57iIrUYdEWhNtwf4nSeZkBTDN_8La4faeOlRl9OUud5mB__4oLUfc"
+									/>
+									<div>
+										<p class="text-sm font-bold text-on-surface">David Chen</p>
+										<p class="text-xs text-on-surface-variant">
+											VP Engineering • 2nd
+										</p>
+									</div>
+								</div>
+							</div>
+							<button
+								class="w-full mt-6 text-xs text-primary font-bold hover:underline flex items-center justify-center gap-1"
+							>
+								View all 24 contacts
+								<span class="material-symbols-outlined text-[14px]"
+									>arrow_forward</span
+								>
+							</button>
+						</div>
+						<div class="bg-surface-container-low rounded-3xl p-6">
+							<h3
+								class="text-sm font-bold uppercase tracking-widest text-on-surface mb-4"
+							>
+								Intent Signals
+							</h3>
+							<div class="space-y-4">
+								<div class="flex gap-3">
+									<div
+										class="w-2 h-2 rounded-full bg-tertiary mt-1.5 shadow-[0_0_8px_rgba(78,222,163,0.5)]"
+									></div>
+									<div>
+										<p class="text-xs font-bold text-on-surface">
+											Cloud Spending Peak
+										</p>
+										<p class="text-[10px] text-on-surface-variant">
+											2 days ago • High Intensity
+										</p>
+									</div>
+								</div>
+								<div class="flex gap-3">
+									<div
+										class="w-2 h-2 rounded-full bg-tertiary mt-1.5 shadow-[0_0_8px_rgba(78,222,163,0.5)]"
+									></div>
+									<div>
+										<p class="text-xs font-bold text-on-surface">
+											Cybersecurity Keyword Spike
+										</p>
+										<p class="text-[10px] text-on-surface-variant">
+											5 days ago • Moderate
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Territory Map Context (Asymmetric Layout Part) -->
+				<div
+					class="bg-surface-container-low rounded-3xl p-1 overflow-hidden relative group"
+				>
+					<div
+						class="absolute top-6 left-6 z-10 bg-surface-container-highest/90 backdrop-blur px-4 py-2 rounded-xl border border-outline-variant/10"
+					>
+						<p
+							class="text-xs font-bold text-on-surface flex items-center gap-2"
+						>
+							<span class="material-symbols-outlined text-primary text-sm"
+								>explore</span
+							>
+							Regional Presence
+						</p>
+					</div>
+					<div
+						class="h-64 bg-surface-container-highest rounded-3xl overflow-hidden grayscale contrast-125 opacity-40 group-hover:opacity-60 transition-opacity"
+					>
+						<img
+							class="w-full h-full object-cover"
+							data-alt="stylized architectural map overlay of san francisco with digital grid lines and data nodes"
+							data-location="San Francisco"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFgEpdXhpXrwcQrc3jYysQYUoxmQlaP-8VBdvsBbS1FZuGJ42mf2_q2BSj3Ruf5RCZ-x3VJteqRrIZ2k7l-rcjakllWElvB2FYR70v_-MsIqZv_pQVecHOv6Xyt_wmEVYFLdrRXL6VtnfybJM5SLcTzetLLSX99m14bQbzClMsHI6PP3uCsLzhsN1oM30uNMqbbGdmbhtknoOK9eZblnno6caEsImVS8LZgZNbDJtSmVMnNZs7GgMPvHObiPLri5UVTWf4Pfuv-ME"
+						/>
+					</div>
+					<div
+						class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none"
+					></div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>
+
+<!-- GeoIntel: Business Profile -->
+<!doctype html>
+
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							background: "#0b1326",
+							"surface-dim": "#0b1326",
+							error: "#ffb4ab",
+							"surface-bright": "#31394d",
+							"surface-container-high": "#222a3d",
+							"on-surface-variant": "#c4c6cf",
+							"on-secondary-fixed": "#001c3b",
+							primary: "#b4c5ff",
+							"surface-container-highest": "#2d3449",
+							"surface-variant": "#2d3449",
+							"on-secondary-container": "#9fbae6",
+							"on-primary-fixed-variant": "#003ea8",
+							"tertiary-container": "#00422b",
+							"on-primary-fixed": "#00174b",
+							"surface-container-low": "#131b2e",
+							"inverse-primary": "#0053db",
+							"secondary-fixed-dim": "#adc8f5",
+							"on-secondary": "#133155",
+							"tertiary-fixed-dim": "#4edea3",
+							"error-container": "#93000a",
+							"on-error": "#690005",
+							"on-tertiary-container": "#10b981",
+							"on-tertiary-fixed": "#002113",
+							secondary: "#adc8f5",
+							"on-background": "#dae2fd",
+							tertiary: "#4edea3",
+							outline: "#8e9199",
+							"surface-container": "#171f33",
+							"on-tertiary-fixed-variant": "#005236",
+							"primary-container": "#00328b",
+							"on-secondary-fixed-variant": "#2d486d",
+							"on-primary": "#002a78",
+							"secondary-container": "#2f4a70",
+							"on-surface": "#dae2fd",
+							"surface-tint": "#b4c5ff",
+							"on-tertiary": "#003824",
+							"on-primary-container": "#7f9fff",
+							"surface-container-lowest": "#060e20",
+							"inverse-surface": "#dae2fd",
+							"inverse-on-surface": "#283044",
+							"tertiary-fixed": "#6ffbbe",
+							"primary-fixed-dim": "#b4c5ff",
+							"secondary-fixed": "#d5e3ff",
+							surface: "#0b1326",
+							"outline-variant": "#43474e",
+							"primary-fixed": "#dbe1ff",
+							"on-error-container": "#ffdad6",
+						},
+						fontFamily: {
+							headline: ["Manrope"],
+							body: ["Inter"],
+							label: ["Inter"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					"FILL" 0,
+					"wght" 400,
+					"GRAD" 0,
+					"opsz" 24;
+			}
+			body {
+				background-color: #0b1326;
+				color: #dae2fd;
+				font-family: "Inter", sans-serif;
+			}
+			.glass-card {
+				background: rgba(45, 52, 73, 0.4);
+				backdrop-filter: blur(12px);
+			}
+		</style>
+	</head>
+	<body class="flex overflow-hidden">
+		<!-- SideNavBar (The Anchor) -->
+		<aside
+			class="flex flex-col h-screen p-4 space-y-8 bg-[#131b2e] dark:bg-slate-900 font-['Manrope'] tracking-tight font-bold docked left-0 h-full w-64 border-r-0 fixed z-50"
+		>
+			<div class="flex flex-col gap-1 px-2">
+				<span class="text-xl font-black text-[#dae2fd] tracking-tighter"
+					>GeoIntel</span
+				>
+				<span
+					class="text-[10px] text-[#b4c5ff] dark:text-blue-300 uppercase tracking-widest opacity-70"
+					>Intelligence Core</span
+				>
+			</div>
+			<nav class="flex-1 space-y-2">
+				<!-- Active: None specifically for Launcher, but keeping leads as context -->
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg group"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="insights"
+						>insights</span
+					>
+					<span>Intelligence</span>
+				</a>
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="map">map</span>
+					<span>Territories</span>
+				</a>
+				<a
+					class="flex items-center gap-3 p-3 text-[#b4c5ff] bg-[#2d3449] rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="person_add"
+						>person_add</span
+					>
+					<span>Leads</span>
+				</a>
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="bar_chart"
+						>bar_chart</span
+					>
+					<span>Analytics</span>
+				</a>
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="settings"
+						>settings</span
+					>
+					<span>Settings</span>
+				</a>
+			</nav>
+			<div class="pt-4 border-t border-outline-variant/10 space-y-2">
+				<button
+					class="w-full flex items-center justify-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-3 rounded-lg scale-98 active:opacity-80 transition-all uppercase text-xs tracking-wider"
+				>
+					<span class="material-symbols-outlined text-sm" data-icon="add"
+						>add</span
+					>
+					New Scan
+				</button>
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="help">help</span>
+					<span>Support</span>
+				</a>
+				<a
+					class="flex items-center gap-3 p-3 text-[#c4c6cf] hover:text-[#dae2fd] hover:bg-[#2d3449] transition-colors duration-200 rounded-lg"
+					href="#"
+				>
+					<span class="material-symbols-outlined" data-icon="manage_accounts"
+						>manage_accounts</span
+					>
+					<span>Account</span>
+				</a>
+			</div>
+		</aside>
+		<!-- Main Canvas -->
+		<main
+			class="flex-1 ml-64 min-h-screen bg-background relative overflow-y-auto"
+		>
+			<!-- TopNavBar -->
+			<header
+				class="flex justify-between items-center h-16 px-8 w-full bg-[#0b1326]/80 backdrop-blur-md shadow-sm shadow-blue-900/10 sticky top-0 z-40"
+			>
+				<div class="flex items-center gap-6">
+					<div
+						class="relative focus-within:ring-2 focus-within:ring-[#b4c5ff]/20 rounded-lg"
+					>
+						<span
+							class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm"
+							data-icon="search"
+							>search</span
+						>
+						<input
+							class="bg-surface-container-lowest border-none rounded-lg pl-10 pr-4 py-2 text-sm w-80 focus:ring-0 text-on-surface placeholder:text-outline"
+							placeholder="Global intelligence search..."
+							type="text"
+						/>
+					</div>
+					<div class="hidden md:flex gap-6 font-['Inter'] text-sm font-medium">
+						<a class="text-[#c4c6cf] hover:text-[#dae2fd]" href="#"
+							>Dashboard</a
+						>
+						<a class="text-[#c4c6cf] hover:text-[#dae2fd]" href="#">Reports</a>
+						<a class="text-[#c4c6cf] hover:text-[#dae2fd]" href="#">Archive</a>
+					</div>
+				</div>
+				<div class="flex items-center gap-5">
+					<button class="text-[#c4c6cf] hover:text-[#dae2fd]">
+						<span class="material-symbols-outlined" data-icon="notifications"
+							>notifications</span
+						>
+					</button>
+					<button class="text-[#c4c6cf] hover:text-[#dae2fd]">
+						<span class="material-symbols-outlined" data-icon="history"
+							>history</span
+						>
+					</button>
+					<button class="text-[#c4c6cf] hover:text-[#dae2fd]">
+						<span class="material-symbols-outlined" data-icon="chat_bubble"
+							>chat_bubble</span
+						>
+					</button>
+					<div
+						class="h-8 w-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20"
+					>
+						<img
+							alt="User Avatar"
+							class="w-full h-full object-cover"
+							data-alt="Portrait of a professional analyst in a dark suit with neutral background, cinematic lighting"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJCbgvsmDugNaeYdbNDgBO_yOpNXPbdGDHXAUHKvybbei14hVve-QbOxf29yFZEOKjqpWl71KR7RZw9d-m6xQMeUT_bfCefthJq6z2-lVNRddgD5pP14SZjL8s7c5Vhd3H_ks5YgxtDy8Dw7zzJNUPP0qd31EubE7xkJw9s0pPs1Bg8_05g_vBE5ZRk-Slx4QyBugUl_gkCTiuMho9Rpllv9Qdpmv9VIPVikY17Lspsk9aO3WmHM2jn-yP-tIjmXlNwqNdgSy0gjU"
+						/>
+					</div>
+				</div>
+			</header>
+			<!-- Launcher View Content -->
+			<div
+				class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-8"
+			>
+				<!-- Decorative Background Element -->
+				<div
+					class="absolute inset-0 pointer-events-none opacity-20 overflow-hidden"
+				>
+					<div
+						class="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-primary/10 blur-[120px] rounded-full"
+					></div>
+					<div
+						class="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-tertiary/5 blur-[100px] rounded-full"
+					></div>
+				</div>
+				<!-- Launcher Form Container -->
+				<div class="w-full max-w-2xl z-10">
+					<div class="mb-12 text-center">
+						<h1
+							class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mb-3"
+						>
+							Launch New Territory Scan
+						</h1>
+						<p class="font-body text-on-surface-variant max-w-md mx-auto">
+							Initiate deep-core data extraction across specific geographic
+							sectors and industrial niches.
+						</p>
+					</div>
+					<div
+						class="surface-container-high rounded-xl p-8 shadow-2xl shadow-black/40 border border-outline-variant/10 relative overflow-hidden"
+					>
+						<!-- Scan Progress Overlay (Simulated Active State) -->
+						<div class="mb-10 space-y-4">
+							<div class="flex justify-between items-end mb-1">
+								<div class="flex items-center gap-2">
+									<span class="relative flex h-2 w-2">
+										<span
+											class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"
+										></span>
+										<span
+											class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"
+										></span>
+									</span>
+									<span
+										class="text-xs font-medium text-tertiary uppercase tracking-widest"
+										>Scanning local registries...</span
+									>
+								</div>
+								<span class="text-xl font-headline font-bold text-on-surface"
+									>45%</span
+								>
+							</div>
+							<div
+								class="w-full h-2 bg-surface-container-lowest rounded-full overflow-hidden"
+							>
+								<div
+									class="h-full bg-gradient-to-r from-primary to-tertiary w-[45%] rounded-full shadow-[0_0_10px_rgba(78,222,163,0.3)]"
+								></div>
+							</div>
+						</div>
+						<form class="space-y-8">
+							<!-- Territory Selection -->
+							<div class="space-y-2">
+								<label
+									class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-1"
+									>Target Territory</label
+								>
+								<div class="relative">
+									<span
+										class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary"
+										data-icon="location_on"
+										>location_on</span
+									>
+									<select
+										class="w-full bg-surface-container-lowest border-none text-on-surface rounded-lg py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 appearance-none font-medium cursor-pointer"
+									>
+										<option>California - Bay Area</option>
+										<option>Texas - Silicon Hills</option>
+										<option>New York - Metropolitan</option>
+										<option>London - Fintech Hub</option>
+										<option>Berlin - Creative District</option>
+									</select>
+									<span
+										class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none"
+										data-icon="expand_more"
+										>expand_more</span
+									>
+								</div>
+							</div>
+							<!-- Niche Selection -->
+							<div class="space-y-4">
+								<label
+									class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-1"
+									>Industry Vertical Focus</label
+								>
+								<div class="grid grid-cols-2 gap-3">
+									<label
+										class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/30 transition-all cursor-pointer group"
+									>
+										<input
+											checked=""
+											class="rounded border-outline-variant bg-surface-container-high text-primary focus:ring-primary/20 h-5 w-5"
+											type="checkbox"
+										/>
+										<span
+											class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors"
+											>Fintech</span
+										>
+									</label>
+									<label
+										class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/30 transition-all cursor-pointer group"
+									>
+										<input
+											checked=""
+											class="rounded border-outline-variant bg-surface-container-high text-primary focus:ring-primary/20 h-5 w-5"
+											type="checkbox"
+										/>
+										<span
+											class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors"
+											>Renewable Energy</span
+										>
+									</label>
+									<label
+										class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/30 transition-all cursor-pointer group"
+									>
+										<input
+											class="rounded border-outline-variant bg-surface-container-high text-primary focus:ring-primary/20 h-5 w-5"
+											type="checkbox"
+										/>
+										<span
+											class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors"
+											>BioTech</span
+										>
+									</label>
+									<label
+										class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/30 transition-all cursor-pointer group"
+									>
+										<input
+											class="rounded border-outline-variant bg-surface-container-high text-primary focus:ring-primary/20 h-5 w-5"
+											type="checkbox"
+										/>
+										<span
+											class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors"
+											>Logistics AI</span
+										>
+									</label>
+								</div>
+							</div>
+							<!-- Scan Options -->
+							<div class="flex items-center gap-6 pt-4">
+								<div class="flex items-center gap-2">
+									<div
+										class="w-10 h-6 bg-primary/20 rounded-full relative cursor-pointer"
+									>
+										<div
+											class="absolute right-1 top-1 w-4 h-4 bg-primary rounded-full"
+										></div>
+									</div>
+									<span class="text-xs text-on-surface-variant font-medium"
+										>Deep Web Crawl</span
+									>
+								</div>
+								<div class="flex items-center gap-2">
+									<div
+										class="w-10 h-6 bg-surface-container-lowest rounded-full relative cursor-pointer"
+									>
+										<div
+											class="absolute left-1 top-1 w-4 h-4 bg-outline-variant rounded-full"
+										></div>
+									</div>
+									<span class="text-xs text-on-surface-variant font-medium"
+										>Export to CRM</span
+									>
+								</div>
+							</div>
+							<!-- Action Button -->
+							<div class="pt-6">
+								<button
+									class="w-full py-5 bg-gradient-to-r from-primary to-primary-container text-on-primary font-black rounded-lg shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-95 uppercase tracking-widest text-sm"
+									type="submit"
+								>
+									Start New Scan
+								</button>
+								<p
+									class="text-center mt-4 text-[10px] text-outline uppercase tracking-tighter"
+								>
+									Approximate scan time: 4-6 minutes for full depth
+								</p>
+							</div>
+						</form>
+					</div>
+					<!-- Footer Contextual Info -->
+					<div class="mt-8 grid grid-cols-3 gap-6">
+						<div class="text-center p-4 bg-surface-container-low/50 rounded-xl">
+							<span
+								class="material-symbols-outlined text-primary mb-2 block"
+								data-icon="database"
+								>database</span
+							>
+							<div class="text-sm font-bold text-on-surface">14.2M</div>
+							<div class="text-[10px] text-outline uppercase">
+								Active Records
+							</div>
+						</div>
+						<div class="text-center p-4 bg-surface-container-low/50 rounded-xl">
+							<span
+								class="material-symbols-outlined text-tertiary mb-2 block"
+								data-icon="bolt"
+								>bolt</span
+							>
+							<div class="text-sm font-bold text-on-surface">99.8%</div>
+							<div class="text-[10px] text-outline uppercase">
+								Uptime Accuracy
+							</div>
+						</div>
+						<div class="text-center p-4 bg-surface-container-low/50 rounded-xl">
+							<span
+								class="material-symbols-outlined text-secondary mb-2 block"
+								data-icon="shield"
+								>shield</span
+							>
+							<div class="text-sm font-bold text-on-surface">ISO-27001</div>
+							<div class="text-[10px] text-outline uppercase">Compliance</div>
+						</div>
+					</div>
+				</div>
+				<!-- Map Visualization Preview (Bottom Right Accessory) -->
+				<div
+					class="absolute bottom-12 right-12 w-80 h-48 rounded-xl overflow-hidden border border-outline-variant/10 shadow-2xl group cursor-crosshair"
+				>
+					<img
+						alt="Map Preview"
+						class="w-full h-full object-cover grayscale opacity-40 group-hover:scale-110 transition-transform duration-1000"
+						data-alt="Stylized dark topographic map of a city grid with glowing blue data points and vector network lines"
+						src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPPICSqqHQ5jx64V1ezQfihJXrq1IbDM66SjNdoglG0nXM4njyJYkvVFCtHvxRqI_L0zoR99X8yp6MttTT7sca6exf3gQxGvv-jp4u-NWU-aXCG6lGdKmB3JO-kSJIoA-LyB537Kev_DmjgvQLCw-lJf6ZHVMh1i-MVRcD0lqUVEHHv2wiTYM6oYaVHZi1lGmggsXjaKNCeUlGhAd7uhjmEf_opR7fELH8H-cox3jn0ER_WNujYI9l3ogMD7sBoZDdw_k_lQl_LWY"
+					/>
+					<div
+						class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"
+					></div>
+					<div
+						class="absolute bottom-4 left-4 right-4 flex justify-between items-center"
+					>
+						<div>
+							<div
+								class="text-[10px] text-primary uppercase font-bold tracking-widest"
+							>
+								Live Feed
+							</div>
+							<div class="text-xs text-on-surface font-medium">
+								Bay Area Sector 7
+							</div>
+						</div>
+						<span
+							class="material-symbols-outlined text-primary animate-pulse"
+							data-icon="radar"
+							>radar</span
+						>
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

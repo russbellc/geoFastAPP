@@ -41,12 +41,32 @@ Setup del frontend con Next.js 14, mapa interactivo con Leaflet/OpenStreetMap, p
 - Frontend en su propio contenedor Docker, separado del backend
 - Nginx como reverse proxy: `/api/*` → backend:8000, `/*` → frontend:3000
 - Leaflet.js sobre Mapbox/Google Maps (gratuito, sin API key)
-- OpenStreetMap tiles (consistente con datos OSM del backend)
-- Clustering con leaflet.markercluster para performance
+- CARTO Dark tiles (dark_all) para consistencia con el dark theme
 - zustand para estado del mapa (bounds, filtros, negocio seleccionado)
 
-## 6. Dependencias con otros modulos
+## 6. Design System (v2 - GeoIntel Intelligence Core)
+- **Theme:** Dark mode only, Material Design 3 inspired
+- **Colors:** Background #0b1326, Primary #b4c5ff, Tertiary #4edea3, Secondary #adc8f5
+- **Fonts:** Manrope (headlines), Inter (body/labels)
+- **Icons:** Material Symbols Outlined (Google Fonts)
+- **Layout:** Fixed sidebar (w-64) + top header + content area
+- **Surfaces:** surface-container-low (#131b2e), surface-container-high (#222a3d), surface-container-highest (#2d3449)
+- **Map markers:** Glow effect matching category color, custom dark popup styling
+- **Reference HTML:** docs/react_GeoIntel.html
+
+## 7. Paginas
+| Ruta | Vista | Descripcion |
+|------|-------|-------------|
+| /login | Login | Auth con gradient primary, glass card |
+| /dashboard | Territories | Mapa + Opportunities sidebar |
+| /dashboard/stats | Intelligence | KPIs, heatmap, timeline, donut chart, recent leads |
+| /dashboard/leads | Leads | Lista lateral + perfil detallado con score circular |
+| /dashboard/scan | Scanner | Radio/Polygon mode con dark map |
+| /dashboard/analytics | Analytics | Placeholder - coming soon |
+| /dashboard/settings | Settings | Placeholder - coming soon |
+
+## 8. Dependencias con otros modulos
 - **Depende de:** 01-fundacion (auth), 02-scanner-osm (datos), 04-ia-scoring (scores)
 - **Requerido por:** 06-dashboard, 07-scanner-ui
 
-## Estado: completado
+## Estado: completado (v2 redesign)

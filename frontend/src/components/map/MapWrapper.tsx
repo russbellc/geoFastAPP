@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 const BusinessMap = dynamic(() => import("./BusinessMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-full w-full flex items-center justify-center bg-gray-900">
-      <p className="text-gray-400">Cargando mapa...</p>
+    <div className="h-full w-full flex items-center justify-center bg-surface-container-lowest">
+      <p className="text-on-surface-variant text-sm">Loading map...</p>
     </div>
   ),
 });

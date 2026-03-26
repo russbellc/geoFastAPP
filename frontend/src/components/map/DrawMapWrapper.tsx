@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 const DrawMap = dynamic(() => import("./DrawMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-full w-full flex items-center justify-center bg-gray-800 rounded-lg">
-      <p className="text-gray-400">Cargando mapa...</p>
+    <div className="h-full w-full flex items-center justify-center bg-surface-container-lowest rounded-2xl">
+      <p className="text-on-surface-variant text-sm">Loading map...</p>
     </div>
   ),
 });

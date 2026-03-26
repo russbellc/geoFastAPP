@@ -34,7 +34,6 @@ export default function ScanPage() {
         country: form.country,
         nicho: form.nicho || undefined,
       };
-
       if (mode === "radio") {
         payload.lat = form.lat;
         payload.lng = form.lng;
@@ -42,7 +41,6 @@ export default function ScanPage() {
       } else if (polygon) {
         payload.polygon = polygon;
       }
-
       const job = await api.createScan(payload);
       setScanJob(job);
       pollStatus(job.id);
@@ -68,166 +66,231 @@ export default function ScanPage() {
     }, 3000);
   };
 
-  const statusColor = {
-    pending: "text-yellow-400",
-    running: "text-blue-400",
-    done: "text-green-400",
-    failed: "text-red-400",
-  };
-
   return (
-    <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-white">Lanzar escaneo</h1>
-
-      {/* Toggle modo */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => { setMode("radio"); setPolygon(null); }}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            mode === "radio" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-          }`}
-        >
-          Por radio
-        </button>
-        <button
-          onClick={() => setMode("polygon")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            mode === "polygon" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-          }`}
-        >
-          Dibujar poligono
-        </button>
-      </div>
-
-      <form onSubmit={handleScan} className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-4">
-        {/* Campos comunes */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Nombre del territorio</label>
-            <input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Ej: Miraflores Norte"
-              required
-            />
-          </div>
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Ciudad</label>
-            <input
-              value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        {/* Modo radio */}
-        {mode === "radio" && (
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="text-gray-400 text-sm block mb-1">Latitud</label>
-              <input
-                type="number" step="any" value={form.lat}
-                onChange={(e) => setForm({ ...form, lat: parseFloat(e.target.value) })}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-gray-400 text-sm block mb-1">Longitud</label>
-              <input
-                type="number" step="any" value={form.lng}
-                onChange={(e) => setForm({ ...form, lng: parseFloat(e.target.value) })}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-gray-400 text-sm block mb-1">Radio (km)</label>
-              <input
-                type="number" step="0.1" min="0.1" max="10" value={form.radius_km}
-                onChange={(e) => setForm({ ...form, radius_km: parseFloat(e.target.value) })}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Modo poligono */}
-        {mode === "polygon" && (
-          <div className="space-y-3">
-            <p className="text-gray-400 text-sm">
-              Usa la herramienta de poligono (icono a la derecha del mapa) para dibujar la zona a escanear.
-            </p>
-            <div className="h-[400px] rounded-lg overflow-hidden border border-gray-700">
-              <DrawMapWrapper
-                onPolygonDrawn={(coords) => setPolygon(coords)}
-                onPolygonCleared={() => setPolygon(null)}
-              />
-            </div>
-            {polygon && (
-              <p className="text-green-400 text-sm">
-                Poligono dibujado con {polygon.length} puntos
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Nicho */}
+    <div className="flex-1 overflow-y-auto custom-scrollbar px-12 pt-8 pb-12 bg-surface-dim">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Header */}
         <div>
-          <label className="text-gray-400 text-sm block mb-1">Nicho (opcional)</label>
-          <input
-            value={form.nicho}
-            onChange={(e) => setForm({ ...form, nicho: e.target.value })}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            placeholder="Ej: salud, gastronomia"
-          />
+          <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">
+            Initialize Scan
+          </h2>
+          <p className="text-on-surface-variant font-body">
+            Define a territory and launch a geospatial intelligence scan.
+          </p>
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {/* Mode Toggle */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setMode("radio"); setPolygon(null); }}
+            className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+              mode === "radio"
+                ? "gradient-primary text-on-primary-fixed shadow-lg shadow-primary-container/20"
+                : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">radar</span>
+              Radius Scan
+            </span>
+          </button>
+          <button
+            onClick={() => setMode("polygon")}
+            className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+              mode === "polygon"
+                ? "gradient-primary text-on-primary-fixed shadow-lg shadow-primary-container/20"
+                : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">draw</span>
+              Polygon Scan
+            </span>
+          </button>
+        </div>
 
-        <button
-          type="submit"
-          disabled={polling || !canSubmit}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
-        >
-          {polling ? "Escaneando..." : "Iniciar escaneo"}
-        </button>
-      </form>
+        {/* Form */}
+        <form onSubmit={handleScan} className="bg-surface-container-low rounded-3xl p-8 space-y-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-transparent pointer-events-none" />
+          <div className="relative z-10 space-y-6">
+            {/* Common Fields */}
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                  Territory Name
+                </label>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none placeholder:text-on-surface-variant/40 transition-all"
+                  placeholder="e.g. Miraflores Norte"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                  City
+                </label>
+                <input
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none placeholder:text-on-surface-variant/40 transition-all"
+                  required
+                />
+              </div>
+            </div>
 
-      {/* Status */}
-      {scanJob && (
-        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-          <h3 className="text-white font-semibold mb-3">Estado del escaneo</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-400">Estado</span>
-              <span className={statusColor[scanJob.status as keyof typeof statusColor] || "text-gray-400"}>
-                {scanJob.status.toUpperCase()}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Negocios encontrados</span>
-              <span className="text-white">{scanJob.total_found}</span>
-            </div>
-            {scanJob.status === "running" && (
-              <div className="mt-3">
-                <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 rounded-full animate-pulse" style={{ width: "60%" }} />
+            {/* Radio Mode Fields */}
+            {mode === "radio" && (
+              <div className="grid grid-cols-3 gap-6">
+                <div>
+                  <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                    Latitude
+                  </label>
+                  <input
+                    type="number" step="any" value={form.lat}
+                    onChange={(e) => setForm({ ...form, lat: parseFloat(e.target.value) })}
+                    className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none transition-all"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                    Longitude
+                  </label>
+                  <input
+                    type="number" step="any" value={form.lng}
+                    onChange={(e) => setForm({ ...form, lng: parseFloat(e.target.value) })}
+                    className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none transition-all"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                    Radius (km)
+                  </label>
+                  <input
+                    type="number" step="0.1" min="0.1" max="10" value={form.radius_km}
+                    onChange={(e) => setForm({ ...form, radius_km: parseFloat(e.target.value) })}
+                    className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none transition-all"
+                    required
+                  />
                 </div>
               </div>
             )}
-            {scanJob.status === "done" && (
-              <p className="text-green-400 mt-2">
-                Escaneo completado. {scanJob.total_found} negocios encontrados.
-              </p>
+
+            {/* Polygon Mode */}
+            {mode === "polygon" && (
+              <div className="space-y-4">
+                <p className="text-on-surface-variant text-sm flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-base">info</span>
+                  Use the polygon tool on the map to define the scan area.
+                </p>
+                <div className="h-[400px] rounded-2xl overflow-hidden border border-outline-variant/10">
+                  <DrawMapWrapper
+                    onPolygonDrawn={(coords) => setPolygon(coords)}
+                    onPolygonCleared={() => setPolygon(null)}
+                  />
+                </div>
+                {polygon && (
+                  <p className="text-tertiary text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                    Polygon defined with {polygon.length} vertices
+                  </p>
+                )}
+              </div>
             )}
+
+            {/* Niche */}
+            <div>
+              <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
+                Niche (optional)
+              </label>
+              <input
+                value={form.nicho}
+                onChange={(e) => setForm({ ...form, nicho: e.target.value })}
+                className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none placeholder:text-on-surface-variant/40 transition-all"
+                placeholder="e.g. salud, gastronomia, turismo"
+              />
+            </div>
+
+            {error && (
+              <div className="bg-error-container/20 text-error px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm">error</span>
+                {error}
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={polling || !canSubmit}
+              className="w-full gradient-primary text-on-primary-fixed py-4 rounded-xl font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20 disabled:opacity-50 transition-all hover:opacity-90 active:scale-[0.99]"
+            >
+              <span className="material-symbols-outlined text-sm">
+                {polling ? "hourglass_empty" : "rocket_launch"}
+              </span>
+              {polling ? "Scanning in progress..." : "Launch Scan"}
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+
+        {/* Scan Status */}
+        {scanJob && (
+          <div className="bg-surface-container-low rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-tertiary/3 to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <h3 className="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">monitoring</span>
+                Scan Status
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-on-surface-variant text-sm">Status</span>
+                  <ScanStatusBadge status={scanJob.status} />
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-on-surface-variant text-sm">Businesses Found</span>
+                  <span className="text-on-surface font-bold text-lg">{scanJob.total_found}</span>
+                </div>
+                {scanJob.status === "running" && (
+                  <div className="mt-4">
+                    <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full animate-pulse" style={{ width: "60%" }} />
+                    </div>
+                  </div>
+                )}
+                {scanJob.status === "done" && (
+                  <div className="mt-4 bg-tertiary-container/20 text-tertiary px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                    Scan completed. {scanJob.total_found} businesses discovered.
+                  </div>
+                )}
+                {scanJob.status === "failed" && (
+                  <div className="mt-4 bg-error-container/20 text-error px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    Scan failed. Please try again.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
+  );
+}
+
+function ScanStatusBadge({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    pending: "bg-secondary/10 text-secondary",
+    running: "bg-primary/10 text-primary",
+    done: "bg-tertiary-container/30 text-tertiary",
+    failed: "bg-error-container/30 text-error",
+  };
+  return (
+    <span className={`${styles[status] || styles.pending} px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider`}>
+      {status}
+    </span>
   );
 }

@@ -6,25 +6,35 @@ import { useMapStore } from "@/stores/map";
 import "leaflet/dist/leaflet.css";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  salud: "#ef4444",
-  gastronomia: "#f97316",
-  comercio: "#3b82f6",
-  educacion: "#8b5cf6",
-  servicios: "#06b6d4",
-  turismo: "#10b981",
-  entretenimiento: "#ec4899",
-  otro: "#6b7280",
+  salud: "#ffb4ab",
+  gastronomia: "#4edea3",
+  comercio: "#b4c5ff",
+  educacion: "#adc8f5",
+  servicios: "#4edea3",
+  turismo: "#7f9fff",
+  entretenimiento: "#4edea3",
+  otro: "#8e9199",
 };
 
 function createIcon(category: string | null) {
   const color = CATEGORY_COLORS[category || "otro"] || CATEGORY_COLORS.otro;
   return L.divIcon({
     className: "custom-marker",
-    html: `<div style="background:${color};width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [12, 12],
-    iconAnchor: [6, 6],
+    html: `<div style="
+      background:${color};
+      width:14px;height:14px;
+      border-radius:50%;
+      border:2px solid rgba(11,19,38,0.8);
+      box-shadow:0 0 8px ${color}80, 0 2px 6px rgba(0,0,0,0.4);
+    "></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
   });
 }
+
+// Dark map tile layer
+const DARK_TILES = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+const DARK_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>';
 
 export default function BusinessMap() {
   const mapRef = useRef<L.Map | null>(null);
@@ -32,7 +42,6 @@ export default function BusinessMap() {
   const markersRef = useRef<L.LayerGroup | null>(null);
   const { businesses, selectBusiness, categoryFilter } = useMapStore();
 
-  // Init map
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
@@ -42,9 +51,9 @@ export default function BusinessMap() {
       zoomControl: false,
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    L.tileLayer(DARK_TILES, { attribution: DARK_ATTRIBUTION }).addTo(map);
+
+    L.control.zoom({ position: "bottomright" }).addTo(map);
 
     markersRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
@@ -55,7 +64,6 @@ export default function BusinessMap() {
     };
   }, []);
 
-  // Update markers
   useEffect(() => {
     const map = mapRef.current;
     const markers = markersRef.current;
@@ -70,14 +78,21 @@ export default function BusinessMap() {
     const points = filtered.filter((b) => b.lat && b.lng);
 
     points.forEach((b) => {
+      const color = CATEGORY_COLORS[b.category || "otro"] || CATEGORY_COLORS.otro;
       const marker = L.marker([b.lat!, b.lng!], { icon: createIcon(b.category) });
       marker.bindPopup(`
-        <div style="font-size:13px;">
-          <b>${b.name}</b><br/>
-          <span style="color:#666;">${b.category}/${b.subcategory}</span>
-          ${b.address ? `<br/><span style="color:#999;">${b.address}</span>` : ""}
+        <div style="font-family:Inter,sans-serif;font-size:12px;color:#dae2fd;background:#171f33;padding:12px;border-radius:12px;min-width:180px;border:1px solid #43474e30;">
+          <div style="font-family:Manrope,sans-serif;font-weight:700;font-size:14px;margin-bottom:4px;">${b.name}</div>
+          <div style="color:#c4c6cf;font-size:11px;margin-bottom:6px;">${b.category || "General"} ${b.subcategory ? `/ ${b.subcategory}` : ""}</div>
+          ${b.address ? `<div style="color:#8e9199;font-size:10px;display:flex;align-items:center;gap:4px;">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color}80;"></span>
+            ${b.address}
+          </div>` : ""}
         </div>
-      `);
+      `, {
+        className: "geointel-popup",
+        closeButton: false,
+      });
       marker.on("click", () => selectBusiness(b));
       markers.addLayer(marker);
     });
