@@ -1,20 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
-import { Business } from "@/lib/api";
 import { useMapStore } from "@/stores/map";
 import "leaflet/dist/leaflet.css";
-
-// Fix Leaflet default icon
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
 
 const CATEGORY_COLORS: Record<string, string> = {
   salud: "#ef4444",
@@ -37,61 +26,69 @@ function createIcon(category: string | null) {
   });
 }
 
-function FitBounds({ businesses }: { businesses: Business[] }) {
-  const map = useMap();
-  useEffect(() => {
-    if (businesses.length === 0) return;
-    const bounds = L.latLngBounds(
-      businesses
-        .filter((b) => b.lat && b.lng)
-        .map((b) => [b.lat!, b.lng!] as [number, number])
-    );
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [40, 40] });
-    }
-  }, [businesses, map]);
-  return null;
-}
-
 export default function BusinessMap() {
+  const mapRef = useRef<L.Map | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<L.LayerGroup | null>(null);
   const { businesses, selectBusiness, categoryFilter } = useMapStore();
 
-  const filtered = categoryFilter
-    ? businesses.filter((b) => b.category === categoryFilter)
-    : businesses;
+  // Init map
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
 
-  const markers = filtered.filter((b) => b.lat && b.lng);
+    const map = L.map(containerRef.current, {
+      center: [-12.0464, -77.0428],
+      zoom: 14,
+      zoomControl: false,
+    });
 
-  return (
-    <MapContainer
-      center={[-12.0464, -77.0428]}
-      zoom={14}
-      className="h-full w-full"
-      zoomControl={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <FitBounds businesses={markers} />
-      {markers.map((b) => (
-        <Marker
-          key={b.id}
-          position={[b.lat!, b.lng!]}
-          icon={createIcon(b.category)}
-          eventHandlers={{ click: () => selectBusiness(b) }}
-        >
-          <Popup>
-            <div className="text-sm">
-              <p className="font-semibold">{b.name}</p>
-              <p className="text-gray-600">
-                {b.category}/{b.subcategory}
-              </p>
-              {b.address && <p className="text-gray-500">{b.address}</p>}
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
-  );
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    markersRef.current = L.layerGroup().addTo(map);
+    mapRef.current = map;
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  // Update markers
+  useEffect(() => {
+    const map = mapRef.current;
+    const markers = markersRef.current;
+    if (!map || !markers) return;
+
+    markers.clearLayers();
+
+    const filtered = categoryFilter
+      ? businesses.filter((b) => b.category === categoryFilter)
+      : businesses;
+
+    const points = filtered.filter((b) => b.lat && b.lng);
+
+    points.forEach((b) => {
+      const marker = L.marker([b.lat!, b.lng!], { icon: createIcon(b.category) });
+      marker.bindPopup(`
+        <div style="font-size:13px;">
+          <b>${b.name}</b><br/>
+          <span style="color:#666;">${b.category}/${b.subcategory}</span>
+          ${b.address ? `<br/><span style="color:#999;">${b.address}</span>` : ""}
+        </div>
+      `);
+      marker.on("click", () => selectBusiness(b));
+      markers.addLayer(marker);
+    });
+
+    if (points.length > 0) {
+      const bounds = L.latLngBounds(points.map((b) => [b.lat!, b.lng!] as [number, number]));
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [40, 40] });
+      }
+    }
+  }, [businesses, categoryFilter, selectBusiness]);
+
+  return <div ref={containerRef} className="h-full w-full" />;
 }
