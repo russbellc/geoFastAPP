@@ -5,10 +5,16 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from sqlalchemy import func
+
 from app.core.config import settings
 from app.models.business import Business
 from app.models.business_profile import BusinessProfile
 from app.scrapers.web_scraper import scrape_website
+from app.models.business_embedding import BusinessEmbedding
+from app.services.ai_service import generate_business_summary
+from app.services.embeddings import build_business_text, generate_embedding
+from app.services.scoring import calculate_opportunity_score, classify_lead
 from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
@@ -71,10 +77,71 @@ async def _run_enrich(business_id: int):
             profile.seo_score = 0
             profile.tech_stack = {"detected": []}
 
+        # Scoring
+        density_result = await db.execute(
+            select(func.count(Business.id)).where(
+                Business.territory_id == business.territory_id,
+                Business.category == business.category,
+            )
+        )
+        territory_density = density_result.scalar() or 0
+
+        score = calculate_opportunity_score(business, profile, territory_density)
+        profile.opportunity_score = score
+        profile.lead_status = classify_lead(score)
+
+        # Resumen IA (Groq)
+        tech = profile.tech_stack or {}
+        social = {
+            "facebook": profile.facebook_url,
+            "instagram": profile.instagram_url,
+            "tiktok": profile.tiktok_url,
+        }
+        profile.ai_summary = generate_business_summary(
+            name=business.name,
+            category=business.category,
+            subcategory=business.subcategory,
+            address=business.address,
+            website=business.website,
+            services_text=profile.services,
+            tech_stack=tech.get("detected", []),
+            has_booking=profile.has_online_booking,
+            has_chatbot=profile.has_chatbot,
+            seo_score=profile.seo_score,
+            social_links=social,
+        )
+
         profile.enriched_at = datetime.now(timezone.utc)
         await db.commit()
 
-        logger.info(f"Business {business_id} enriquecido (website: {business.website})")
+        # Generar embedding para busqueda semantica
+        try:
+            text = build_business_text(
+                name=business.name,
+                category=business.category,
+                subcategory=business.subcategory,
+                address=business.address,
+                services=profile.services,
+            )
+            emb = generate_embedding(text)
+
+            existing_emb = await db.execute(
+                select(BusinessEmbedding).where(
+                    BusinessEmbedding.business_id == business_id
+                )
+            )
+            emb_record = existing_emb.scalar_one_or_none()
+            if emb_record:
+                emb_record.embedding = emb
+            else:
+                db.add(BusinessEmbedding(business_id=business_id, embedding=emb))
+            await db.commit()
+        except Exception as e:
+            logger.warning(f"Error generando embedding para {business_id}: {e}")
+
+        logger.info(
+            f"Business {business_id} enriquecido: score={score} lead={profile.lead_status}"
+        )
 
 
 @celery_app.task(name="enrich_business", bind=True, max_retries=1)

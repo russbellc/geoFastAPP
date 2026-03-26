@@ -16,8 +16,9 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_MINUTES: int = 60 * 24  # 24 horas
 
-    # Claude API
-    CLAUDE_API_KEY: str = ""
+    # IA (Groq)
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "llama-3.1-8b-instant"
 
     model_config = {"env_file": ".env", "case_sensitive": True}
 

@@ -12,7 +12,7 @@
 | 01 | [01-fundacion.md](01-fundacion.md) | Sprint 1 — Setup monorepo, Docker, modelos, JWT | completado |
 | 02 | [02-scanner-osm.md](02-scanner-osm.md) | Sprint 2 — Overpass API, Celery, endpoints scan | completado |
 | 03 | [03-enriquecimiento-web.md](03-enriquecimiento-web.md) | Sprint 3 — Playwright, Wappalyzer, redes sociales | completado |
-| 04 | [04-ia-scoring-vectores.md](04-ia-scoring-vectores.md) | Sprint 4 — Claude API, scoring 0-100, pgvector | pendiente |
+| 04 | [04-ia-scoring-vectores.md](04-ia-scoring-vectores.md) | Sprint 4 — Groq API, scoring 0-100, pgvector | completado |
 
 ---
 

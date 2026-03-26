@@ -17,19 +17,21 @@ Implementar analisis con IA (Claude API) para generar resumenes por negocio, sis
 | GET | /stats/territory/{id} | Metricas y reportes del territorio |
 
 ## 4. Tareas
-- [ ] Integracion Claude API (Groq temporal): generar ai_summary por negocio
-- [ ] Sistema de scoring 0-100 (reglas definidas en CLAUDE.md)
-- [ ] Clasificacion automatica: cold (0-49) / warm (50-79) / hot (80-100)
-- [ ] Setup pgvector: embeddings de perfiles de negocios
-- [ ] Busqueda semantica: query en lenguaje natural → negocios relevantes
-- [ ] Endpoint POST /search/semantic
-- [ ] Endpoint GET /stats/territory/{id}
+- [x] Integracion Groq API: generar ai_summary por negocio (llama-3.1-8b-instant)
+- [x] Sistema de scoring 0-100 (reglas fijas)
+- [x] Clasificacion automatica: cold (0-49) / warm (50-79) / hot (80-100)
+- [x] Setup pgvector: tabla business_embeddings (384 dims)
+- [x] Modelo sentence-transformers (paraphrase-multilingual-MiniLM-L12-v2)
+- [x] Busqueda semantica: POST /search/semantic
+- [x] Endpoint GET /stats/territory/{id}
+- [x] Scoring + IA + embeddings integrados en task de enriquecimiento
 
 ## 5. Decisiones tecnicas
-- Claude API como IA principal, Groq como fallback temporal (mas rapido, gratis en desarrollo)
+- Groq API para resumenes IA (rapido, modelo llama-3.1-8b-instant)
 - Scoring basado en reglas fijas (no ML) para transparencia y control
-- pgvector integrado en PostgreSQL (sin servicio externo tipo Pinecone)
-- Embeddings generados al momento del enriquecimiento, no on-demand
+- pgvector integrado en PostgreSQL (sin servicio externo)
+- sentence-transformers multilingue para embeddings (~100MB)
+- Embeddings generados al momento del enriquecimiento
 
 ### Sistema de scoring
 ```
@@ -46,4 +48,4 @@ Implementar analisis con IA (Claude API) para generar resumenes por negocio, sis
 - **Depende de:** 01-fundacion, 02-scanner-osm, 03-enriquecimiento (datos completos)
 - **Requerido por:** 05-frontend-mapa (mostrar scores), 08-nicho-salud, 09-social-intelligence
 
-## Estado: pendiente
+## Estado: completado
