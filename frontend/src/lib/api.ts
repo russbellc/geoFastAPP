@@ -118,6 +118,12 @@ class ApiClient {
     return this.request<TerritoryStats>(`/stats/territory/${id}`);
   }
 
+  // Health stats
+  getHealthStats(territoryId?: number) {
+    const params = territoryId ? `?territory_id=${territoryId}` : "";
+    return this.request<HealthStats>(`/stats/health${params}`);
+  }
+
   // Search
   semanticSearch(query: string, limit = 10) {
     return this.request<{ query: string; results: Business[] }>("/search/semantic", {
@@ -203,6 +209,15 @@ export interface ScanJob {
   total_enriched: number;
   started_at: string | null;
   finished_at: string | null;
+}
+
+export interface HealthStats {
+  total_health: number;
+  total_enriched: number;
+  subcategories: { subcategory: string; count: number }[];
+  lead_distribution: { status: string; count: number }[];
+  avg_opportunity_score: number | null;
+  sources: { category: string; count: number }[];
 }
 
 export interface TerritoryStats {

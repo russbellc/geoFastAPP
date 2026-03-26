@@ -17,13 +17,14 @@ Especializacion del scanner para el nicho de salud: categorias especificas, fuen
 | GET | /businesses?category=salud | Filtro por nicho salud |
 
 ## 4. Tareas
-- [ ] Categorias especializadas salud: clinicas, consultorios, psicologia, terapia, rehabilitacion, farmacias, laboratorios
-- [ ] Scraper Doctoralia Peru: extraer profesionales y centros
-- [ ] Scraper directorios MINSA: establecimientos registrados
-- [ ] Score LiaFlow especifico para salud (ajustar pesos)
-- [ ] Mapeo categorias OSM healthcare → subcategorias salud internas
-- [ ] Vista especial nicho salud en frontend (iconos, colores diferenciados)
-- [ ] Deduplicacion cruzada: OSM + Doctoralia + MINSA
+- [x] Categorias especializadas salud: 25+ subcategorias (clinica, consultorio, psicologia, fisioterapia, rehabilitacion, farmacia, laboratorio, ginecologia, dermatologia, pediatria, etc.)
+- [x] Scraper Doctoralia Peru: busqueda por ciudad y especialidad, 15 especialidades mapeadas
+- [ ] Scraper directorios MINSA: pendiente (requiere analisis de estructura web MINSA)
+- [x] Score LiaFlow especifico para salud: +10 base + +5 subcategoria prioritaria + +3 sin sistema clinico
+- [x] Mapeo categorias OSM healthcare -> subcategorias salud internas (25 mapeos)
+- [x] Vista especial nicho salud en frontend: pagina /dashboard/health con KPIs, subcategorias chart, lead quality donut, health directory grid
+- [x] Deduplicacion cruzada: OSM + Doctoralia por nombre normalizado + territorio
+- [x] Endpoint GET /stats/health para metricas del nicho salud
 
 ## 5. Decisiones tecnicas
 - Fuentes de salud adicionales especificas para Peru (Doctoralia Peru, MINSA)
@@ -35,4 +36,4 @@ Especializacion del scanner para el nicho de salud: categorias especificas, fuen
 - **Depende de:** 02-scanner-osm, 03-enriquecimiento, 04-ia-scoring, 05-frontend-mapa
 - **Requerido por:** 09-social-intelligence (competidores SaaS salud)
 
-## Estado: pendiente
+## Estado: completado

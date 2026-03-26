@@ -99,3 +99,95 @@ async def get_territory_stats(
         lead_distribution=lead_distribution,
         avg_opportunity_score=round(avg_score, 1) if avg_score else None,
     )
+
+
+class SubcategoryCount(BaseModel):
+    subcategory: str
+    count: int
+
+
+class HealthStatsResponse(BaseModel):
+    total_health: int
+    total_enriched: int
+    subcategories: list[SubcategoryCount]
+    lead_distribution: list[LeadCount]
+    avg_opportunity_score: float | None
+    sources: list[CategoryCount]
+
+
+@router.get("/health", response_model=HealthStatsResponse)
+async def get_health_stats(
+    territory_id: int | None = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Estadisticas especificas del nicho salud."""
+    base_filter = Business.category == "salud"
+    if territory_id:
+        base_filter = base_filter & (Business.territory_id == territory_id)
+
+    # Total salud
+    total_result = await db.execute(
+        select(func.count(Business.id)).where(base_filter)
+    )
+    total_health = total_result.scalar()
+
+    # Subcategorias
+    sub_result = await db.execute(
+        select(Business.subcategory, func.count(Business.id))
+        .where(base_filter)
+        .group_by(Business.subcategory)
+        .order_by(func.count(Business.id).desc())
+    )
+    subcategories = [
+        SubcategoryCount(subcategory=row[0] or "otro", count=row[1])
+        for row in sub_result.all()
+    ]
+
+    # Enriched
+    enriched_result = await db.execute(
+        select(func.count(BusinessProfile.id))
+        .join(Business, Business.id == BusinessProfile.business_id)
+        .where(base_filter)
+    )
+    total_enriched = enriched_result.scalar()
+
+    # Leads
+    lead_result = await db.execute(
+        select(BusinessProfile.lead_status, func.count(BusinessProfile.id))
+        .join(Business, Business.id == BusinessProfile.business_id)
+        .where(base_filter)
+        .group_by(BusinessProfile.lead_status)
+    )
+    lead_distribution = [
+        LeadCount(status=row[0], count=row[1]) for row in lead_result.all()
+    ]
+
+    # Avg score
+    avg_result = await db.execute(
+        select(func.avg(BusinessProfile.opportunity_score))
+        .join(Business, Business.id == BusinessProfile.business_id)
+        .where(base_filter)
+    )
+    avg_score = avg_result.scalar()
+
+    # Sources
+    source_result = await db.execute(
+        select(Business.source, func.count(Business.id))
+        .where(base_filter)
+        .group_by(Business.source)
+        .order_by(func.count(Business.id).desc())
+    )
+    sources = [
+        CategoryCount(category=row[0] or "unknown", count=row[1])
+        for row in source_result.all()
+    ]
+
+    return HealthStatsResponse(
+        total_health=total_health,
+        total_enriched=total_enriched,
+        subcategories=subcategories,
+        lead_distribution=lead_distribution,
+        avg_opportunity_score=round(avg_score, 1) if avg_score else None,
+        sources=sources,
+    )

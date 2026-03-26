@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/stats", icon: "insights", label: "Intelligence" },
   { href: "/dashboard", icon: "map", label: "Territories" },
   { href: "/dashboard/leads", icon: "person_add", label: "Leads" },
+  { href: "/dashboard/health", icon: "local_hospital", label: "Health Niche" },
   { href: "/dashboard/analytics", icon: "bar_chart", label: "Analytics" },
   { href: "/dashboard/settings", icon: "settings", label: "Settings" },
 ];

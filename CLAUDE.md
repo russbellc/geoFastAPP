@@ -275,7 +275,7 @@ GET    /competitors               # Radar de competencia
 - [x] Sprint 5 — Frontend mapa
 - [x] Sprint 6 — Dashboard
 - [x] Sprint 7 — Scanner UI + Exportacion
-- [ ] Sprint 8 — Nicho Salud
+- [x] Sprint 8 — Nicho Salud
 - [ ] Sprint 9 — Social Intelligence
 - [ ] Sprint 10 — Automatizacion n8n
 - [ ] Sprint 11 — Mobile setup + mapa

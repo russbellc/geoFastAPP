@@ -2,20 +2,32 @@
 
 # Mapeo: (tag_key, tag_value) -> (category, subcategory)
 OSM_CATEGORY_MAP: dict[tuple[str, str], tuple[str, str]] = {
-    # Salud
+    # Salud — categorias ampliadas (Sprint 8: Nicho Salud)
     ("amenity", "clinic"): ("salud", "clinica"),
     ("amenity", "hospital"): ("salud", "hospital"),
     ("amenity", "pharmacy"): ("salud", "farmacia"),
     ("amenity", "dentist"): ("salud", "dentista"),
     ("amenity", "doctors"): ("salud", "consultorio"),
     ("amenity", "veterinary"): ("salud", "veterinaria"),
+    ("amenity", "nursing_home"): ("salud", "residencia_geriatrica"),
+    ("amenity", "social_facility"): ("salud", "centro_social"),
     ("healthcare", "doctor"): ("salud", "consultorio"),
     ("healthcare", "clinic"): ("salud", "clinica"),
+    ("healthcare", "hospital"): ("salud", "hospital"),
     ("healthcare", "laboratory"): ("salud", "laboratorio"),
     ("healthcare", "pharmacy"): ("salud", "farmacia"),
     ("healthcare", "physiotherapist"): ("salud", "fisioterapia"),
     ("healthcare", "psychotherapist"): ("salud", "psicologia"),
     ("healthcare", "optometrist"): ("salud", "optica"),
+    ("healthcare", "dentist"): ("salud", "dentista"),
+    ("healthcare", "rehabilitation"): ("salud", "rehabilitacion"),
+    ("healthcare", "midwife"): ("salud", "obstetricia"),
+    ("healthcare", "speech_therapist"): ("salud", "terapia_lenguaje"),
+    ("healthcare", "occupational_therapist"): ("salud", "terapia_ocupacional"),
+    ("healthcare", "podiatrist"): ("salud", "podologia"),
+    ("healthcare", "nutrition_counselling"): ("salud", "nutricion"),
+    ("healthcare", "alternative"): ("salud", "medicina_alternativa"),
+    ("healthcare", "centre"): ("salud", "centro_medico"),
     # Gastronomia
     ("amenity", "restaurant"): ("gastronomia", "restaurante"),
     ("amenity", "cafe"): ("gastronomia", "cafe"),
@@ -77,3 +89,20 @@ def categorize_osm_tags(tags: dict) -> tuple[str, str]:
                 return result
             return ("otro", value)
     return ("otro", "desconocido")
+
+
+# Todas las subcategorias de salud conocidas
+HEALTH_SUBCATEGORIES = {
+    "clinica", "hospital", "farmacia", "dentista", "consultorio", "veterinaria",
+    "laboratorio", "fisioterapia", "psicologia", "optica", "rehabilitacion",
+    "obstetricia", "terapia_lenguaje", "terapia_ocupacional", "podologia",
+    "nutricion", "medicina_alternativa", "centro_medico", "residencia_geriatrica",
+    "centro_social", "ginecologia", "dermatologia", "pediatria", "oftalmologia",
+    "traumatologia", "cardiologia", "urologia", "otorrinolaringologia",
+    "neurologia", "endocrinologia",
+}
+
+
+def is_health_business(category: str | None, subcategory: str | None) -> bool:
+    """Determina si un negocio pertenece al nicho salud."""
+    return category == "salud" or (subcategory or "") in HEALTH_SUBCATEGORIES
