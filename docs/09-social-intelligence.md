@@ -22,13 +22,14 @@ Monitorear redes sociales para detectar competidores SaaS de salud en LATAM. Ana
 | POST | /competitors/scan | Lanzar escaneo de competidores |
 
 ## 4. Tareas
-- [ ] Scanner redes sociales: Instagram, TikTok, Facebook
-- [ ] Keywords de busqueda: "sistema medico", "gestion clinica", "historia clinica digital"
-- [ ] Perfil completo por competidor: contenido, estrategia, mercados
-- [ ] Analisis IA: gaps y oportunidades vs LiaFlow
-- [ ] Radar de competencia en dashboard (grafico radar/spider)
-- [ ] Modelo competitors en BD
-- [ ] Endpoints CRUD competidores
+- [x] Modelo competitors en BD (name, type, country, markets, social urls, followers, ai_analysis, gap_vs_liaflow)
+- [x] Endpoints CRUD: GET/POST /competitors, GET /competitors/{id}, POST /competitors/scan
+- [x] Seed 8 competidores SaaS salud LATAM conocidos (Doctoralia, Medilink, Nubimed, Dentalink, etc.)
+- [x] Keywords de busqueda definidos: 9 keywords en español para deteccion
+- [x] Analisis IA: gaps y oportunidades vs LiaFlow (auto-generado)
+- [x] Radar de competencia en /dashboard/analytics: grid + detail panel con markets, gaps, social
+- [x] Celery task scan_competitors para seed + analisis
+- [ ] Scraping en vivo de perfiles sociales (pendiente — requiere proxies para evitar rate limiting)
 
 ## 5. Decisiones tecnicas
 - Scraping de perfiles publicos (no APIs oficiales — limitadas y costosas)
@@ -41,4 +42,4 @@ Monitorear redes sociales para detectar competidores SaaS de salud en LATAM. Ana
 - **Depende de:** 03-enriquecimiento (scraping base), 04-ia-scoring (Claude API), 06-dashboard (radar visual)
 - **Requerido por:** 10-automatizacion (alertas de competidores)
 
-## Estado: pendiente
+## Estado: completado

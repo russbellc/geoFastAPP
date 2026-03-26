@@ -124,6 +124,47 @@ class ApiClient {
     return this.request<HealthStats>(`/stats/health${params}`);
   }
 
+  // Competitors
+  getCompetitors() {
+    return this.request<Competitor[]>("/competitors");
+  }
+
+  createCompetitor(data: CompetitorCreate) {
+    return this.request<Competitor>("/competitors", { method: "POST", body: JSON.stringify(data) });
+  }
+
+  scanCompetitors() {
+    return this.request<{ message: string }>("/competitors/scan", { method: "POST" });
+  }
+
+  // Webhooks
+  getWebhooks() {
+    return this.request<WebhookItem[]>("/webhooks");
+  }
+
+  createWebhook(url: string, events: string[]) {
+    return this.request<WebhookItem>("/webhooks", { method: "POST", body: JSON.stringify({ url, events }) });
+  }
+
+  deleteWebhook(id: number) {
+    return this.request<void>(`/webhooks/${id}`, { method: "DELETE" });
+  }
+
+  // API Keys
+  getApiKeys() {
+    return this.request<ApiKeyItem[]>("/api-keys");
+  }
+
+  createApiKey(name: string, permissions?: string[]) {
+    return this.request<ApiKeyItem & { key: string }>("/api-keys", {
+      method: "POST", body: JSON.stringify({ name, permissions }),
+    });
+  }
+
+  revokeApiKey(id: number) {
+    return this.request<void>(`/api-keys/${id}`, { method: "DELETE" });
+  }
+
   // Search
   semanticSearch(query: string, limit = 10) {
     return this.request<{ query: string; results: Business[] }>("/search/semantic", {
@@ -209,6 +250,58 @@ export interface ScanJob {
   total_enriched: number;
   started_at: string | null;
   finished_at: string | null;
+}
+
+export interface Competitor {
+  id: number;
+  name: string;
+  type: string;
+  country: string | null;
+  markets: string[] | null;
+  website: string | null;
+  instagram_url: string | null;
+  tiktok_url: string | null;
+  facebook_url: string | null;
+  linkedin_url: string | null;
+  followers: number | null;
+  engagement_rate: number | null;
+  posting_frequency: string | null;
+  content_strategy: Record<string, unknown> | null;
+  target_markets: string[] | null;
+  ai_analysis: string | null;
+  gap_vs_liaflow: string | null;
+  last_scanned_at: string | null;
+}
+
+export interface CompetitorCreate {
+  name: string;
+  type?: string;
+  country?: string;
+  markets?: string[];
+  website?: string;
+  instagram_url?: string;
+  tiktok_url?: string;
+  facebook_url?: string;
+  linkedin_url?: string;
+}
+
+export interface WebhookItem {
+  id: number;
+  url: string;
+  events: string[];
+  active: boolean;
+  secret?: string;
+  created_at: string;
+}
+
+export interface ApiKeyItem {
+  id: number;
+  name: string;
+  key_prefix: string;
+  permissions: string[] | null;
+  active: boolean;
+  last_used_at: string | null;
+  created_at: string;
 }
 
 export interface HealthStats {
