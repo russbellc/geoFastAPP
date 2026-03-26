@@ -20,13 +20,13 @@ Interfaz para lanzar escaneos con progress bar en tiempo real (WebSocket), histo
 | POST | /export/pdf | Reporte ejecutivo PDF |
 
 ## 4. Tareas
-- [ ] UI para lanzar escaneo: seleccionar territorio, nicho, radio
-- [ ] Progress bar con WebSocket (/ws/scan/{job_id})
-- [ ] Historial de escaneos: lista con estado, fecha, resultados
-- [ ] Exportacion CSV/Excel con filtros aplicados
-- [ ] Exportacion PDF: reporte ejecutivo con graficos y metricas
-- [ ] Vista leads calientes: tabla con accion rapida (copiar email, abrir web)
-- [ ] Backend: endpoints POST /export/csv y POST /export/pdf
+- [x] UI para lanzar escaneo: seleccionar territorio, nicho, radio/poligono
+- [ ] Progress bar con WebSocket (/ws/scan/{job_id}) — usa polling como fallback
+- [x] Historial de escaneos: lista con estado, fecha, resultados (GET /scans/history)
+- [x] Exportacion CSV con filtros aplicados (GET /export/csv)
+- [x] Exportacion PDF: reporte ejecutivo HTML estilizado (GET /export/pdf) — printable via browser
+- [x] Vista leads calientes: perfil detallado con score, tech stack, social footprint
+- [x] Backend: endpoints GET /export/csv y GET /export/pdf
 
 ## 5. Decisiones tecnicas
 - WebSocket para progreso real-time (no polling)

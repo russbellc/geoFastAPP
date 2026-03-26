@@ -61,6 +61,18 @@ async def create_scan(
     return job
 
 
+@router.get("/history", response_model=list[ScanJobResponse])
+async def get_scan_history(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Historial de escaneos, mas recientes primero."""
+    result = await db.execute(
+        select(ScanJob).order_by(ScanJob.id.desc()).limit(50)
+    )
+    return result.scalars().all()
+
+
 @router.get("/{scan_id}/status", response_model=ScanJobResponse)
 async def get_scan_status(
     scan_id: int,

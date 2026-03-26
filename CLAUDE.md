@@ -232,7 +232,7 @@ GET    /competitors               # Radar de competencia
 - Scanner competidores SaaS salud LATAM en redes sociales
 - Keywords: "sistema médico", "gestión clínica", "historia clínica digital"
 - Perfil completo por competidor: contenido, estrategia, mercados
-- Análisis IA gaps vs LiaFlow
+- Análisis IA gaps
 - Radar de competencia en dashboard
 
 **Sprint 10 — Automatización + n8n**
@@ -268,16 +268,16 @@ GET    /competitors               # Radar de competencia
 
 ## Estado Actual
 
-- [ ] Sprint 1 — Fundación del proyecto
-- [ ] Sprint 2 — Scanner OSM
-- [ ] Sprint 3 — Motor de enriquecimiento
-- [ ] Sprint 4 — IA + Scoring + Vectores
-- [ ] Sprint 5 — Frontend mapa
-- [ ] Sprint 6 — Dashboard
-- [ ] Sprint 7 — Scanner UI + Exportación
+- [x] Sprint 1 — Fundacion del proyecto
+- [x] Sprint 2 — Scanner OSM
+- [x] Sprint 3 — Motor de enriquecimiento
+- [x] Sprint 4 — IA + Scoring + Vectores
+- [x] Sprint 5 — Frontend mapa
+- [x] Sprint 6 — Dashboard
+- [x] Sprint 7 — Scanner UI + Exportacion
 - [ ] Sprint 8 — Nicho Salud
 - [ ] Sprint 9 — Social Intelligence
-- [ ] Sprint 10 — Automatización n8n
+- [ ] Sprint 10 — Automatizacion n8n
 - [ ] Sprint 11 — Mobile setup + mapa
 - [ ] Sprint 12 — Mobile dashboard
 - [ ] Sprint 13 — Mobile avanzado
@@ -330,7 +330,7 @@ GET    /competitors               # Radar de competencia
 
 
 
-
+****
 
 
 

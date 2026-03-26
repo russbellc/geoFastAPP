@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api, ScanJob, ScanRequest } from "@/lib/api";
 import DrawMapWrapper from "@/components/map/DrawMapWrapper";
 
@@ -21,6 +21,11 @@ export default function ScanPage() {
   const [scanJob, setScanJob] = useState<ScanJob | null>(null);
   const [polling, setPolling] = useState(false);
   const [error, setError] = useState("");
+  const [history, setHistory] = useState<ScanJob[]>([]);
+
+  useEffect(() => {
+    api.getScanHistory().then(setHistory).catch(console.error);
+  }, []);
 
   const canSubmit = mode === "radio" ? form.name.length > 0 : form.name.length > 0 && polygon !== null;
 
@@ -58,6 +63,7 @@ export default function ScanPage() {
         if (status.status === "done" || status.status === "failed") {
           clearInterval(interval);
           setPolling(false);
+          api.getScanHistory().then(setHistory).catch(console.error);
         }
       } catch {
         clearInterval(interval);
@@ -273,6 +279,46 @@ export default function ScanPage() {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Scan History */}
+        {history.length > 0 && (
+          <div className="bg-surface-container-low rounded-3xl p-8">
+            <h3 className="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary">history</span>
+              Scan History
+            </h3>
+            <div className="space-y-3">
+              {history.map((job) => (
+                <div
+                  key={job.id}
+                  className="flex items-center justify-between bg-surface-container-high p-4 rounded-xl"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center">
+                      <span className="material-symbols-outlined text-primary text-lg">radar</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-on-surface">
+                        Territory #{job.territory_id}
+                        {job.nicho && <span className="text-on-surface-variant font-normal"> — {job.nicho}</span>}
+                      </p>
+                      <p className="text-[11px] text-on-surface-variant">
+                        {job.started_at ? new Date(job.started_at).toLocaleString() : "Pending"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-on-surface">{job.total_found}</p>
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">found</p>
+                    </div>
+                    <ScanStatusBadge status={job.status} />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

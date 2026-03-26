@@ -294,8 +294,34 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
               <span className="material-symbols-outlined text-sm">rocket_launch</span>
               Execute Outreach
             </button>
-            <button className="px-6 py-3 border border-outline-variant/20 rounded-xl font-bold uppercase tracking-wider text-sm text-on-surface hover:bg-surface-container-highest transition-colors">
-              Export Data
+            <button
+              onClick={async () => {
+                try {
+                  const blob = await api.exportCsv(business.territory_id ? { territory_id: business.territory_id } : {});
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = "geointel_export.csv";
+                  a.click();
+                  URL.revokeObjectURL(url);
+                } catch (err) { console.error(err); }
+              }}
+              className="px-6 py-3 border border-outline-variant/20 rounded-xl font-bold uppercase tracking-wider text-sm text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              CSV
+            </button>
+            <button
+              onClick={() => {
+                const params: Record<string, string | number> = {};
+                if (business.territory_id) params.territory_id = business.territory_id;
+                const url = api.exportPdfUrl(params);
+                window.open(url, "_blank");
+              }}
+              className="px-6 py-3 border border-outline-variant/20 rounded-xl font-bold uppercase tracking-wider text-sm text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
+              Report
             </button>
           </div>
         </div>

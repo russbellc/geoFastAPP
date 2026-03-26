@@ -109,6 +109,10 @@ class ApiClient {
     return this.request<ScanJob>(`/scans/${id}/status`);
   }
 
+  getScanHistory() {
+    return this.request<ScanJob[]>("/scans/history");
+  }
+
   // Stats
   getTerritoryStats(id: number) {
     return this.request<TerritoryStats>(`/stats/territory/${id}`);
@@ -132,6 +136,13 @@ class ApiClient {
       headers: { Authorization: `Bearer ${token}` },
     });
     return res.blob();
+  }
+
+  exportPdfUrl(params: Record<string, string | number> = {}) {
+    const query = new URLSearchParams(
+      Object.entries(params).map(([k, v]) => [k, String(v)])
+    ).toString();
+    return `${API_URL}/export/pdf?${query}`;
   }
 }
 
