@@ -1,0 +1,8 @@
+{
+  "name": "geointel-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Frontend placeholder - Next.js se configura en Sprint 5' && tail -f /dev/null"
+  }
+}
