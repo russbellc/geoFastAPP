@@ -77,6 +77,20 @@ out center meta;
         data = await self._execute_query(query)
         return self._parse_elements(data.get("elements", []))
 
+    async def query_by_polygon(self, coords: list[list[float]]) -> list[dict]:
+        """Escanea negocios dentro de un poligono.
+
+        Args:
+            coords: Lista de [lat, lng] que forman el poligono.
+        """
+        # Formato Overpass poly: "lat1 lng1 lat2 lng2 ..."
+        poly_str = " ".join(f"{c[0]} {c[1]}" for c in coords)
+        area_filter = f'(poly:"{poly_str}")'
+        query = self._build_query(area_filter)
+        logger.info(f"Overpass query: poligono con {len(coords)} puntos")
+        data = await self._execute_query(query)
+        return self._parse_elements(data.get("elements", []))
+
     def _parse_elements(self, elements: list[dict]) -> list[dict]:
         """Parsea elementos OSM crudos a formato normalizado."""
         businesses = []

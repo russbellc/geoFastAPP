@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { api, ScanJob } from "@/lib/api";
+import { api, ScanJob, ScanRequest } from "@/lib/api";
+import DrawMapWrapper from "@/components/map/DrawMapWrapper";
+
+type ScanMode = "radio" | "polygon";
 
 export default function ScanPage() {
+  const [mode, setMode] = useState<ScanMode>("radio");
   const [form, setForm] = useState({
     name: "",
     city: "Lima",
@@ -13,18 +17,33 @@ export default function ScanPage() {
     radius_km: 1,
     nicho: "",
   });
+  const [polygon, setPolygon] = useState<[number, number][] | null>(null);
   const [scanJob, setScanJob] = useState<ScanJob | null>(null);
   const [polling, setPolling] = useState(false);
   const [error, setError] = useState("");
+
+  const canSubmit = mode === "radio" ? form.name.length > 0 : form.name.length > 0 && polygon !== null;
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      const job = await api.createScan({
-        ...form,
+      const payload: ScanRequest = {
+        name: form.name,
+        city: form.city,
+        country: form.country,
         nicho: form.nicho || undefined,
-      });
+      };
+
+      if (mode === "radio") {
+        payload.lat = form.lat;
+        payload.lng = form.lng;
+        payload.radius_km = form.radius_km;
+      } else if (polygon) {
+        payload.polygon = polygon;
+      }
+
+      const job = await api.createScan(payload);
       setScanJob(job);
       pollStatus(job.id);
     } catch (err: unknown) {
@@ -57,10 +76,31 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 max-w-2xl mx-auto space-y-6">
+    <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-white">Lanzar escaneo</h1>
 
+      {/* Toggle modo */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => { setMode("radio"); setPolygon(null); }}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            mode === "radio" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+          }`}
+        >
+          Por radio
+        </button>
+        <button
+          onClick={() => setMode("polygon")}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            mode === "polygon" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+          }`}
+        >
+          Dibujar poligono
+        </button>
+      </div>
+
       <form onSubmit={handleScan} className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-4">
+        {/* Campos comunes */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-gray-400 text-sm block mb-1">Nombre del territorio</label>
@@ -68,7 +108,7 @@ export default function ScanPage() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Ej: Lima Centro"
+              placeholder="Ej: Miraflores Norte"
               required
             />
           </div>
@@ -83,44 +123,60 @@ export default function ScanPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Latitud</label>
-            <input
-              type="number"
-              step="any"
-              value={form.lat}
-              onChange={(e) => setForm({ ...form, lat: parseFloat(e.target.value) })}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
+        {/* Modo radio */}
+        {mode === "radio" && (
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="text-gray-400 text-sm block mb-1">Latitud</label>
+              <input
+                type="number" step="any" value={form.lat}
+                onChange={(e) => setForm({ ...form, lat: parseFloat(e.target.value) })}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-gray-400 text-sm block mb-1">Longitud</label>
+              <input
+                type="number" step="any" value={form.lng}
+                onChange={(e) => setForm({ ...form, lng: parseFloat(e.target.value) })}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-gray-400 text-sm block mb-1">Radio (km)</label>
+              <input
+                type="number" step="0.1" min="0.1" max="10" value={form.radius_km}
+                onChange={(e) => setForm({ ...form, radius_km: parseFloat(e.target.value) })}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+            </div>
           </div>
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Longitud</label>
-            <input
-              type="number"
-              step="any"
-              value={form.lng}
-              onChange={(e) => setForm({ ...form, lng: parseFloat(e.target.value) })}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Radio (km)</label>
-            <input
-              type="number"
-              step="0.1"
-              min="0.1"
-              max="10"
-              value={form.radius_km}
-              onChange={(e) => setForm({ ...form, radius_km: parseFloat(e.target.value) })}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-        </div>
+        )}
 
+        {/* Modo poligono */}
+        {mode === "polygon" && (
+          <div className="space-y-3">
+            <p className="text-gray-400 text-sm">
+              Usa la herramienta de poligono (icono a la derecha del mapa) para dibujar la zona a escanear.
+            </p>
+            <div className="h-[400px] rounded-lg overflow-hidden border border-gray-700">
+              <DrawMapWrapper
+                onPolygonDrawn={(coords) => setPolygon(coords)}
+                onPolygonCleared={() => setPolygon(null)}
+              />
+            </div>
+            {polygon && (
+              <p className="text-green-400 text-sm">
+                Poligono dibujado con {polygon.length} puntos
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Nicho */}
         <div>
           <label className="text-gray-400 text-sm block mb-1">Nicho (opcional)</label>
           <input
@@ -135,7 +191,7 @@ export default function ScanPage() {
 
         <button
           type="submit"
-          disabled={polling}
+          disabled={polling || !canSubmit}
           className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
         >
           {polling ? "Escaneando..." : "Iniciar escaneo"}

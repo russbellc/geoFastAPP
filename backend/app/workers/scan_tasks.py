@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from geoalchemy2.shape import to_shape
+
 from app.core.config import settings
 from app.models.business import Business
 from app.models.scan_job import ScanJob
@@ -43,11 +45,18 @@ async def _run_scan(job_id: int):
 
             # 4. Query Overpass API
             client = OverpassClient()
-            raw_businesses = await client.query_by_radius(
-                lat=territory.lat,
-                lng=territory.lng,
-                radius_m=territory.radius_m or 1000,
-            )
+            if territory.geometry is not None:
+                # Modo poligono: usar filtro poly de Overpass
+                shapely_geom = to_shape(territory.geometry)
+                coords = [[y, x] for x, y in shapely_geom.exterior.coords[:-1]]
+                raw_businesses = await client.query_by_polygon(coords)
+            else:
+                # Modo radio
+                raw_businesses = await client.query_by_radius(
+                    lat=territory.lat,
+                    lng=territory.lng,
+                    radius_m=territory.radius_m or 1000,
+                )
 
             # 5. Deduplicar e insertar
             inserted = 0

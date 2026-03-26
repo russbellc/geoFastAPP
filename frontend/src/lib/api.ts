@@ -176,9 +176,10 @@ export interface ScanRequest {
   name: string;
   city: string;
   country: string;
-  lat: number;
-  lng: number;
-  radius_km: number;
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
+  polygon?: [number, number][];
   nicho?: string;
 }
 
