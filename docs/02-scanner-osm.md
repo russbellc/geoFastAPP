@@ -18,23 +18,27 @@ Integrar Overpass API para escanear territorios geograficos completos, extraer n
 | GET | /businesses | Lista de negocios con filtros |
 
 ## 4. Tareas
-- [ ] Integracion Overpass API (queries por bounding box y radio)
-- [ ] Escaneo por ciudad completa o por radio
-- [ ] Normalizacion de categorias OSM a categorias internas
-- [ ] Setup Celery + Redis para background jobs
-- [ ] Endpoint POST /scans/territory
-- [ ] Endpoint GET /scans/{id}/status
-- [ ] Endpoint GET /businesses (con filtros: categoria, territorio, paginacion)
-- [ ] Deduplicacion por osm_id OR nombre+coordenadas cercanas
+- [x] Integracion Overpass API (queries por bounding box y radio)
+- [x] Escaneo por radio desde punto central
+- [x] Normalizacion de categorias OSM a categorias internas (~50 mapeos)
+- [x] Setup Celery + Redis para background jobs
+- [x] Endpoint POST /scans/territory
+- [x] Endpoint GET /scans/{id}/status
+- [x] Endpoint GET /businesses (con filtros: categoria, territorio, paginacion)
+- [x] Deduplicacion por osm_id
+- [x] Migracion: columnas lat, lng, radius_m en territories
 
 ## 5. Decisiones tecnicas
 - Overpass API como fuente principal de datos geograficos (gratuita, sin limites estrictos)
 - Celery para jobs largos: nunca bloquear el request HTTP
 - Normalizacion propia de categorias OSM (mapeo amenity/shop/healthcare → categorias internas)
-- Rate limiting en queries a Overpass para evitar bloqueos
+- Rate limiting en queries a Overpass (min 2s entre requests)
+- httpx async para requests a Overpass (timeout 90s)
+- Deduplicacion por osm_id (formato "type/id", ej: "node/1234")
+- Territory ahora tiene lat/lng/radius_m para escaneo por radio
 
 ## 6. Dependencias con otros modulos
 - **Depende de:** 01-fundacion (modelos, Docker, FastAPI base)
 - **Requerido por:** 03-enriquecimiento, 04-ia-scoring, 08-nicho-salud
 
-## Estado: pendiente
+## Estado: completado
