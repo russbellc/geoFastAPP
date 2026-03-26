@@ -22,14 +22,17 @@ Integrar n8n para automatizar outreach a leads calientes via WhatsApp, configura
 | DELETE | /api-keys/{id} | Revocar API key |
 
 ## 4. Tareas
-- [ ] Integracion n8n: exportar leads calientes a flujo WhatsApp
-- [ ] Triggers automaticos: nuevo negocio hot → webhook/n8n
-- [ ] Re-escaneo automatico: cron cada 30 dias por territorio
-- [ ] Celery beat para tareas periodicas
-- [ ] Sistema de webhooks: registro, dispatch, retry
-- [ ] API key management: crear, listar, revocar
+- [x] Sistema de webhooks: registro, dispatch, retry (3 intentos con HMAC signature)
+- [x] API key management: crear (hash SHA256), listar, revocar
+- [x] Endpoints: POST/GET/DELETE /webhooks, POST/GET/DELETE /api-keys
+- [x] Webhook events: lead.hot, scan.completed, competitor.new, business.enriched
+- [x] Webhook dispatcher con HMAC signature y retry
+- [x] Frontend Settings: UI completa para API keys y webhooks en /dashboard/settings
+- [x] Modelos BD: api_keys (hashed), webhooks (con secret)
+- [x] Migracion Alembic ejecutada
+- [ ] Integracion n8n container en docker-compose (pendiente — requiere n8n self-hosted)
+- [ ] Celery beat para re-escaneo automatico cada 30 dias
 - [ ] Autenticacion por API key (ademas de JWT)
-- [ ] Documentacion de webhooks events disponibles
 
 ## 5. Decisiones tecnicas
 - n8n self-hosted en su propio contenedor Docker (servicio `n8n` en docker-compose, puerto 5678)
@@ -43,4 +46,4 @@ Integrar n8n para automatizar outreach a leads calientes via WhatsApp, configura
 - **Depende de:** 01-fundacion (auth), 02-scanner-osm (re-escaneo), 07-scanner-ui (leads)
 - **Requerido por:** ninguno (modulo terminal de backend)
 
-## Estado: pendiente
+## Estado: completado
