@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
-  static const String _baseUrl = 'http://192.168.1.52:8000/api/v1'; // LAN -> host PC
+  static const String _baseUrl = 'http://192.168.1.52:8000/api/v1';
   static const String _tokenKey = 'auth_token';
 
   late final Dio _dio;
@@ -50,6 +50,7 @@ class ApiClient {
   }
 
   bool get isAuthenticated => _token != null;
+  String get baseUrl => _baseUrl;
 
   // Auth
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -123,5 +124,45 @@ class ApiClient {
   Future<List<dynamic>> getCompetitors() async {
     final res = await _dio.get('/competitors');
     return res.data;
+  }
+
+  Future<void> scanCompetitors() async {
+    await _dio.post('/competitors/scan');
+  }
+
+  // API Keys
+  Future<List<dynamic>> getApiKeys() async {
+    final res = await _dio.get('/api-keys');
+    return res.data;
+  }
+
+  Future<Map<String, dynamic>> createApiKey(String name, List<String> permissions) async {
+    final res = await _dio.post('/api-keys', data: {'name': name, 'permissions': permissions});
+    return res.data;
+  }
+
+  Future<void> revokeApiKey(int id) async {
+    await _dio.delete('/api-keys/$id');
+  }
+
+  // Webhooks
+  Future<List<dynamic>> getWebhooks() async {
+    final res = await _dio.get('/webhooks');
+    return res.data;
+  }
+
+  Future<Map<String, dynamic>> createWebhook(String url, List<String> events) async {
+    final res = await _dio.post('/webhooks', data: {'url': url, 'events': events});
+    return res.data;
+  }
+
+  Future<void> deleteWebhook(int id) async {
+    await _dio.delete('/webhooks/$id');
+  }
+
+  // Export
+  Future<String> getExportPdfUrl({int? territoryId}) {
+    final params = territoryId != null ? '?territory_id=$territoryId' : '';
+    return Future.value('$_baseUrl/export/pdf$params');
   }
 }

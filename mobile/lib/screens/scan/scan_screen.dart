@@ -1,205 +1,208 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:geointel_mobile/core/theme.dart';
 import 'package:geointel_mobile/widgets/geo_top_bar.dart';
+import 'package:geointel_mobile/providers/providers.dart';
 
-class ScanScreen extends StatefulWidget {
+class ScanScreen extends ConsumerStatefulWidget {
   const ScanScreen({super.key});
 
   @override
-  State<ScanScreen> createState() => _ScanScreenState();
+  ConsumerState<ScanScreen> createState() => _ScanScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> {
-  final Set<String> _selectedIndustries = {'Technology', 'Healthcare'};
-  double _progress = 0.45;
-  bool _scanning = false;
+class _ScanScreenState extends ConsumerState<ScanScreen> {
+  String _name = '';
+  String _city = 'Lima';
+  String _nicho = '';
+  double _lat = -12.0464;
+  double _lng = -77.0428;
+  double _radiusKm = 1.0;
+  String _status = '';
+  int _totalFound = 0;
+  int? _jobId;
+  Timer? _pollTimer;
+  List<Map<String, dynamic>> _history = [];
+  bool _loadingHistory = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadHistory() async {
+    try {
+      final api = ref.read(apiClientProvider);
+      final hist = await api.getScanHistory();
+      if (mounted) setState(() { _history = List<Map<String, dynamic>>.from(hist); _loadingHistory = false; });
+    } catch (_) {
+      if (mounted) setState(() => _loadingHistory = false);
+    }
+  }
+
+  Future<void> _launchScan() async {
+    if (_name.isEmpty) return;
+    setState(() { _status = 'pending'; _totalFound = 0; });
+    try {
+      final api = ref.read(apiClientProvider);
+      final result = await api.createScan({
+        'name': _name, 'city': _city, 'country': 'Peru',
+        'lat': _lat, 'lng': _lng, 'radius_km': _radiusKm,
+        if (_nicho.isNotEmpty) 'nicho': _nicho,
+      });
+      _jobId = result['id'];
+      setState(() => _status = 'running');
+      _startPolling();
+    } catch (e) {
+      setState(() => _status = 'failed');
+    }
+  }
+
+  void _startPolling() {
+    _pollTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      if (_jobId == null) { timer.cancel(); return; }
+      try {
+        final status = await ref.read(apiClientProvider).getScanStatus(_jobId!);
+        setState(() { _status = status['status']; _totalFound = status['total_found'] ?? 0; });
+        if (_status == 'done' || _status == 'failed') {
+          timer.cancel();
+          _loadHistory();
+        }
+      } catch (_) { timer.cancel(); }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeoTopBar(title: 'Intelligence Launchpad', showBack: true, showSearch: false),
+      appBar: const GeoTopBar(title: 'Initialize Scan', showBack: true, showSearch: false),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
         children: [
-          Text('Intelligence\nLaunchpad', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5, height: 1.1)),
+          Text('Initialize\nScan', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5, height: 1.1)),
           const SizedBox(height: 8),
-          const Text('Configure the parameters for your localized intelligence sweep.', style: TextStyle(fontSize: 14, color: GeoColors.onSurfaceVariant, height: 1.5)),
-          const SizedBox(height: 32),
+          const Text('Define a territory and launch a geospatial intelligence scan.', style: TextStyle(fontSize: 14, color: GeoColors.onSurfaceVariant, height: 1.5)),
+          const SizedBox(height: 24),
 
-          // Form card
+          // Form
           Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: GeoColors.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.1)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Territory selector
-                Text('PRIMARY TERRITORY', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(color: GeoColors.surfaceContainerLowest, borderRadius: BorderRadius.circular(12)),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.map, color: GeoColors.primary, size: 20),
-                      const SizedBox(width: 12),
-                      const Expanded(child: Text('Lima Metropolitan', style: TextStyle(color: GeoColors.onSurface, fontWeight: FontWeight.w500))),
-                      const Icon(Icons.expand_more, color: GeoColors.onSurfaceVariant),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(color: GeoColors.surfaceContainerLow, borderRadius: BorderRadius.circular(16), border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.1))),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _Label('TERRITORY NAME'),
+              const SizedBox(height: 8),
+              TextField(onChanged: (v) => setState(() => _name = v), decoration: const InputDecoration(hintText: 'e.g. Miraflores Norte'), style: const TextStyle(color: GeoColors.onSurface)),
+              const SizedBox(height: 16),
+              Row(children: [
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  _Label('CITY'), const SizedBox(height: 8),
+                  TextField(onChanged: (v) => setState(() => _city = v), controller: TextEditingController(text: _city), decoration: const InputDecoration(hintText: 'Lima'), style: const TextStyle(color: GeoColors.onSurface)),
+                ])),
+                const SizedBox(width: 12),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  _Label('RADIUS (KM)'), const SizedBox(height: 8),
+                  TextField(onChanged: (v) => setState(() => _radiusKm = double.tryParse(v) ?? 1.0), controller: TextEditingController(text: _radiusKm.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '1.0'), style: const TextStyle(color: GeoColors.onSurface)),
+                ])),
+              ]),
+              const SizedBox(height: 16),
+              Row(children: [
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  _Label('LATITUDE'), const SizedBox(height: 8),
+                  TextField(onChanged: (v) => setState(() => _lat = double.tryParse(v) ?? _lat), controller: TextEditingController(text: _lat.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '-12.0464'), style: const TextStyle(color: GeoColors.onSurface)),
+                ])),
+                const SizedBox(width: 12),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  _Label('LONGITUDE'), const SizedBox(height: 8),
+                  TextField(onChanged: (v) => setState(() => _lng = double.tryParse(v) ?? _lng), controller: TextEditingController(text: _lng.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '-77.0428'), style: const TextStyle(color: GeoColors.onSurface)),
+                ])),
+              ]),
+              const SizedBox(height: 16),
+              _Label('NICHE (OPTIONAL)'), const SizedBox(height: 8),
+              TextField(onChanged: (v) => setState(() => _nicho = v), decoration: const InputDecoration(hintText: 'salud, gastronomia...'), style: const TextStyle(color: GeoColors.onSurface)),
+              const SizedBox(height: 24),
 
-                // Industry verticals
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('INDUSTRY VERTICALS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
-                    Text('${_selectedIndustries.length} Selected', style: const TextStyle(fontSize: 10, color: GeoColors.primary, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: ['Technology', 'Finance', 'Healthcare', 'Retail'].map((ind) {
-                    final selected = _selectedIndustries.contains(ind);
-                    return GestureDetector(
-                      onTap: () => setState(() => selected ? _selectedIndustries.remove(ind) : _selectedIndustries.add(ind)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: selected ? GeoColors.primary.withOpacity(0.1) : GeoColors.surfaceContainerHighest.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: selected ? GeoColors.primary.withOpacity(0.3) : GeoColors.outlineVariant.withOpacity(0.05)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(selected ? Icons.check_box : Icons.check_box_outline_blank, size: 18, color: selected ? GeoColors.primary : GeoColors.onSurfaceVariant),
-                            const SizedBox(width: 8),
-                            Text(ind, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: selected ? GeoColors.primary : GeoColors.onSurface)),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 32),
-
-                // Progress bar
-                if (_scanning) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Container(width: 8, height: 8, decoration: BoxDecoration(shape: BoxShape.circle, color: GeoColors.tertiary, boxShadow: [BoxShadow(color: GeoColors.tertiary.withOpacity(0.5), blurRadius: 4)])),
-                        const SizedBox(width: 8),
-                        const Text('Scanning Local Registries...', style: TextStyle(fontSize: 12, color: GeoColors.tertiary, fontWeight: FontWeight.w500)),
-                      ]),
-                      Text('${(_progress * 100).toInt()}%', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: GeoColors.onSurface)),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: LinearProgressIndicator(
-                      value: _progress,
-                      minHeight: 12,
-                      backgroundColor: GeoColors.surfaceContainerLowest,
-                      valueColor: const AlwaysStoppedAnimation(GeoColors.primary),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Launch button
-                SizedBox(
-                  width: double.infinity,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() { _scanning = true; _progress = 0.0; });
-                      _simulateScan();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: [GeoColors.primary, GeoColors.primaryContainer]),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [BoxShadow(color: GeoColors.primary.withOpacity(0.2), blurRadius: 16, offset: const Offset(0, 4))],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        _scanning ? 'SCANNING...' : 'START NEW SCAN',
-                        style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: GeoColors.onPrimary, letterSpacing: 1.5),
-                      ),
-                    ),
-                  ),
-                ),
+              // Status
+              if (_status.isNotEmpty) ...[
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Text('Status: ${_status.toUpperCase()}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: _status == 'done' ? GeoColors.tertiary : _status == 'failed' ? GeoColors.error : GeoColors.primary)),
+                  Text('Found: $_totalFound', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
+                ]),
+                const SizedBox(height: 8),
+                if (_status == 'running') ClipRRect(borderRadius: BorderRadius.circular(6), child: const LinearProgressIndicator(minHeight: 8, color: GeoColors.primary, backgroundColor: GeoColors.surfaceContainerHighest)),
+                const SizedBox(height: 16),
               ],
-            ),
+
+              // Button
+              GestureDetector(
+                onTap: (_name.isNotEmpty && _status != 'running') ? _launchScan : null,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    gradient: _name.isNotEmpty ? const LinearGradient(colors: [GeoColors.primary, GeoColors.primaryContainer]) : null,
+                    color: _name.isEmpty ? GeoColors.surfaceContainerHighest : null,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(_status == 'running' ? 'SCANNING...' : 'LAUNCH SCAN', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: _name.isNotEmpty ? GeoColors.onPrimary : GeoColors.onSurfaceVariant)),
+                ),
+              ),
+            ]),
           ),
           const SizedBox(height: 24),
 
-          // Stats cards
-          Row(
-            children: [
-              Expanded(child: _StatCard(icon: Icons.history, iconColor: GeoColors.primary, label: 'Last Sweep', value: '2 hours ago')),
-              const SizedBox(width: 16),
-              Expanded(child: _StatCard(icon: Icons.bolt, iconColor: GeoColors.tertiary, label: 'Efficiency', value: '0.4s Latency')),
-            ],
-          ),
+          // History
+          if (_history.isNotEmpty) ...[
+            Text('SCAN HISTORY', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
+            const SizedBox(height: 12),
+            ..._history.take(10).map((job) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(color: GeoColors.surfaceContainerHigh, borderRadius: BorderRadius.circular(12)),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Territory #${job['territory_id']}${job['nicho'] != null ? " — ${job['nicho']}" : ""}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: GeoColors.onSurface)),
+                  if (job['started_at'] != null) Text(job['started_at'].toString().substring(0, 16), style: const TextStyle(fontSize: 10, color: GeoColors.onSurfaceVariant)),
+                ]),
+                Row(children: [
+                  Text('${job['total_found']}', style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w800, color: GeoColors.onSurface)),
+                  const SizedBox(width: 10),
+                  _StatusDot(status: job['status'] as String),
+                ]),
+              ]),
+            )),
+          ],
         ],
       ),
     );
   }
-
-  void _simulateScan() {
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 200));
-      if (!mounted) return false;
-      setState(() => _progress = (_progress + 0.02).clamp(0, 1));
-      return _progress < 1.0;
-    }).then((_) {
-      if (mounted) setState(() => _scanning = false);
-    });
-  }
 }
 
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label, value;
-  const _StatCard({required this.icon, required this.iconColor, required this.label, required this.value});
+class _Label extends StatelessWidget {
+  final String text;
+  const _Label(this.text);
+  @override
+  Widget build(BuildContext context) => Text(text, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant));
+}
 
+class _StatusDot extends StatelessWidget {
+  final String status;
+  const _StatusDot({required this.status});
   @override
   Widget build(BuildContext context) {
+    final color = status == 'done' ? GeoColors.tertiary : status == 'failed' ? GeoColors.error : status == 'running' ? GeoColors.primary : GeoColors.secondary;
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: GeoColors.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(color: iconColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 16, color: iconColor),
-          ),
-          const SizedBox(height: 12),
-          Text(label.toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.5, color: GeoColors.onSurfaceVariant)),
-          const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(color: color.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
+      child: Text(status.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: color)),
     );
   }
 }
