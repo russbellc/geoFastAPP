@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
-  static const String _baseUrl = 'http://10.0.2.2:8000/api/v1'; // Android emulator -> host
+  static const String _baseUrl = 'http://192.168.1.52:8000/api/v1'; // LAN -> host PC
   static const String _tokenKey = 'auth_token';
 
   late final Dio _dio;
