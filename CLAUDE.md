@@ -278,8 +278,8 @@ GET    /competitors               # Radar de competencia
 - [x] Sprint 8 — Nicho Salud
 - [x] Sprint 9 — Social Intelligence
 - [x] Sprint 10 — Automatizacion n8n
-- [ ] Sprint 11 — Mobile setup + mapa
-- [ ] Sprint 12 — Mobile dashboard
+- [x] Sprint 11 — Mobile setup + mapa
+- [x] Sprint 12 — Mobile dashboard
 - [ ] Sprint 13 — Mobile avanzado
 
 

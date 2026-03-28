@@ -40,4 +40,14 @@ Setup de la app mobile con Flutter, mapa interactivo con flutter_map/OpenStreetM
 - **Depende de:** 01-fundacion (API auth), 02-scanner-osm (datos), 04-ia-scoring (scores)
 - **Requerido por:** 12-mobile-dashboard, 13-mobile-avanzado
 
-## Estado: pendiente
+## Estado: completado
+
+## Implementacion
+- Flutter 3.2+ con Riverpod 2.x + go_router + flutter_map + fl_chart
+- Design system identico al web: dark theme #0b1326, Manrope/Inter, Material icons
+- 6 pantallas: Dashboard, Map, Leads, Scan, Profile, Settings
+- Bottom navigation bar con 4 tabs (Intelligence, Territories, Leads, Settings)
+- API client con Dio + SharedPreferences para token JWT
+- CARTO Dark tiles en mapa con flutter_map
+- Estructura: lib/core, lib/providers, lib/screens, lib/widgets
+- Referencia UI: docs/flutter-geointel.html

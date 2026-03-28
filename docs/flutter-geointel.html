@@ -1,0 +1,972 @@
+<!doctype html>
+<html class="dark" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>GeoIntel | Mobile Dashboard</title>
+
+		<!-- Scripts & Styles -->
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- React & Router CDN -->
+		<script
+			src="https://unpkg.com/react@18/umd/react.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/history@5/umd/history.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"
+			crossorigin
+		></script>
+		<script
+			src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"
+			crossorigin
+		></script>
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							primary: "#b4c5ff",
+							"primary-container": "#00328b",
+							"on-primary": "#002a78",
+							secondary: "#adc8f5",
+							tertiary: "#4edea3",
+							"tertiary-container": "#00422b",
+							"on-tertiary-container": "#10b981",
+							background: "#0b1326",
+							"on-background": "#dae2fd",
+							surface: "#0b1326",
+							"on-surface": "#dae2fd",
+							"surface-variant": "#2d3449",
+							"on-surface-variant": "#c4c6cf",
+							"surface-container-lowest": "#060e20",
+							"surface-container-low": "#131b2e",
+							"surface-container": "#171f33",
+							"surface-container-high": "#222a3d",
+							"surface-container-highest": "#2d3449",
+							outline: "#8e9199",
+							"outline-variant": "#43474e",
+							error: "#ffb4ab",
+							"error-container": "#93000a",
+							accent: "#ffb4ab", // mapping for lead border
+						},
+						fontFamily: {
+							headline: ["Manrope"],
+							body: ["Inter"],
+							label: ["Inter"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings:
+					"FILL" 0,
+					"wght" 400,
+					"GRAD" 0,
+					"opsz" 24;
+			}
+			.progress-ring__circle {
+				transition: stroke-dashoffset 0.35s;
+				transform: rotate(-90deg);
+				transform-origin: 50% 50%;
+			}
+			::-webkit-scrollbar {
+				width: 0px;
+				background: transparent;
+				display: none;
+			}
+			body {
+				min-height: max(884px, 100dvh);
+				background-color: #0b1326;
+				color: #dae2fd;
+			}
+			.bg-scan-gradient {
+				background: linear-gradient(135deg, #b4c5ff 0%, #00328b 100%);
+			}
+			.scan-progress-shimmer {
+				background: linear-gradient(
+					90deg,
+					transparent,
+					rgba(180, 197, 255, 0.4),
+					transparent
+				);
+				background-size: 200% 100%;
+			}
+			.map-gradient-overlay {
+				background: linear-gradient(
+					to bottom,
+					rgba(11, 19, 38, 0.9) 0%,
+					rgba(11, 19, 38, 0) 20%,
+					rgba(11, 19, 38, 0) 80%,
+					rgba(11, 19, 38, 0.9) 100%
+				);
+			}
+			.no-scrollbar {
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
+		</style>
+		<style>
+			body {
+				min-height: max(884px, 100dvh);
+			}
+		</style>
+	</head>
+	<body
+		class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen flex flex-col"
+	>
+		<div id="root"></div>
+
+		<script type="text/babel">
+			const { useState, useEffect } = React;
+			const { createRoot } = ReactDOM;
+			const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } =
+				ReactRouterDOM;
+
+			// --- Components ---
+
+			const TopBar = ({ title, showSearch = true }) => (
+				<header className="flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] sticky top-0 z-50">
+					<div className="flex items-center gap-3">
+						<div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden ring-2 ring-primary/20">
+							<img
+								alt="User Profile"
+								className="w-full h-full object-cover"
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaM1HvVPojgCOP75dc2HQADDzcxa1LE4VLGtCFt1BaXhbrXFWUxuop4bROLdBAMKftw6B-p1toqUx7oCrAc0Ax_Pwb2AVeE4VUAMulfSwVydulQ4bXY44HDtrcsNRj3iBi-PGJ5DgHcfBLnKBaCT6Xddy0eHTR6j16zw3lo-bi0LNbY6kfdZKDW9Pk02uSw9ZH3Ne1gfjv3gmx-vlUXDzbdOP12eS08GHUqEuyVTIs7CtvtLADkI1Ryr_etOjcwnMIiZpr-qNR218"
+							/>
+						</div>
+						<span className="text-xl font-extrabold tracking-tighter text-[#dae2fd] font-headline">
+							GeoIntel
+						</span>
+					</div>
+					{showSearch && (
+						<button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#2d3449] transition-colors active:scale-95 duration-150 text-[#b4c5ff]">
+							<span className="material-symbols-outlined">search</span>
+						</button>
+					)}
+				</header>
+			);
+
+			const BottomNav = () => {
+				const location = useLocation();
+
+				const navItems = [
+					{ path: "/", icon: "dashboard", label: "Intelligence", iconFill: 1 },
+					{
+						path: "/territories",
+						icon: "map",
+						label: "Territories",
+						iconFill: 1,
+					},
+					{
+						path: "/leads",
+						icon: "person_search",
+						label: "Leads",
+						iconFill: 1,
+					},
+					{
+						path: "/settings",
+						icon: "settings",
+						label: "Settings",
+						iconFill: 0,
+					},
+				];
+
+				return (
+					<nav className="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#0b1326]/80 backdrop-blur-md border-t border-[#2d3449]/30 shadow-[0_-4px_12px_rgba(180,197,255,0.05)] rounded-t-xl">
+						{navItems.map((item) => {
+							const isActive =
+								location.pathname === item.path ||
+								(item.path === "/leads" && location.pathname === "/profile") ||
+								(item.path === "/territories" && location.pathname === "/scan");
+							return (
+								<Link
+									key={item.path}
+									to={item.path}
+									className={`flex flex-col items-center justify-center transition-transform active:scale-90 ${isActive ? "text-[#b4c5ff] bg-[#131b2e] rounded-xl px-3 py-1" : "text-[#c4c6cf] opacity-70 hover:text-[#dae2fd]"}`}
+								>
+									<span
+										className="material-symbols-outlined"
+										style={{
+											fontVariationSettings: `'FILL' ${isActive ? 1 : 0}`,
+										}}
+									>
+										{item.icon}
+									</span>
+									<span className="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">
+										{item.label}
+									</span>
+								</Link>
+							);
+						})}
+					</nav>
+				);
+			};
+
+			// --- Screens ---
+
+			const DashboardScreen = () => {
+				const navigate = useNavigate();
+				return (
+					<div className="flex flex-col h-full">
+						<TopBar />
+						<main className="pt-4 pb-28 px-4 flex flex-col gap-6 overflow-y-auto">
+							{/* KPI Horizontal Scroll */}
+							<section className="flex overflow-x-auto gap-4 pb-2 -mx-4 px-4 no-scrollbar">
+								<div
+									className="min-w-[160px] flex-1 bg-surface-container-high rounded-xl p-4 border-l-4 border-primary"
+									onClick={() => navigate("/leads")}
+								>
+									<span className="text-[10px] font-medium uppercase tracking-wider text-on-surface-variant">
+										Total Businesses
+									</span>
+									<div className="flex items-baseline gap-2 mt-1">
+										<span className="text-2xl font-bold font-headline text-on-surface">
+											12,842
+										</span>
+									</div>
+									<div className="flex items-center gap-1 mt-2 text-tertiary">
+										<span className="material-symbols-outlined text-sm">
+											trending_up
+										</span>
+										<span className="text-xs font-semibold">+8.2%</span>
+									</div>
+								</div>
+								<div
+									className="min-w-[160px] flex-1 bg-surface-container-high rounded-xl p-4 border-l-4 border-accent"
+									onClick={() => navigate("/leads")}
+								>
+									<span className="text-[10px] font-medium uppercase tracking-wider text-on-surface-variant">
+										Leads
+									</span>
+									<div className="flex items-baseline gap-2 mt-1">
+										<span className="text-2xl font-bold font-headline text-on-surface">
+											458
+										</span>
+									</div>
+									<div className="flex items-center gap-1 mt-2 text-tertiary">
+										<span className="material-symbols-outlined text-sm">
+											trending_up
+										</span>
+										<span className="text-xs font-semibold">+12%</span>
+									</div>
+								</div>
+								<div
+									className="min-w-[160px] flex-1 bg-surface-container-high rounded-xl p-4 border-l-4 border-secondary"
+									onClick={() => navigate("/territories")}
+								>
+									<span className="text-[10px] font-medium uppercase tracking-wider text-on-surface-variant">
+										Territories
+									</span>
+									<div className="flex items-baseline gap-2 mt-1">
+										<span className="text-2xl font-bold font-headline text-on-surface">
+											24
+										</span>
+									</div>
+									<div className="flex items-center gap-1 mt-2 text-on-surface-variant">
+										<span className="material-symbols-outlined text-sm">
+											horizontal_rule
+										</span>
+										<span className="text-xs font-semibold">Stable</span>
+									</div>
+								</div>
+							</section>
+
+							{/* Geographic Heatmap Section */}
+							<section
+								className="bg-surface-container rounded-xl overflow-hidden relative cursor-pointer"
+								onClick={() => navigate("/territories")}
+							>
+								<div className="p-4 flex justify-between items-center">
+									<div>
+										<h2 className="text-lg font-bold font-headline text-on-surface tracking-tight">
+											Active Coverage
+										</h2>
+										<p className="text-xs text-on-surface-variant">
+											Live intelligence density map
+										</p>
+									</div>
+									<button className="bg-surface-container-highest text-primary px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-surface-bright transition-colors">
+										<span className="material-symbols-outlined text-sm">
+											open_in_full
+										</span>
+										MAXIMIZE
+									</button>
+								</div>
+								<div className="h-48 w-full bg-surface-container-lowest relative group">
+									<img
+										className="w-full h-full object-cover opacity-60 grayscale brightness-50 contrast-125"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxzGefXtgJu880xxMc6XeBG_wf611jtNuRrzEIxgp8guVdF8gepyBE7ZaSiDmiCzWTjHAe7QhytDBPO2zqrJjvpZQcRPzTWolDZAaUOqXH61J9MYPwYwgcDrGyzN9LkZUpDM7WNYGikwXOSPUQZCtgpj0F3aN-SGgDFfGS3W-TPcgzfXnUkoC0d215xYXSu-6x8Doiz2YiOAIGxV0EKpxtYGcX0PqK2xAdZJgKNEBs8q8xgV84r4xYMrqEesC6cRKWwK2r1pJfDx0"
+										alt="Map"
+									/>
+									<div className="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent"></div>
+									<div className="absolute top-1/2 left-1/3 w-12 h-12 bg-primary/20 rounded-full blur-xl"></div>
+									<div className="absolute top-1/4 left-1/2 w-8 h-8 bg-tertiary/20 rounded-full blur-lg"></div>
+								</div>
+							</section>
+
+							{/* Market Distribution Donut */}
+							<section className="bg-surface-container rounded-xl p-4">
+								<h2 className="text-lg font-bold font-headline text-on-surface tracking-tight mb-4">
+									Market Distribution
+								</h2>
+								<div className="flex items-center justify-between gap-6">
+									<div className="relative w-28 h-28 flex items-center justify-center">
+										<svg className="w-full h-full transform -rotate-90">
+											<circle
+												className="text-surface-container-highest"
+												cx="56"
+												cy="56"
+												fill="transparent"
+												r="48"
+												stroke="currentColor"
+												strokeWidth="12"
+											></circle>
+											<circle
+												className="text-primary"
+												cx="56"
+												cy="56"
+												fill="transparent"
+												r="48"
+												stroke="currentColor"
+												strokeDasharray="301.59"
+												strokeDashoffset="100"
+												strokeWidth="12"
+											></circle>
+											<circle
+												className="text-tertiary"
+												cx="56"
+												cy="56"
+												fill="transparent"
+												r="48"
+												stroke="currentColor"
+												strokeDasharray="301.59"
+												strokeDashoffset="240"
+												strokeWidth="12"
+											></circle>
+										</svg>
+										<div className="absolute inset-0 flex flex-col items-center justify-center">
+											<span className="text-sm font-bold text-on-surface">
+												High
+											</span>
+											<span className="text-[10px] text-on-surface-variant uppercase">
+												Focus
+											</span>
+										</div>
+									</div>
+									<div className="flex flex-col gap-3 flex-1">
+										<div className="flex items-center justify-between">
+											<div className="flex items-center gap-2">
+												<div className="w-2 h-2 rounded-full bg-primary"></div>
+												<span className="text-xs text-on-surface-variant">
+													Retail
+												</span>
+											</div>
+											<span className="text-xs font-bold">64%</span>
+										</div>
+										<div className="flex items-center justify-between">
+											<div className="flex items-center gap-2">
+												<div className="w-2 h-2 rounded-full bg-tertiary"></div>
+												<span className="text-xs text-on-surface-variant">
+													Service
+												</span>
+											</div>
+											<span className="text-xs font-bold">22%</span>
+										</div>
+										<div className="flex items-center justify-between">
+											<div className="flex items-center gap-2">
+												<div className="w-2 h-2 rounded-full bg-surface-variant"></div>
+												<span className="text-xs text-on-surface-variant">
+													Tech
+												</span>
+											</div>
+											<span className="text-xs font-bold">14%</span>
+										</div>
+									</div>
+								</div>
+							</section>
+
+							{/* Recent Leads List */}
+							<section className="bg-surface-container rounded-xl p-4">
+								<div
+									className="flex justify-between items-center mb-4 cursor-pointer"
+									onClick={() => navigate("/leads")}
+								>
+									<h2 className="text-lg font-bold font-headline text-on-surface tracking-tight">
+										Recent Leads
+									</h2>
+									<span className="text-[10px] font-bold text-primary uppercase tracking-widest">
+										View All
+									</span>
+								</div>
+								<div className="flex flex-col">
+									<div
+										className="flex items-center justify-between py-3 cursor-pointer"
+										onClick={() => navigate("/profile")}
+									>
+										<div className="flex items-center gap-3">
+											<div className="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-high ring-1 ring-outline-variant/30">
+												<img
+													alt="Lead"
+													className="w-full h-full object-cover"
+													src="https://lh3.googleusercontent.com/aida-public/AB6AXuDss8yb7kAeRlEBnvhFmXZ36R36yktXb7sBlN63eRUBj6I5KNRitAhvd0Iu4iGh2nKFlCx5C6cIfpIV52ZVs3blKvdyuf300AWq858vPf2-YyOxbkm1oh4JvSBpZhz-Ol4D3ca6QZfka-fgJ40svJ704vAofjJ7eLvnW_PorAXV6r30_aTyCa5lbgsTtiiMhP1XDY0nfLj047uqKLT4PfirjVC9POd9YpflcpFOFCTOtGqXTqonFwMETGMXFFv-9ZHLyS60eG4yhjI"
+												/>
+											</div>
+											<div>
+												<p className="text-sm font-bold text-on-surface">
+													Jordan Dynamics
+												</p>
+												<p className="text-[10px] text-on-surface-variant">
+													Retail • 2h ago
+												</p>
+											</div>
+										</div>
+										<span className="px-2 py-0.5 rounded-full bg-error-container text-error text-[9px] font-extrabold uppercase">
+											Hot
+										</span>
+									</div>
+									<div
+										className="flex items-center justify-between py-3 cursor-pointer"
+										onClick={() => navigate("/profile")}
+									>
+										<div className="flex items-center gap-3">
+											<div className="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-high ring-1 ring-outline-variant/30">
+												<img
+													alt="Lead"
+													className="w-full h-full object-cover"
+													src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_C9vzUd3DwnZvCPXHa5Ok3dHJeRSBQHqJx7ti6lvbntnj_d4yFIPdIIVkrYIM90p1811OUaTa40UmMP1NZgP-AwXTfA5uXGTNYeYJCX61TnWbES6d0YvZYZhvl1Tq7QRVN5Cysohocj70h-JaN2h8NnP9C6UGZNWAOTZ9KtOzxJjSkH1iGF3EMv8NUdgtiFgoy1novF00amSaIo6RcGzhzLLbEQku8pz_UVVTkKrdwwT7KAAAHzKuBw5yYVfU0kVByrBWkIH1GLc"
+												/>
+											</div>
+											<div>
+												<p className="text-sm font-bold text-on-surface">
+													Apex Solutions
+												</p>
+												<p className="text-[10px] text-on-surface-variant">
+													Consulting • 5h ago
+												</p>
+											</div>
+										</div>
+										<span className="px-2 py-0.5 rounded-full bg-tertiary-container text-tertiary text-[9px] font-extrabold uppercase">
+											Warm
+										</span>
+									</div>
+								</div>
+							</section>
+						</main>
+						<BottomNav />
+					</div>
+				);
+			};
+
+			const MapScreen = () => {
+				const navigate = useNavigate();
+				return (
+					<div className="relative h-screen w-full bg-background overflow-hidden select-none">
+						<TopBar />
+						<main className="relative h-full w-full pt-16 pb-24">
+							<div className="absolute inset-0 z-0">
+								<img
+									className="w-full h-full object-cover grayscale brightness-50 contrast-125"
+									src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS4rMmjbHUXqbSmX_rMlpq-0a7o7zPWFNiJMSgP4rZsQll7G2JiTkKTG-gndY8IIr58nLlwLLNhDyMxpasK_Y0DK8wfbDU0E1Y3gCLwc0BzSEHIxYDknpvZuChXLAMlPg6QbtIsPwpjv1SNC0HbR4TM4nioeQ48ueljLwTMMF2S03TuXK7gVxmsTkzFKEcsZcpV2Lr1am83qpCFepiYJTKDOhBjCN6H703Iu4CArYfEAronNc_4n19vbsnkcibEbM2Yc5bCBB-WnM"
+									alt="Map bg"
+								/>
+								<div className="absolute inset-0 map-gradient-overlay pointer-events-none"></div>
+							</div>
+
+							<div className="absolute top-20 left-0 w-full z-20 px-4">
+								<div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+									<button className="flex-none px-4 py-2 bg-primary text-on-primary rounded-full text-sm font-medium flex items-center gap-2 shadow-lg">
+										<span
+											className="material-symbols-outlined text-sm"
+											style={{ fontVariationSettings: "'FILL' 1" }}
+										>
+											filter_alt
+										</span>
+										High Score
+									</button>
+									<button className="flex-none px-4 py-2 bg-surface-container-highest/80 backdrop-blur-md text-on-surface border border-outline-variant/20 rounded-full text-sm font-medium">
+										Retail
+									</button>
+									<button className="flex-none px-4 py-2 bg-surface-container-highest/80 backdrop-blur-md text-on-surface border border-outline-variant/20 rounded-full text-sm font-medium">
+										Logistics
+									</button>
+									<button className="flex-none px-4 py-2 bg-surface-container-highest/80 backdrop-blur-md text-on-surface border border-outline-variant/20 rounded-full text-sm font-medium">
+										&lt; 5km
+									</button>
+								</div>
+							</div>
+
+							<div
+								className="absolute top-1/3 left-1/4 z-10 cursor-pointer"
+								onClick={() => navigate("/profile")}
+							>
+								<div className="relative flex flex-col items-center">
+									<div className="bg-tertiary text-on-tertiary text-[10px] font-bold px-1.5 py-0.5 rounded mb-1 shadow-[0_0_12px_rgba(78,222,163,0.4)]">
+										9.2
+									</div>
+									<div className="w-4 h-4 bg-tertiary rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+								</div>
+							</div>
+							<div className="absolute top-1/2 right-1/3 z-10">
+								<div className="relative flex flex-col items-center">
+									<div className="bg-primary text-on-primary text-[10px] font-bold px-1.5 py-0.5 rounded mb-1 shadow-[0_0_12px_rgba(180,197,255,0.4)]">
+										8.5
+									</div>
+									<div className="w-4 h-4 bg-primary rounded-full border-2 border-white shadow-lg"></div>
+								</div>
+							</div>
+
+							<div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30">
+								<div className="flex flex-col bg-surface-container-highest/90 backdrop-blur-md rounded-xl overflow-hidden border border-outline-variant/20 shadow-xl">
+									<button className="p-3 text-on-surface hover:bg-white/10 border-b border-outline-variant/10">
+										<span className="material-symbols-outlined">add</span>
+									</button>
+									<button className="p-3 text-on-surface hover:bg-white/10">
+										<span className="material-symbols-outlined">remove</span>
+									</button>
+								</div>
+								<button className="p-3 bg-surface-container-highest/90 backdrop-blur-md text-primary rounded-xl border border-outline-variant/20 shadow-xl active:scale-90 transition-transform">
+									<span
+										className="material-symbols-outlined"
+										style={{ fontVariationSettings: "'FILL' 1" }}
+									>
+										my_location
+									</span>
+								</button>
+							</div>
+
+							<div className="absolute bottom-32 right-6 z-40">
+								<button
+									onClick={() => navigate("/scan")}
+									className="w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-2xl shadow-[0_8px_20px_rgba(0,50,139,0.4)] flex items-center justify-center active:scale-90 transition-transform"
+								>
+									<span className="material-symbols-outlined text-3xl">
+										add_location_alt
+									</span>
+								</button>
+							</div>
+
+							<div className="absolute bottom-0 left-0 w-full z-50">
+								<div className="bg-surface-container-low rounded-t-3xl border-t border-outline-variant/20 pt-2 px-6 pb-28 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+									<div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mb-4"></div>
+									<div className="flex justify-between items-center mb-4">
+										<div>
+											<h3 className="text-on-surface font-headline font-bold text-lg">
+												Nearby Intelligence
+											</h3>
+											<p className="text-on-surface-variant text-xs">
+												12 active territories detected
+											</p>
+										</div>
+										<span className="material-symbols-outlined text-primary">
+											keyboard_arrow_up
+										</span>
+									</div>
+									<div
+										className="bg-surface-container-high rounded-xl p-4 flex gap-4 items-center border border-outline-variant/10 cursor-pointer"
+										onClick={() => navigate("/profile")}
+									>
+										<div className="w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center">
+											<span className="material-symbols-outlined text-tertiary">
+												storefront
+											</span>
+										</div>
+										<div className="flex-1">
+											<div className="flex justify-between items-start">
+												<h4 className="text-on-surface font-semibold text-sm">
+													Market District A
+												</h4>
+												<span className="text-tertiary text-xs font-bold px-1.5 py-0.5 bg-tertiary/10 rounded">
+													9.2 Score
+												</span>
+											</div>
+											<p className="text-on-surface-variant text-xs mt-1">
+												Ready for deployment • 0.8km away
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</main>
+						<BottomNav />
+					</div>
+				);
+			};
+
+			const ScanScreen = () => {
+				return (
+					<div className="flex flex-col h-full bg-background">
+						<TopBar />
+						<main className="flex-1 px-6 pt-8 pb-32 overflow-y-auto">
+							<div className="max-w-md mx-auto space-y-8">
+								<section className="space-y-2">
+									<h1 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface">
+										Intelligence Launchpad
+									</h1>
+									<p className="text-on-surface-variant text-sm leading-relaxed">
+										Configure the digital cartography parameters for your
+										localized intelligence sweep.
+									</p>
+								</section>
+
+								<div className="bg-surface-container-low rounded-xl p-6 space-y-8 border border-outline-variant/10">
+									<div className="space-y-3">
+										<label className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold">
+											Primary Territory
+										</label>
+										<div className="relative group">
+											<div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-primary">
+												<span className="material-symbols-outlined text-lg">
+													map
+												</span>
+											</div>
+											<select className="w-full bg-surface-container-lowest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface appearance-none focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+												<option>North American Tech Hubs</option>
+												<option>European Financial Districts</option>
+												<option>APAC Emerging Markets</option>
+											</select>
+											<div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-on-surface-variant">
+												<span className="material-symbols-outlined">
+													expand_more
+												</span>
+											</div>
+										</div>
+									</div>
+
+									<div className="space-y-4">
+										<div className="flex justify-between items-end">
+											<label className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold">
+												Industry Verticals
+											</label>
+											<span className="text-[10px] text-primary/80 font-medium">
+												4 Selected
+											</span>
+										</div>
+										<div className="grid grid-cols-2 gap-3">
+											{["Technology", "Finance", "Healthcare", "Retail"].map(
+												(ind, i) => (
+													<div
+														key={ind}
+														className="flex items-center p-3 rounded-lg bg-surface-container-highest/40 border border-outline-variant/5"
+													>
+														<input
+															defaultChecked={i % 2 === 0}
+															className="w-5 h-5 rounded border-outline-variant bg-surface-container-lowest text-primary focus:ring-offset-background"
+															type="checkbox"
+														/>
+														<label className="ml-3 text-sm font-medium text-on-surface">
+															{ind}
+														</label>
+													</div>
+												),
+											)}
+										</div>
+									</div>
+
+									<div className="pt-4 space-y-4">
+										<div className="flex justify-between items-center text-xs font-medium">
+											<div className="flex items-center gap-2 text-tertiary">
+												<span className="w-2 h-2 rounded-full bg-tertiary blur-[2px]"></span>
+												<span>Scanning Local Registries...</span>
+											</div>
+											<span className="text-on-surface">45%</span>
+										</div>
+										<div className="h-3 w-full bg-surface-container-lowest rounded-full overflow-hidden relative">
+											<div className="h-full w-[45%] bg-scan-gradient rounded-full relative shadow-[0_0_12px_rgba(180,197,255,0.4)]">
+												<div className="absolute inset-0 scan-progress-shimmer"></div>
+											</div>
+										</div>
+									</div>
+
+									<button className="w-full bg-scan-gradient py-4 rounded-xl text-on-primary font-bold font-label uppercase tracking-wider text-sm shadow-xl active:scale-95 transition-transform">
+										Start New Scan
+									</button>
+								</div>
+
+								<div className="grid grid-cols-2 gap-4">
+									<div className="bg-surface-container-high p-4 rounded-xl border border-outline-variant/5">
+										<div className="text-primary-container bg-primary/10 w-8 h-8 rounded-lg flex items-center justify-center mb-3">
+											<span className="material-symbols-outlined text-sm">
+												history
+											</span>
+										</div>
+										<div className="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">
+											Last Sweep
+										</div>
+										<div className="text-sm font-bold text-on-surface">
+											2 hours ago
+										</div>
+									</div>
+									<div className="bg-surface-container-high p-4 rounded-xl border border-outline-variant/5">
+										<div className="text-tertiary bg-tertiary/10 w-8 h-8 rounded-lg flex items-center justify-center mb-3">
+											<span className="material-symbols-outlined text-sm">
+												bolt
+											</span>
+										</div>
+										<div className="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">
+											Efficiency
+										</div>
+										<div className="text-sm font-bold text-on-surface">
+											0.4s Latency
+										</div>
+									</div>
+								</div>
+							</div>
+						</main>
+						<BottomNav />
+					</div>
+				);
+			};
+
+			const ProfileScreen = () => {
+				const navigate = useNavigate();
+				return (
+					<div className="flex flex-col h-full bg-background">
+						<header className="flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] fixed top-0 z-40">
+							<div className="flex items-center gap-3">
+								<button
+									onClick={() => navigate(-1)}
+									className="text-[#b4c5ff] hover:bg-[#2d3449] p-1 rounded-full"
+								>
+									<span className="material-symbols-outlined">arrow_back</span>
+								</button>
+								<span className="font-headline font-bold tracking-tight text-lg text-[#dae2fd]">
+									Business Profile
+								</span>
+							</div>
+						</header>
+
+						<main className="pt-20 pb-40 px-6 max-w-md mx-auto overflow-y-auto">
+							<section className="mb-8">
+								<div className="flex items-start justify-between mb-6">
+									<div className="flex-1">
+										<h1 className="font-headline text-2xl font-extrabold text-on-surface tracking-tight mb-1">
+											Aetheria Logistics
+										</h1>
+										<p className="text-on-surface-variant text-sm font-medium">
+											Supply Chain & Freight Tech
+										</p>
+										<div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary-container rounded-full border border-tertiary/20">
+											<span className="w-1.5 h-1.5 rounded-full bg-tertiary shadow-[0_0_8px_#4edea3]"></span>
+											<span className="text-[10px] font-bold uppercase tracking-wider text-on-tertiary-container">
+												High Opportunity
+											</span>
+										</div>
+									</div>
+									<div className="relative w-24 h-24 flex items-center justify-center">
+										<svg className="w-full h-full">
+											<circle
+												className="text-surface-container-highest"
+												cx="48"
+												cy="48"
+												fill="transparent"
+												r="40"
+												stroke="currentColor"
+												strokeWidth="6"
+											></circle>
+											<circle
+												className="text-primary progress-ring__circle"
+												cx="48"
+												cy="48"
+												fill="transparent"
+												r="40"
+												stroke="currentColor"
+												strokeDasharray="251.2"
+												strokeDashoffset="37.68"
+												strokeLinecap="round"
+												strokeWidth="6"
+											></circle>
+										</svg>
+										<div className="absolute inset-0 flex flex-col items-center justify-center">
+											<span className="font-headline text-xl font-bold text-primary">
+												85
+											</span>
+											<span className="text-[8px] uppercase tracking-tighter text-on-surface-variant font-bold">
+												Score
+											</span>
+										</div>
+									</div>
+								</div>
+							</section>
+
+							<section className="mb-8">
+								<div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/10">
+									<div className="flex items-center gap-2 mb-4">
+										<span className="material-symbols-outlined text-primary text-lg">
+											psychology
+										</span>
+										<h2 className="font-headline text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+											Intelligence Summary
+										</h2>
+									</div>
+									<p className="text-on-surface leading-relaxed text-sm">
+										Aetheria Logistics has shown a{" "}
+										<span className="text-tertiary font-semibold">
+											24% increase
+										</span>{" "}
+										in regional expansion activities over the last quarter.
+										Signal data suggests a heavy pivot toward automated fleet
+										management and real-time geospatial tracking in the APAC
+										region.
+									</p>
+									<div className="mt-4 pt-4 border-t border-outline-variant/10 flex gap-4">
+										<div>
+											<p className="text-[10px] text-on-surface-variant uppercase font-bold mb-1">
+												Signals
+											</p>
+											<p className="text-sm font-bold text-on-surface">
+												12 Active
+											</p>
+										</div>
+										<div>
+											<p className="text-[10px] text-on-surface-variant uppercase font-bold mb-1">
+												Sentiment
+											</p>
+											<p className="text-sm font-bold text-tertiary">Bullish</p>
+										</div>
+									</div>
+								</div>
+							</section>
+
+							<section className="mb-8">
+								<h2 className="font-headline text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-1">
+									Tech Stack Architecture
+								</h2>
+								<div className="flex flex-wrap gap-2">
+									{[
+										"Snowflake",
+										"AWS Bedrock",
+										"Kubernetes",
+										"Salesforce",
+										"Terraform",
+										"PostgreSQL",
+									].map((tech) => (
+										<span
+											key={tech}
+											className="px-3 py-1.5 bg-surface-container-highest rounded-lg text-xs font-semibold text-on-surface border border-outline-variant/20"
+										>
+											{tech}
+										</span>
+									))}
+									<span className="px-3 py-1.5 bg-surface-container-highest rounded-lg text-xs font-semibold text-primary border border-primary/20">
+										React Native
+									</span>
+								</div>
+							</section>
+
+							<section className="mb-8">
+								<h2 className="font-headline text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-1">
+									Social Footprint
+								</h2>
+								<div className="grid grid-cols-2 gap-3">
+									<div className="bg-surface-container-high p-4 rounded-xl flex items-center gap-3 border border-outline-variant/10">
+										<div className="w-8 h-8 rounded-lg bg-[#0077b5]/10 flex items-center justify-center text-[#0077b5]">
+											<span
+												className="material-symbols-outlined"
+												style={{ fontVariationSettings: "'FILL' 1" }}
+											>
+												business_center
+											</span>
+										</div>
+										<div>
+											<p className="text-xs font-bold text-on-surface">
+												LinkedIn
+											</p>
+											<p className="text-[10px] text-on-surface-variant">
+												420 Empl.
+											</p>
+										</div>
+									</div>
+									<div className="bg-surface-container-high p-4 rounded-xl flex items-center gap-3 border border-outline-variant/10">
+										<div className="w-8 h-8 rounded-lg bg-[#1DA1F2]/10 flex items-center justify-center text-[#1DA1F2]">
+											<span className="material-symbols-outlined">public</span>
+										</div>
+										<div>
+											<p className="text-xs font-bold text-on-surface">
+												Twitter
+											</p>
+											<p className="text-[10px] text-on-surface-variant">
+												12.4k Post
+											</p>
+										</div>
+									</div>
+								</div>
+							</section>
+						</main>
+
+						<div className="fixed bottom-20 left-0 w-full z-40 px-6 pb-4">
+							<button className="w-full h-14 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(180,197,255,0.2)] active:scale-95 transition-transform">
+								<span className="material-symbols-outlined">send</span>
+								Execute Outreach
+							</button>
+						</div>
+						<BottomNav />
+					</div>
+				);
+			};
+
+			const LeadsScreenPlaceholder = () => (
+				<div className="flex flex-col h-full bg-background items-center justify-center">
+					<TopBar />
+					<main className="flex-1 flex flex-col items-center justify-center p-6 text-center text-on-surface-variant">
+						<span className="material-symbols-outlined text-4xl mb-4">
+							person_search
+						</span>
+						<p>
+							Leads overview coming soon. <br /> Navigate to Dashboard to see
+							recent leads.
+						</p>
+					</main>
+					<BottomNav />
+				</div>
+			);
+
+			// --- App Layout & Router ---
+
+			const App = () => {
+				return (
+					<MemoryRouter initialEntries={["/"]}>
+						<Routes>
+							<Route path="/" element={<DashboardScreen />} />
+							<Route path="/territories" element={<MapScreen />} />
+							<Route path="/scan" element={<ScanScreen />} />
+							<Route path="/profile" element={<ProfileScreen />} />
+							<Route path="/leads" element={<LeadsScreenPlaceholder />} />
+							<Route path="/settings" element={<LeadsScreenPlaceholder />} />
+						</Routes>
+					</MemoryRouter>
+				);
+			};
+
+			const root = createRoot(document.getElementById("root"));
+			root.render(<App />);
+		</script>
+	</body>
+</html>
