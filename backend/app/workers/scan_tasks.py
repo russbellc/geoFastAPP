@@ -18,13 +18,16 @@ from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
 
-# Engine sincrono para Celery (cada task crea su propia session)
-_engine = create_async_engine(settings.DATABASE_URL, echo=False)
-_async_session = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+
+def _make_session():
+    """Crea engine + session fresco por cada invocacion (evita event loop conflicts con Celery)."""
+    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    return async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def _run_scan(job_id: int):
-    async with _async_session() as db:
+    session_factory = _make_session()
+    async with session_factory() as db:
         # 1. Obtener scan_job
         result = await db.execute(select(ScanJob).where(ScanJob.id == job_id))
         job = result.scalar_one_or_none()

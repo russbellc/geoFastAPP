@@ -8,7 +8,7 @@ celery_app = Celery(
     "geointel",
     broker=redis_url,
     backend=redis_url,
-    include=["app.workers.scan_tasks", "app.workers.enrich_tasks"],
+    include=["app.workers.scan_tasks", "app.workers.enrich_tasks", "app.workers.competitor_tasks"],
 )
 
 celery_app.conf.update(

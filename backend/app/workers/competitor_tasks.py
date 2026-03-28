@@ -13,8 +13,10 @@ from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
 
-_engine = create_async_engine(settings.DATABASE_URL, echo=False)
-_async_session = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+
+def _make_session():
+    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    return async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 # Competidores SaaS salud conocidos en LATAM para seed inicial
 KNOWN_COMPETITORS = [
@@ -92,7 +94,7 @@ SEARCH_KEYWORDS = [
 
 async def _run_competitor_scan():
     """Ejecuta escaneo de competidores: seed conocidos + analisis basico."""
-    async with _async_session() as db:
+    async with _make_session()() as db:
         # 1. Seed competidores conocidos si no existen
         for comp_data in KNOWN_COMPETITORS:
             existing = await db.execute(

@@ -129,13 +129,13 @@ async def create_api_key(
     current_user: User = Depends(get_current_user),
 ):
     """Crear API key. La key completa solo se muestra una vez."""
-    raw_key = f"geoink_{secrets.token_hex(24)}"
+    raw_key = f"gi_{secrets.token_hex(24)}"
     key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
 
     api_key = ApiKey(
         user_id=current_user.id,
         key_hash=key_hash,
-        key_prefix=raw_key[:12],
+        key_prefix=raw_key[:10],
         name=data.name,
         permissions=data.permissions or ["read"],
         active=True,

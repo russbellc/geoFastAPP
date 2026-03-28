@@ -19,12 +19,13 @@ from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
 
-_engine = create_async_engine(settings.DATABASE_URL, echo=False)
-_async_session = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+def _make_session():
+    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    return async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def _run_enrich(business_id: int):
-    async with _async_session() as db:
+    async with _make_session()() as db:
         result = await db.execute(
             select(Business).where(Business.id == business_id)
         )
@@ -152,7 +153,7 @@ def enrich_business(self, business_id: int):
 
 
 async def _run_enrich_territory(territory_id: int):
-    async with _async_session() as db:
+    async with _make_session()() as db:
         result = await db.execute(
             select(Business.id).where(Business.territory_id == territory_id)
         )
