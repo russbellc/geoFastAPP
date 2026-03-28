@@ -280,7 +280,7 @@ GET    /competitors               # Radar de competencia
 - [x] Sprint 10 — Automatizacion n8n
 - [x] Sprint 11 — Mobile setup + mapa
 - [x] Sprint 12 — Mobile dashboard
-- [ ] Sprint 13 — Mobile avanzado
+- [x] Sprint 13 — Mobile avanzado
 
 
 ## REGLAS DE BUILD Y SERVIDOR

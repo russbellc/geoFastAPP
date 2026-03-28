@@ -39,4 +39,14 @@ Features avanzados mobile: escanear zona desde ubicacion actual, mapa de calor, 
 - **Depende de:** 11-mobile-setup, 12-mobile-dashboard, 02-scanner-osm, 07-scanner-ui (export)
 - **Requerido por:** ninguno (sprint final)
 
-## Estado: pendiente
+## Estado: completado
+
+## Implementacion
+- Scan desde GPS: pantalla /scan/mobile con geolocator, slider de radio, polling status
+- Heatmap: pantalla /heatmap con CircleLayer de flutter_map, colores por categoria
+- Export/Share: bottom sheet con PDF (browser), CSV (download+share), share profile
+- Offline cache: sqflite con tablas businesses, profiles, api_cache (TTL 30min)
+- Clear cache en Settings
+- FABs en mapa: heatmap + GPS scan + new scan
+- Share button en profile screen
+- Deps: geolocator, sqflite, share_plus, path_provider, connectivity_plus

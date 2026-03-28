@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:geointel_mobile/core/theme.dart';
+import 'package:geointel_mobile/core/offline_cache.dart';
 import 'package:geointel_mobile/widgets/geo_top_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -33,7 +34,14 @@ class SettingsScreen extends StatelessWidget {
           _SettingsGroup(title: 'App', children: [
             _SettingsTile(icon: Icons.language, label: 'Language', trailing: 'English', onTap: () {}),
             _SettingsTile(icon: Icons.dark_mode, label: 'Theme', trailing: 'Dark', onTap: () {}),
-            _SettingsTile(icon: Icons.storage, label: 'Cache', trailing: '24 MB', onTap: () {}),
+            _SettingsTile(icon: Icons.storage, label: 'Clear Offline Cache', trailing: '', onTap: () async {
+              await OfflineCache.clearAll();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Cache cleared'), backgroundColor: GeoColors.surfaceContainerHigh),
+                );
+              }
+            }),
           ]),
           const SizedBox(height: 24),
 

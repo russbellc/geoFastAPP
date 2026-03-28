@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:geointel_mobile/screens/dashboard/dashboard_screen.dart';
 import 'package:geointel_mobile/screens/map/map_screen.dart';
+import 'package:geointel_mobile/screens/map/heatmap_screen.dart';
 import 'package:geointel_mobile/screens/leads/leads_screen.dart';
 import 'package:geointel_mobile/screens/scan/scan_screen.dart';
+import 'package:geointel_mobile/screens/scan/mobile_scan_screen.dart';
 import 'package:geointel_mobile/screens/profile/profile_screen.dart';
 import 'package:geointel_mobile/screens/settings/settings_screen.dart';
 import 'package:geointel_mobile/widgets/app_shell.dart';
@@ -26,6 +28,8 @@ final router = GoRouter(
       ],
     ),
     GoRoute(path: '/scan', builder: (_, __) => const ScanScreen()),
+    GoRoute(path: '/scan/mobile', builder: (_, __) => const MobileScanScreen()),
+    GoRoute(path: '/heatmap', builder: (_, __) => const HeatmapScreen()),
     GoRoute(
       path: '/profile/:id',
       builder: (_, state) => ProfileScreen(

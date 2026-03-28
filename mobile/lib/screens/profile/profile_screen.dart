@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:geointel_mobile/core/theme.dart';
 import 'package:geointel_mobile/widgets/geo_top_bar.dart';
+import 'package:geointel_mobile/screens/profile/export_share.dart';
 
 class ProfileScreen extends StatelessWidget {
   final int businessId;
@@ -161,7 +162,20 @@ class ProfileScreen extends StatelessWidget {
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   const Icon(Icons.send, color: GeoColors.onPrimary, size: 20),
                   const SizedBox(width: 8),
-                  Text('EXECUTE OUTREACH', style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 14, color: GeoColors.onPrimary, letterSpacing: 1.5)),
+                  Text('OUTREACH', style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 14, color: GeoColors.onPrimary, letterSpacing: 1.5)),
+                  const SizedBox(width: 16),
+                  GestureDetector(
+                    onTap: () => showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => const ExportShareSheet(businessName: 'Aetheria Logistics'),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
+                      child: const Icon(Icons.ios_share, color: GeoColors.onPrimary, size: 18),
+                    ),
+                  ),
                 ]),
               ),
             ),

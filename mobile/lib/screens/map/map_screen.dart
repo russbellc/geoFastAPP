@@ -139,21 +139,54 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          // Scan FAB
+          // FABs column
           Positioned(
             right: 24,
             bottom: 220,
-            child: GestureDetector(
-              onTap: () => context.push('/scan'),
-              child: Container(
-                width: 56, height: 56,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [GeoColors.primary, GeoColors.primaryContainer]),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: GeoColors.primaryContainer.withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 8))],
+            child: Column(
+              children: [
+                // Heatmap FAB
+                GestureDetector(
+                  onTap: () => context.push('/heatmap'),
+                  child: Container(
+                    width: 48, height: 48,
+                    decoration: BoxDecoration(
+                      color: GeoColors.surfaceContainerHighest.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.2)),
+                    ),
+                    child: const Icon(Icons.layers, color: GeoColors.tertiary, size: 22),
+                  ),
                 ),
-                child: const Icon(Icons.add_location_alt, color: GeoColors.onPrimary, size: 28),
-              ),
+                const SizedBox(height: 12),
+                // GPS Scan FAB
+                GestureDetector(
+                  onTap: () => context.push('/scan/mobile'),
+                  child: Container(
+                    width: 48, height: 48,
+                    decoration: BoxDecoration(
+                      color: GeoColors.surfaceContainerHighest.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.2)),
+                    ),
+                    child: const Icon(Icons.radar, color: GeoColors.primary, size: 22),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // New Scan FAB
+                GestureDetector(
+                  onTap: () => context.push('/scan'),
+                  child: Container(
+                    width: 56, height: 56,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [GeoColors.primary, GeoColors.primaryContainer]),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [BoxShadow(color: GeoColors.primaryContainer.withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 8))],
+                    ),
+                    child: const Icon(Icons.add_location_alt, color: GeoColors.onPrimary, size: 28),
+                  ),
+                ),
+              ],
             ),
           ),
 
