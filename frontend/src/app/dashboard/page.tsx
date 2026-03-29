@@ -234,21 +234,6 @@ export default function DashboardPage() {
 function OpportunityCard({
   business, isSelected, onClick,
 }: { business: Business; isSelected: boolean; onClick: () => void }) {
-  const score = Math.floor(Math.random() * 50) + 50;
-  const leadStatus = score >= 80 ? "hot" : score >= 50 ? "warm" : "cold";
-
-  const statusStyles = {
-    hot: "bg-error/10 text-error border-error/20",
-    warm: "bg-secondary/10 text-secondary border-secondary/20",
-    cold: "bg-outline-variant/20 text-on-surface-variant border-outline-variant/20",
-  };
-
-  const scoreColor = {
-    hot: "text-tertiary",
-    warm: "text-primary",
-    cold: "text-on-surface-variant",
-  };
-
   return (
     <div
       onClick={onClick}
@@ -268,20 +253,30 @@ function OpportunityCard({
           </p>
         </div>
         <div className="flex flex-col items-end ml-3">
-          <span className={`${scoreColor[leadStatus]} font-black text-lg leading-none`}>{score}</span>
-          <span className="text-[8px] uppercase tracking-tighter text-on-surface-variant">PUNTAJE</span>
+          <span className="text-on-surface-variant/50 text-[9px] uppercase tracking-tighter">
+            {business.source || "osm"}
+          </span>
         </div>
       </div>
       <div className="flex gap-2 mt-3">
-        <span className={`text-[9px] font-bold px-2 py-0.5 rounded border flex items-center gap-1 uppercase ${statusStyles[leadStatus]}`}>
-          <span className={`w-1.5 h-1.5 rounded-full glow-pip ${
-            leadStatus === "hot" ? "bg-error" : leadStatus === "warm" ? "bg-secondary" : "bg-outline-variant"
-          }`} style={{ color: leadStatus === "hot" ? "#ffb4ab" : leadStatus === "warm" ? "#adc8f5" : undefined }} />
-          {leadStatus === "hot" ? "CALIENTE" : leadStatus === "warm" ? "TIBIO" : "FRIO"}
-        </span>
         {business.category && (
           <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase">
             {business.category}
+          </span>
+        )}
+        {business.subcategory && business.subcategory !== business.category && (
+          <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase">
+            {business.subcategory}
+          </span>
+        )}
+        {business.website && (
+          <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase">
+            web
+          </span>
+        )}
+        {business.phone && (
+          <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 uppercase">
+            tel
           </span>
         )}
       </div>
