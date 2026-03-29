@@ -22,15 +22,23 @@ export default function ScanPage() {
     api.getScanHistory().then(setHistory).catch(console.error);
   }, []);
 
-  // Geolocate user
+  // Geolocate user + reverse geocode to get city name
   const handleLocateMe = () => {
     if (!navigator.geolocation) return;
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         setLat(pos.coords.latitude);
         setLng(pos.coords.longitude);
-        setForm((f) => ({ ...f, city: "Mi Ubicacion" }));
+        // Reverse geocode to get city name
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`);
+          const data = await res.json();
+          const city = data.address?.city || data.address?.town || data.address?.county || data.address?.state || "Mi Ubicacion";
+          setForm((f) => ({ ...f, city }));
+        } catch {
+          setForm((f) => ({ ...f, city: "Mi Ubicacion" }));
+        }
         setLocating(false);
       },
       () => setLocating(false),

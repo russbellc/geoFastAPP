@@ -101,6 +101,9 @@ async def _run_scan(job_id: int):
                 try:
                     doctoralia = DoctoraliaClient()
                     city = territory.city or "Lima"
+                    bad_cities = {"mi ubicacion", "auto", "mi ubicación", "mobile scan", "unknown", ""}
+                    if city.lower().strip() in bad_cities:
+                        city = territory.name.split("-")[0].strip() if "-" in territory.name else "Lima"
                     doctoralia_results = await doctoralia.search_by_city(city, max_pages=2)
                     logger.info(f"Doctoralia: {len(doctoralia_results)} resultados para {city}")
 
@@ -140,7 +143,12 @@ async def _run_scan(job_id: int):
             if job.nicho:
                 try:
                     gmaps = GMapsScraper(headless=True, max_results=20)
+                    # Usar ciudad real, o coordenadas si la ciudad no es util
                     city = territory.city or "Lima"
+                    bad_cities = {"mi ubicacion", "auto", "mi ubicación", "mobile scan", "unknown", ""}
+                    if city.lower().strip() in bad_cities:
+                        # Usar coordenadas como ubicacion
+                        city = f"{territory.lat},{territory.lng}" if territory.lat else "Peru"
                     search_query = job.nicho if job.nicho.lower() != "salud" else "clinicas consultorios medicos"
                     gmaps_results = await gmaps.search(search_query, city)
                     logger.info(f"GMaps: {len(gmaps_results)} resultados para '{search_query}' en {city}")
