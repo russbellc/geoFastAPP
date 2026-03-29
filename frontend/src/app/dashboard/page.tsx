@@ -6,7 +6,7 @@ import { useMapStore } from "@/stores/map";
 import MapWrapper from "@/components/map/MapWrapper";
 
 export default function DashboardPage() {
-  const { setBusinesses, setTerritoryId, selectedBusiness, selectBusiness } = useMapStore();
+  const { setBusinesses, setTerritoryId, selectedBusiness, selectBusiness, zoomToBusiness } = useMapStore();
 
   const [items, setItems] = useState<Business[]>([]);
   const [total, setTotal] = useState(0);
@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [territories, setTerritories] = useState<{ id: number; name: string }[]>([]);
   const [selectedTerritory, setSelectedTerritory] = useState<number | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const [subcategoryFilter, setSubcategoryFilter] = useState<string | null>(null);
+  const [subcategoryFilter, setSubcategoryFilter] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchInput, setSearchInput] = useState("");
 
@@ -57,7 +57,7 @@ export default function DashboardPage() {
   // Load subcategories when category changes (dependent combo)
   useEffect(() => {
     if (!selectedTerritory) return;
-    setSubcategoryFilter(null);
+    setSubcategoryFilter([]);
     if (!categoryFilter) {
       setSubcategories([]);
       return;
@@ -78,7 +78,7 @@ export default function DashboardPage() {
       const params: Record<string, string | number> = { page: pageNum, per_page: perPage };
       if (selectedTerritory) params.territory_id = selectedTerritory;
       if (categoryFilter) params.category = categoryFilter;
-      if (subcategoryFilter) params.subcategory = subcategoryFilter;
+      if (subcategoryFilter.length > 0) params.subcategory = subcategoryFilter.join(",");
       if (searchQuery) params.search = searchQuery;
 
       const data = await api.getBusinesses(params);
@@ -179,22 +179,40 @@ export default function DashboardPage() {
               </select>
               <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm">expand_more</span>
             </div>
-            {subcategories.length > 0 && (
-              <div className="flex-1 relative">
-                <select
-                  value={subcategoryFilter || ""}
-                  onChange={(e) => setSubcategoryFilter(e.target.value || null)}
-                  className="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none text-on-surface"
-                >
-                  <option value="">Todas Subcategorias</option>
-                  {subcategories.map((sc) => (
-                    <option key={sc.subcategory} value={sc.subcategory}>{sc.subcategory} ({sc.count})</option>
-                  ))}
-                </select>
-                <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm">expand_more</span>
-              </div>
-            )}
           </div>
+          {/* Subcategory multi-selector */}
+          {subcategories.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {subcategories.map((sc) => {
+                const selected = subcategoryFilter.includes(sc.subcategory);
+                return (
+                  <button
+                    key={sc.subcategory}
+                    onClick={() => setSubcategoryFilter(
+                      selected
+                        ? subcategoryFilter.filter((s) => s !== sc.subcategory)
+                        : [...subcategoryFilter, sc.subcategory]
+                    )}
+                    className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                      selected
+                        ? "bg-primary text-on-primary"
+                        : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"
+                    }`}
+                  >
+                    {sc.subcategory} ({sc.count})
+                  </button>
+                );
+              })}
+              {subcategoryFilter.length > 0 && (
+                <button
+                  onClick={() => setSubcategoryFilter([])}
+                  className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-error/10 text-error hover:bg-error/20 transition-all"
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
+          )}
 
           {searchQuery && (
             <p className="text-xs text-primary flex items-center gap-1">
@@ -224,6 +242,7 @@ export default function DashboardPage() {
                   business={biz}
                   isSelected={selectedBusiness?.id === biz.id}
                   onClick={() => selectBusiness(biz)}
+                  onDoubleClick={() => zoomToBusiness(biz)}
                 />
               ))}
               {loadingMore && (
@@ -257,9 +276,9 @@ export default function DashboardPage() {
   );
 }
 
-function OpportunityCard({ business, isSelected, onClick }: { business: Business; isSelected: boolean; onClick: () => void }) {
+function OpportunityCard({ business, isSelected, onClick, onDoubleClick }: { business: Business; isSelected: boolean; onClick: () => void; onDoubleClick: () => void }) {
   return (
-    <div onClick={onClick} className={`group p-4 rounded-xl transition-all cursor-pointer ${isSelected ? "bg-surface-container-highest ring-1 ring-primary/30" : "bg-surface-container-high hover:bg-surface-container-highest"}`}>
+    <div onClick={onClick} onDoubleClick={onDoubleClick} className={`group p-4 rounded-xl transition-all cursor-pointer ${isSelected ? "bg-surface-container-highest ring-1 ring-primary/30" : "bg-surface-container-high hover:bg-surface-container-highest"}`}>
       <div className="flex justify-between items-start mb-2">
         <div className="min-w-0 flex-1">
           <h3 className="font-headline font-bold text-sm group-hover:text-primary transition-colors truncate">{business.name}</h3>
