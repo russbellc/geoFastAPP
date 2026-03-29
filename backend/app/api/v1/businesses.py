@@ -19,7 +19,7 @@ async def list_businesses(
     territory_id: int | None = Query(None, description="Filtrar por territorio"),
     category: str | None = Query(None, description="Filtrar por categoria"),
     page: int = Query(1, ge=1, description="Pagina"),
-    per_page: int = Query(20, ge=1, le=100, description="Resultados por pagina"),
+    per_page: int = Query(20, ge=1, le=500, description="Resultados por pagina"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

@@ -35,7 +35,7 @@ export default function DashboardPage() {
     async function loadData() {
       setLoading(true);
       try {
-        const params: any = { per_page: 100 };
+        const params: any = { per_page: 500 };
         if (selectedTerritory) params.territory_id = selectedTerritory;
         const data = await api.getBusinesses(params);
         setBusinesses(data.items);
