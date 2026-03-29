@@ -6,9 +6,9 @@ import { useAuth } from "@/stores/auth";
 import { useRouter } from "next/navigation";
 
 const TOP_TABS = [
-  { href: "/dashboard/stats", label: "Dashboard" },
-  { href: "/dashboard", label: "Reports" },
-  { href: "/dashboard/leads", label: "Archive" },
+  { href: "/dashboard/stats", label: "Panel" },
+  { href: "/dashboard", label: "Reportes" },
+  { href: "/dashboard/leads", label: "Archivo" },
 ];
 
 export default function Header() {
@@ -31,7 +31,7 @@ export default function Header() {
           </span>
           <input
             className="w-full bg-surface-container-lowest border-none rounded-full py-2.5 pl-12 pr-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/40 transition-all outline-none"
-            placeholder="AI Semantic Search: 'Find clinics in Lima with no website...'"
+            placeholder="Busqueda Semantica IA: 'Buscar clinicas en Lima sin sitio web...'"
             type="text"
           />
         </div>

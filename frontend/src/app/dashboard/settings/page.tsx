@@ -11,10 +11,10 @@ export default function SettingsPage() {
       <div className="max-w-4xl mx-auto space-y-10">
         <div>
           <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">
-            Settings
+            Configuracion
           </h2>
           <p className="text-on-surface-variant font-body">
-            API key management, webhook configuration, and integration settings.
+            Gestion de claves API, configuracion de webhooks y ajustes de integracion.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ function ApiKeysSection() {
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-6">
           <span className="material-symbols-outlined text-primary">key</span>
-          <h3 className="font-headline font-bold text-on-surface text-lg">API Keys</h3>
+          <h3 className="font-headline font-bold text-on-surface text-lg">Claves API</h3>
         </div>
 
         {/* Create new key */}
@@ -68,7 +68,7 @@ function ApiKeysSection() {
           <input
             value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
-            placeholder="Key name (e.g. n8n-integration)"
+            placeholder="Nombre de clave (ej. n8n-integracion)"
             className="flex-1 px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 outline-none placeholder:text-on-surface-variant/40"
           />
           <button
@@ -77,7 +77,7 @@ function ApiKeysSection() {
             className="gradient-primary text-on-primary-fixed px-5 py-3 rounded-xl font-bold text-sm disabled:opacity-50 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">add</span>
-            Create
+            Crear
           </button>
         </div>
 
@@ -86,22 +86,22 @@ function ApiKeysSection() {
           <div className="mb-6 bg-tertiary-container/20 text-tertiary p-4 rounded-xl text-sm">
             <p className="font-bold mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-sm">warning</span>
-              Save this key — it won&apos;t be shown again:
+              Guarda esta clave — no se mostrara de nuevo:
             </p>
             <code className="block bg-surface-container-lowest px-3 py-2 rounded-lg text-on-surface font-mono text-xs break-all">
               {createdKey}
             </code>
             <button onClick={() => setCreatedKey(null)} className="mt-2 text-xs text-tertiary hover:underline">
-              Dismiss
+              Cerrar
             </button>
           </div>
         )}
 
         {/* Key list */}
         {loading ? (
-          <p className="text-on-surface-variant text-sm">Loading...</p>
+          <p className="text-on-surface-variant text-sm">Cargando...</p>
         ) : keys.length === 0 ? (
-          <p className="text-on-surface-variant text-sm">No API keys created yet.</p>
+          <p className="text-on-surface-variant text-sm">Aun no se han creado claves API.</p>
         ) : (
           <div className="space-y-3">
             {keys.map((k) => (
@@ -128,11 +128,11 @@ function ApiKeysSection() {
                       onClick={() => handleRevoke(k.id)}
                       className="text-error text-xs font-bold hover:underline"
                     >
-                      Revoke
+                      Revocar
                     </button>
                   )}
                   {!k.active && (
-                    <span className="text-outline text-xs">Revoked</span>
+                    <span className="text-outline text-xs">Revocada</span>
                   )}
                 </div>
               </div>
@@ -214,15 +214,15 @@ function WebhooksSection() {
             className="gradient-primary text-on-primary-fixed px-5 py-3 rounded-xl font-bold text-sm disabled:opacity-50 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">add</span>
-            Register Webhook
+            Registrar Webhook
           </button>
         </div>
 
         {/* List */}
         {loading ? (
-          <p className="text-on-surface-variant text-sm">Loading...</p>
+          <p className="text-on-surface-variant text-sm">Cargando...</p>
         ) : hooks.length === 0 ? (
-          <p className="text-on-surface-variant text-sm">No webhooks registered. Connect your n8n instance to receive real-time events.</p>
+          <p className="text-on-surface-variant text-sm">No hay webhooks registrados. Conecta tu instancia de n8n para recibir eventos en tiempo real.</p>
         ) : (
           <div className="space-y-3">
             {hooks.map((h) => (
@@ -241,7 +241,7 @@ function WebhooksSection() {
                   onClick={() => handleDelete(h.id)}
                   className="text-error text-xs font-bold hover:underline"
                 >
-                  Delete
+                  Eliminar
                 </button>
               </div>
             ))}

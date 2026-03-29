@@ -49,7 +49,7 @@ export default function HealthPage() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-on-surface-variant text-sm">Loading health intelligence...</p>
+        <p className="text-on-surface-variant text-sm">Cargando inteligencia de salud...</p>
       </div>
     );
   }
@@ -66,10 +66,10 @@ export default function HealthPage() {
           </div>
           <div>
             <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-1">
-              Health Niche Intelligence
+              Inteligencia Nicho Salud
             </h2>
             <p className="text-on-surface-variant font-body">
-              Specialized health sector analysis — clinics, practices, pharmacies & more.
+              Analisis especializado del sector salud — clinicas, consultorios, farmacias y mas.
             </p>
           </div>
         </div>
@@ -83,25 +83,25 @@ export default function HealthPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <HealthKpi
           icon="local_hospital"
-          label="Health Businesses"
+          label="Negocios de Salud"
           value={stats?.total_health || 0}
           color="tertiary"
         />
         <HealthKpi
           icon="ads_click"
-          label="Enriched Profiles"
+          label="Perfiles Enriquecidos"
           value={stats?.total_enriched || 0}
           color="primary"
         />
         <HealthKpi
           icon="speed"
-          label="Avg Score"
+          label="Puntaje Prom."
           value={stats?.avg_opportunity_score ? Math.round(stats.avg_opportunity_score) : 0}
           color="secondary"
         />
         <HealthKpi
           icon="whatshot"
-          label="Hot Leads"
+          label="Leads Calientes"
           value={stats?.lead_distribution.find(l => l.status === "hot")?.count || 0}
           color="error"
         />
@@ -110,7 +110,7 @@ export default function HealthPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Subcategories Chart */}
         <div className="lg:col-span-2 bg-surface-container-low p-6 rounded-xl">
-          <h3 className="font-headline font-bold text-on-surface mb-6">Subcategory Distribution</h3>
+          <h3 className="font-headline font-bold text-on-surface mb-6">Distribucion por Subcategoria</h3>
           {stats && stats.subcategories.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={stats.subcategories} layout="vertical">
@@ -134,13 +134,13 @@ export default function HealthPage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <EmptyState message="Scan a territory with niche 'salud' to see subcategory data" />
+            <EmptyState message="Escanea un territorio con nicho 'salud' para ver datos por subcategoria" />
           )}
         </div>
 
         {/* Lead Distribution Donut */}
         <div className="bg-surface-container-low p-6 rounded-xl">
-          <h3 className="font-headline font-bold text-on-surface mb-6">Lead Quality</h3>
+          <h3 className="font-headline font-bold text-on-surface mb-6">Calidad de Leads</h3>
           {stats && stats.lead_distribution.length > 0 ? (
             <>
               <div className="w-40 h-40 mx-auto mb-6">
@@ -176,13 +176,13 @@ export default function HealthPage() {
               </div>
             </>
           ) : (
-            <EmptyState message="Enrich health businesses to see lead distribution" />
+            <EmptyState message="Enriquece negocios de salud para ver la distribucion de leads" />
           )}
 
           {/* Sources */}
           {stats && stats.sources.length > 0 && (
             <div className="mt-8 pt-6 border-t border-outline-variant/10">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Data Sources</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Fuentes de Datos</h4>
               <div className="space-y-2">
                 {stats.sources.map((src) => (
                   <div key={src.category} className="flex justify-between items-center">
@@ -199,8 +199,8 @@ export default function HealthPage() {
       {/* Health Businesses Grid */}
       <div className="mt-8">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="font-headline font-bold text-on-surface text-lg">Health Directory</h3>
-          <span className="text-xs text-on-surface-variant">{businesses.length} businesses</span>
+          <h3 className="font-headline font-bold text-on-surface text-lg">Directorio de Salud</h3>
+          <span className="text-xs text-on-surface-variant">{businesses.length} negocios</span>
         </div>
         {businesses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -209,7 +209,7 @@ export default function HealthPage() {
             ))}
           </div>
         ) : (
-          <EmptyState message="No health businesses found. Launch a scan with niche 'salud' to discover health businesses." />
+          <EmptyState message="No se encontraron negocios de salud. Lanza un escaneo con nicho 'salud' para descubrir negocios de salud." />
         )}
       </div>
     </div>
@@ -242,7 +242,7 @@ function HealthBusinessCard({ business }: { business: Business }) {
           <h4 className="font-headline font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate">
             {business.name}
           </h4>
-          <p className="text-[11px] text-on-surface-variant truncate">{business.address || "Unknown location"}</p>
+          <p className="text-[11px] text-on-surface-variant truncate">{business.address || "Ubicacion desconocida"}</p>
           <div className="flex gap-2 mt-2">
             <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 uppercase">
               {business.subcategory || "salud"}

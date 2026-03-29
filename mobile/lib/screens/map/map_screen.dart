@@ -14,9 +14,9 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
-  String _activeFilter = 'High Score';
+  String _activeFilter = 'Alto Puntaje';
 
-  final List<String> _filters = ['High Score', 'Retail', 'Health', 'Services', '< 5km'];
+  final List<String> _filters = ['Alto Puntaje', 'Retail', 'Salud', 'Servicios', '< 5km'];
 
   @override
   Widget build(BuildContext context) {
@@ -213,9 +213,9 @@ class _MapScreenState extends State<MapScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('Nearby Intelligence', style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 18, color: GeoColors.onSurface)),
+                        Text('Inteligencia Cercana', style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 18, color: GeoColors.onSurface)),
                         const SizedBox(height: 2),
-                        const Text('12 active territories detected', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
+                        const Text('12 territorios activos detectados', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
                       ]),
                       const Icon(Icons.keyboard_arrow_up, color: GeoColors.primary),
                     ],
@@ -242,15 +242,15 @@ class _MapScreenState extends State<MapScreen> {
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                const Text('Market District A', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: GeoColors.onSurface)),
+                                const Text('Distrito Comercial A', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: GeoColors.onSurface)),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(color: GeoColors.tertiary.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
-                                  child: const Text('9.2 Score', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.tertiary)),
+                                  child: const Text('9.2 Puntaje', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.tertiary)),
                                 ),
                               ]),
                               const SizedBox(height: 4),
-                              const Text('Ready for deployment • 0.8km away', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
+                              const Text('Listo para despliegue • 0.8km de distancia', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
                             ]),
                           ),
                         ],

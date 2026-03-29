@@ -26,7 +26,7 @@ export default function LoginPage() {
       }
       router.push("/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Authentication error");
+      setError(err instanceof Error ? err.message : "Error de autenticacion");
     } finally {
       setLoading(false);
     }
@@ -54,7 +54,7 @@ export default function LoginPage() {
               GeoIntel
             </h1>
             <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">
-              Intelligence Core
+              Centro de Inteligencia
             </p>
           </div>
         </div>
@@ -64,21 +64,21 @@ export default function LoginPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/3 to-transparent pointer-events-none" />
           <div className="relative z-10">
             <h2 className="text-xl font-headline font-bold text-on-surface mb-1">
-              {isRegister ? "Create Account" : "Welcome Back"}
+              {isRegister ? "Crear Cuenta" : "Bienvenido"}
             </h2>
             <p className="text-on-surface-variant text-sm mb-8">
-              {isRegister ? "Register to start scanning territories" : "Sign in to your intelligence dashboard"}
+              {isRegister ? "Registrate para comenzar a escanear territorios" : "Inicia sesion en tu panel de inteligencia"}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {isRegister && (
                 <div>
                   <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                    Full Name
+                    Nombre Completo
                   </label>
                   <input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Juan Perez"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/30 outline-none transition-all"
@@ -88,11 +88,11 @@ export default function LoginPage() {
               )}
               <div>
                 <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                  Email
+                  Correo
                 </label>
                 <input
                   type="email"
-                  placeholder="you@company.com"
+                  placeholder="tu@empresa.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-surface-container-highest border-none rounded-xl text-on-surface text-sm placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/30 outline-none transition-all"
@@ -101,7 +101,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                  Password
+                  Contrasena
                 </label>
                 <input
                   type="password"
@@ -128,29 +128,29 @@ export default function LoginPage() {
                 {loading ? (
                   <>
                     <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
-                    Processing...
+                    Procesando...
                   </>
                 ) : isRegister ? (
                   <>
                     <span className="material-symbols-outlined text-sm">person_add</span>
-                    Create Account
+                    Crear Cuenta
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-sm">login</span>
-                    Sign In
+                    Iniciar Sesion
                   </>
                 )}
               </button>
             </form>
 
             <p className="text-on-surface-variant text-sm mt-6 text-center">
-              {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
+              {isRegister ? "Ya tienes una cuenta?" : "No tienes una cuenta?"}{" "}
               <button
                 onClick={() => setIsRegister(!isRegister)}
                 className="text-primary font-bold hover:underline"
               >
-                {isRegister ? "Sign In" : "Register"}
+                {isRegister ? "Iniciar Sesion" : "Registrarse"}
               </button>
             </p>
           </div>

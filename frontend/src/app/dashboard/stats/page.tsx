@@ -20,21 +20,21 @@ export default function StatsPage() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-on-surface-variant text-sm">Loading intelligence data...</p>
+        <p className="text-on-surface-variant text-sm">Cargando datos de inteligencia...</p>
       </div>
     );
   }
 
   const kpis = stats
     ? [
-        { icon: "storefront", label: "Total Businesses", value: stats.total_businesses.toLocaleString(), trend: "+5.2%", color: "primary" },
-        { icon: "ads_click", label: "Generated Leads", value: stats.total_enriched.toLocaleString(), trend: "+12%", color: "secondary" },
-        { icon: "public", label: "Territories Scanned", value: stats.categories.length.toString(), trend: "2 new", color: "tertiary" },
+        { icon: "storefront", label: "Total Negocios", value: stats.total_businesses.toLocaleString(), trend: "+5.2%", color: "primary" },
+        { icon: "ads_click", label: "Leads Generados", value: stats.total_enriched.toLocaleString(), trend: "+12%", color: "secondary" },
+        { icon: "public", label: "Territorios Escaneados", value: stats.categories.length.toString(), trend: "2 nuevos", color: "tertiary" },
       ]
     : [
-        { icon: "storefront", label: "Total Businesses", value: "0", trend: "--", color: "primary" },
-        { icon: "ads_click", label: "Generated Leads", value: "0", trend: "--", color: "secondary" },
-        { icon: "public", label: "Territories Scanned", value: "0", trend: "--", color: "tertiary" },
+        { icon: "storefront", label: "Total Negocios", value: "0", trend: "--", color: "primary" },
+        { icon: "ads_click", label: "Leads Generados", value: "0", trend: "--", color: "secondary" },
+        { icon: "public", label: "Territorios Escaneados", value: "0", trend: "--", color: "tertiary" },
       ];
 
   return (
@@ -43,20 +43,20 @@ export default function StatsPage() {
       <div className="mb-10 flex justify-between items-end">
         <div>
           <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">
-            Intelligence Dashboard
+            Panel de Inteligencia
           </h2>
           <p className="text-on-surface-variant font-body">
-            Real-time geospatial business distribution and lead generation tracking.
+            Distribucion geoespacial de negocios y seguimiento de generacion de leads en tiempo real.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs font-bold text-tertiary px-3 py-1 bg-tertiary-container/30 rounded-full flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-tertiary rounded-full blur-[1px]" />
-            Live Monitoring
+            Monitoreo en Vivo
           </span>
           <button className="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
             <span className="material-symbols-outlined text-sm">filter_list</span>
-            Filters
+            Filtros
           </button>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function StatsPage() {
             <h3 className="text-on-surface-variant text-sm font-medium mb-1">{kpi.label}</h3>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-headline font-black text-on-surface">{kpi.value}</span>
-              <span className="text-on-surface-variant text-xs">active entities</span>
+              <span className="text-on-surface-variant text-xs">entidades activas</span>
             </div>
           </div>
         ))}
@@ -94,14 +94,14 @@ export default function StatsPage() {
           <div className="bg-surface-container-low rounded-xl overflow-hidden">
             <div className="p-6 flex justify-between items-center bg-surface-container-high/40">
               <div>
-                <h3 className="font-headline font-bold text-on-surface">Geospatial Distribution</h3>
+                <h3 className="font-headline font-bold text-on-surface">Distribucion Geoespacial</h3>
                 <p className="text-xs text-on-surface-variant">
-                  {stats?.territory_name || "Territory"} — Active businesses
+                  {stats?.territory_name || "Territorio"} — Negocios activos
                 </p>
               </div>
               <div className="flex gap-2">
                 <button className="px-3 py-1.5 text-xs font-bold bg-primary text-on-primary rounded-lg transition-all">
-                  Heatmap
+                  Mapa de Calor
                 </button>
                 <button className="px-3 py-1.5 text-xs font-bold bg-surface-container-highest text-on-surface-variant rounded-lg hover:text-on-surface transition-all">
                   Cluster
@@ -117,20 +117,20 @@ export default function StatsPage() {
               {/* Legend */}
               <div className="absolute bottom-6 right-6 bg-surface-container-highest/90 backdrop-blur-md p-4 rounded-xl border border-outline-variant/10">
                 <h4 className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-2">
-                  Density Legend
+                  Leyenda de Densidad
                 </h4>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-primary" />
-                    <span className="text-[10px] text-on-surface">High Concentration</span>
+                    <span className="text-[10px] text-on-surface">Alta Concentracion</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-tertiary" />
-                    <span className="text-[10px] text-on-surface">Emerging Market</span>
+                    <span className="text-[10px] text-on-surface">Mercado Emergente</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-on-surface-variant/20" />
-                    <span className="text-[10px] text-on-surface">Low Density</span>
+                    <span className="text-[10px] text-on-surface">Baja Densidad</span>
                   </div>
                 </div>
               </div>
@@ -141,17 +141,17 @@ export default function StatsPage() {
           <div className="bg-surface-container-low p-6 rounded-xl">
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h3 className="font-headline font-bold text-on-surface">Registration Timeline</h3>
+                <h3 className="font-headline font-bold text-on-surface">Linea de Tiempo</h3>
                 <p className="text-xs text-on-surface-variant">
-                  Business entities by category
+                  Entidades de negocio por categoria
                 </p>
               </div>
               <div className="flex items-center gap-4 text-xs font-medium text-on-surface-variant">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-primary" /> Current
+                  <span className="w-2 h-2 rounded-full bg-primary" /> Actual
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-outline-variant/30" /> Previous
+                  <span className="w-2 h-2 rounded-full bg-outline-variant/30" /> Anterior
                 </span>
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function StatsPage() {
         <div className="space-y-8">
           {/* Market Distribution Donut */}
           <div className="bg-surface-container-low p-6 rounded-xl">
-            <h3 className="font-headline font-bold text-on-surface mb-6">Market Distribution</h3>
+            <h3 className="font-headline font-bold text-on-surface mb-6">Distribucion del Mercado</h3>
             {stats && stats.categories.length > 0 ? (
               <>
                 <div className="w-48 h-48 mx-auto mb-8">
@@ -254,15 +254,15 @@ export default function StatsPage() {
           {/* Recent Leads */}
           <div className="bg-surface-container-low p-6 rounded-xl">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="font-headline font-bold text-on-surface">Recent Leads</h3>
+              <h3 className="font-headline font-bold text-on-surface">Leads Recientes</h3>
               <a className="text-xs font-bold text-primary hover:underline" href="/dashboard/leads">
-                View All
+                Ver Todo
               </a>
             </div>
             <div className="space-y-6">
-              <LeadItem icon="restaurant" name="The Golden Plate" location="San Francisco, CA" status="High Potential" statusColor="text-tertiary" />
-              <LeadItem icon="medical_services" name="Wellness Core Clinic" location="Oakland, CA" status="Monitoring" statusColor="text-on-surface-variant" />
-              <LeadItem icon="terminal" name="Quant Systems" location="Palo Alto, CA" status="Contacted" statusColor="text-primary" />
+              <LeadItem icon="restaurant" name="The Golden Plate" location="San Francisco, CA" status="Alto Potencial" statusColor="text-tertiary" />
+              <LeadItem icon="medical_services" name="Wellness Core Clinic" location="Oakland, CA" status="Monitoreando" statusColor="text-on-surface-variant" />
+              <LeadItem icon="terminal" name="Quant Systems" location="Palo Alto, CA" status="Contactado" statusColor="text-primary" />
             </div>
           </div>
         </div>
@@ -304,15 +304,15 @@ function DonutPlaceholder() {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-2xl font-headline font-black text-on-surface">100%</span>
-          <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Categorized</span>
+          <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Categorizado</span>
         </div>
       </div>
       <div className="space-y-4">
         {[
-          { color: "bg-primary", label: "Technology", pct: "45%" },
-          { color: "bg-tertiary", label: "Retail", pct: "25%" },
-          { color: "bg-secondary", label: "Services", pct: "15%" },
-          { color: "bg-surface-container-highest", label: "Others", pct: "15%" },
+          { color: "bg-primary", label: "Tecnologia", pct: "45%" },
+          { color: "bg-tertiary", label: "Comercio", pct: "25%" },
+          { color: "bg-secondary", label: "Servicios", pct: "15%" },
+          { color: "bg-surface-container-highest", label: "Otros", pct: "15%" },
         ].map((item) => (
           <div key={item.label} className="flex justify-between items-center group cursor-pointer">
             <div className="flex items-center gap-3">

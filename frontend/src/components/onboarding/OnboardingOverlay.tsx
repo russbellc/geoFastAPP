@@ -12,32 +12,32 @@ interface Step {
 const STEPS: Step[] = [
   {
     target: '[data-onboarding="sidebar"]',
-    title: "Navigation",
-    description: "Use the sidebar to navigate between Intelligence, Territories, Leads, Health Niche, Analytics, and Settings.",
+    title: "Navegacion",
+    description: "Usa la barra lateral para navegar entre Inteligencia, Territorios, Leads, Nicho Salud, Analitica y Configuracion.",
     position: "right",
   },
   {
     target: '[data-onboarding="new-scan"]',
-    title: "Launch a Scan",
-    description: "Click 'New Scan' to scan a territory. Define a radius or draw a polygon on the map to discover businesses.",
+    title: "Lanzar un Escaneo",
+    description: "Haz clic en 'Nuevo Escaneo' para escanear un territorio. Define un radio o dibuja un poligono en el mapa para descubrir negocios.",
     position: "right",
   },
   {
     target: '[data-onboarding="search"]',
-    title: "AI Semantic Search",
-    description: "Search businesses using natural language. Try: 'clinics in Lima with no website' or 'restaurants near Miraflores'.",
+    title: "Busqueda Semantica IA",
+    description: "Busca negocios usando lenguaje natural. Prueba: 'clinicas en Lima sin sitio web' o 'restaurantes cerca de Miraflores'.",
     position: "bottom",
   },
   {
     target: '[data-onboarding="opportunities"]',
-    title: "Opportunities Panel",
-    description: "Browse discovered businesses with their Opportunity Score (0-100). Filter by category or score threshold.",
+    title: "Panel de Oportunidades",
+    description: "Explora negocios descubiertos con su Puntaje de Oportunidad (0-100). Filtra por categoria o umbral de puntaje.",
     position: "right",
   },
   {
     target: '[data-onboarding="map"]',
-    title: "Interactive Map",
-    description: "Explore businesses on the map with dark CARTO tiles. Click markers for details. Use the legend to understand density.",
+    title: "Mapa Interactivo",
+    description: "Explora negocios en el mapa con tiles oscuros CARTO. Haz clic en los marcadores para ver detalles. Usa la leyenda para entender la densidad.",
     position: "left",
   },
 ];
@@ -166,13 +166,13 @@ export default function OnboardingOverlay() {
               onClick={handleFinish}
               className="text-on-surface-variant text-xs font-bold hover:text-on-surface transition-colors"
             >
-              Skip Tour
+              Omitir Tour
             </button>
             <button
               onClick={handleNext}
               className="gradient-primary text-on-primary-fixed px-5 py-2 rounded-lg font-bold text-sm transition-all hover:opacity-90"
             >
-              {isLast ? "Get Started" : "Next"}
+              {isLast ? "Comenzar" : "Siguiente"}
             </button>
           </div>
         </div>

@@ -25,29 +25,29 @@ class ExportShareSheet extends StatelessWidget {
         children: [
           Container(width: 40, height: 4, decoration: BoxDecoration(color: GeoColors.outlineVariant.withOpacity(0.4), borderRadius: BorderRadius.circular(2))),
           const SizedBox(height: 20),
-          Text('Export & Share', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Manrope', color: GeoColors.onSurface)),
+          Text('Exportar y Compartir', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Manrope', color: GeoColors.onSurface)),
           const SizedBox(height: 20),
           _ActionTile(
             icon: Icons.picture_as_pdf,
             color: GeoColors.error,
-            label: 'View PDF Report',
-            subtitle: 'Open executive report in browser',
+            label: 'Ver Reporte PDF',
+            subtitle: 'Abrir reporte ejecutivo en navegador',
             onTap: () => _openPdfReport(context),
           ),
           const SizedBox(height: 12),
           _ActionTile(
             icon: Icons.download,
             color: GeoColors.primary,
-            label: 'Download CSV',
-            subtitle: 'Export business data as spreadsheet',
+            label: 'Descargar CSV',
+            subtitle: 'Exportar datos de negocios como hoja de calculo',
             onTap: () => _downloadCsv(context),
           ),
           const SizedBox(height: 12),
           _ActionTile(
             icon: Icons.share,
             color: GeoColors.tertiary,
-            label: 'Share Profile',
-            subtitle: 'Share business info via messaging apps',
+            label: 'Compartir Perfil',
+            subtitle: 'Compartir info del negocio via apps de mensajeria',
             onTap: () => _shareProfile(context),
           ),
         ],
@@ -84,10 +84,10 @@ class ExportShareSheet extends StatelessWidget {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('CSV downloaded'),
+            content: const Text('CSV descargado'),
             backgroundColor: GeoColors.surfaceContainerHigh,
             action: SnackBarAction(
-              label: 'SHARE',
+              label: 'COMPARTIR',
               textColor: GeoColors.primary,
               onPressed: () => Share.shareXFiles([XFile(filePath)], text: 'GeoIntel Export'),
             ),
@@ -98,7 +98,7 @@ class ExportShareSheet extends StatelessWidget {
       if (context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Export failed: $e'), backgroundColor: GeoColors.errorContainer),
+          SnackBar(content: Text('Error al exportar: $e'), backgroundColor: GeoColors.errorContainer),
         );
       }
     }
@@ -106,8 +106,8 @@ class ExportShareSheet extends StatelessWidget {
 
   void _shareProfile(BuildContext context) {
     final text = businessName != null
-        ? 'Check out $businessName on GeoIntel Intelligence Core! 🔍'
-        : 'GeoIntel Intelligence Core — Geospatial Business Intelligence';
+        ? 'Mira $businessName en GeoIntel Centro de Inteligencia!'
+        : 'GeoIntel Centro de Inteligencia — Inteligencia de Negocios Geoespacial';
     Share.share(text);
     Navigator.pop(context);
   }

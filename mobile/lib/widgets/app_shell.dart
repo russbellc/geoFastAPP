@@ -35,10 +35,10 @@ class AppShell extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _NavItem(icon: Icons.dashboard_rounded, label: 'Intelligence', isActive: index == 0, onTap: () => context.go('/')),
-                _NavItem(icon: Icons.map_rounded, label: 'Territories', isActive: index == 1, onTap: () => context.go('/territories')),
+                _NavItem(icon: Icons.dashboard_rounded, label: 'Inteligencia', isActive: index == 0, onTap: () => context.go('/')),
+                _NavItem(icon: Icons.map_rounded, label: 'Territorios', isActive: index == 1, onTap: () => context.go('/territories')),
                 _NavItem(icon: Icons.person_search_rounded, label: 'Leads', isActive: index == 2, onTap: () => context.go('/leads')),
-                _NavItem(icon: Icons.settings_rounded, label: 'Settings', isActive: index == 3, onTap: () => context.go('/settings')),
+                _NavItem(icon: Icons.settings_rounded, label: 'Configuracion', isActive: index == 3, onTap: () => context.go('/settings')),
               ],
             ),
           ),

@@ -77,11 +77,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        KpiCard(label: 'Businesses', value: _formatNum(totalBiz), trend: '+${categories.length} cats', borderColor: GeoColors.primary, onTap: () => context.go('/leads')),
+                        KpiCard(label: 'Negocios', value: _formatNum(totalBiz), trend: '+${categories.length} cats', borderColor: GeoColors.primary, onTap: () => context.go('/leads')),
                         const SizedBox(width: 12),
-                        KpiCard(label: 'Enriched', value: '$totalEnriched', trend: 'profiles', borderColor: GeoColors.error, onTap: () => context.go('/leads')),
+                        KpiCard(label: 'Enriquecidos', value: '$totalEnriched', trend: 'perfiles', borderColor: GeoColors.error, onTap: () => context.go('/leads')),
                         const SizedBox(width: 12),
-                        KpiCard(label: 'Categories', value: '${categories.length}', borderColor: GeoColors.secondary, onTap: () => context.go('/territories')),
+                        KpiCard(label: 'Categorias', value: '${categories.length}', borderColor: GeoColors.secondary, onTap: () => context.go('/territories')),
                       ],
                     ),
                   ),
@@ -101,13 +101,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Text('Active Coverage', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface, letterSpacing: -0.3)),
-                                  const Text('Live intelligence density map', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
+                                  Text('Cobertura Activa', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface, letterSpacing: -0.3)),
+                                  const Text('Mapa de densidad de inteligencia en vivo', style: TextStyle(fontSize: 12, color: GeoColors.onSurfaceVariant)),
                                 ]),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(color: GeoColors.surfaceContainerHighest, borderRadius: BorderRadius.circular(8)),
-                                  child: const Text('OPEN MAP', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.primary)),
+                                  child: const Text('ABRIR MAPA', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.primary)),
                                 ),
                               ],
                             ),
@@ -135,7 +135,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Market Distribution', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
+                          Text('Distribucion del Mercado', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
                           const SizedBox(height: 16),
                           ...categories.take(5).map((cat) {
                             final pct = totalBiz > 0 ? ((cat['count'] as int) / totalBiz * 100).toStringAsFixed(0) : '0';
@@ -163,12 +163,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     child: Column(
                       children: [
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text('Recent Businesses', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
-                          GestureDetector(onTap: () => context.go('/leads'), child: const Text('VIEW ALL', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1.2))),
+                          Text('Negocios Recientes', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
+                          GestureDetector(onTap: () => context.go('/leads'), child: const Text('VER TODO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1.2))),
                         ]),
                         const SizedBox(height: 12),
                         ..._recentLeads.map((biz) => _BizTile(
-                          name: biz['name'] as String? ?? 'Unknown',
+                          name: biz['name'] as String? ?? 'Desconocido',
                           category: biz['category'] as String? ?? 'otro',
                           address: biz['address'] as String?,
                           onTap: () => context.push('/profile/${biz['id']}'),

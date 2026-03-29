@@ -38,9 +38,9 @@ export default function DashboardPage() {
         {/* Filters Header */}
         <div className="p-5 space-y-4 bg-surface-container-low shadow-sm">
           <div className="flex justify-between items-center">
-            <h2 className="font-headline font-bold text-lg text-on-surface">Opportunities</h2>
+            <h2 className="font-headline font-bold text-lg text-on-surface">Oportunidades</h2>
             <span className="text-[10px] font-bold bg-surface-container-highest px-2 py-1 rounded text-primary tracking-widest">
-              {filtered.length} RESULTS
+              {filtered.length} RESULTADOS
             </span>
           </div>
           <div className="flex gap-2">
@@ -50,7 +50,7 @@ export default function DashboardPage() {
                 onChange={(e) => setCategoryFilter(e.target.value || null)}
                 className="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none text-on-surface"
               >
-                <option value="">All Categories</option>
+                <option value="">Todas las Categorias</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -61,9 +61,9 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1 relative">
               <select className="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none text-on-surface">
-                <option>All Scores</option>
-                <option>Score &gt; 80</option>
-                <option>Score &gt; 50</option>
+                <option>Todos los Puntajes</option>
+                <option>Puntaje &gt; 80</option>
+                <option>Puntaje &gt; 50</option>
               </select>
               <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm">
                 filter_alt
@@ -76,11 +76,11 @@ export default function DashboardPage() {
         <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-on-surface-variant text-sm">Loading businesses...</p>
+              <p className="text-on-surface-variant text-sm">Cargando negocios...</p>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-on-surface-variant text-sm">No businesses found</p>
+              <p className="text-on-surface-variant text-sm">No se encontraron negocios</p>
             </div>
           ) : (
             filtered.map((biz) => (
@@ -102,20 +102,20 @@ export default function DashboardPage() {
         {/* Map Legend */}
         <div className="absolute bottom-8 left-8 bg-surface-container-low/90 backdrop-blur-md p-4 rounded-2xl z-[1000] shadow-2xl border border-outline-variant/10">
           <h4 className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
-            Territory Heatmap
+            Mapa de Calor
           </h4>
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-primary glow-pip" style={{ color: "#b4c5ff" }} />
-              <span className="text-[11px] font-medium text-on-surface">High Concentration</span>
+              <span className="text-[11px] font-medium text-on-surface">Alta Concentracion</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-tertiary glow-pip" style={{ color: "#4edea3" }} />
-              <span className="text-[11px] font-medium text-on-surface">Emerging Market</span>
+              <span className="text-[11px] font-medium text-on-surface">Mercado Emergente</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-error glow-pip" style={{ color: "#ffb4ab" }} />
-              <span className="text-[11px] font-medium text-on-surface">Low Activity</span>
+              <span className="text-[11px] font-medium text-on-surface">Baja Actividad</span>
             </div>
           </div>
         </div>
@@ -163,7 +163,7 @@ function OpportunityCard({
             {business.name}
           </h3>
           <p className="text-[11px] text-on-surface-variant truncate">
-            {business.address || "Unknown"} | {business.category || "General"}
+            {business.address || "Desconocido"} | {business.category || "General"}
           </p>
         </div>
         <div className="flex flex-col items-end ml-3">
@@ -171,7 +171,7 @@ function OpportunityCard({
             {score}
           </span>
           <span className="text-[8px] uppercase tracking-tighter text-on-surface-variant">
-            OPP SCORE
+            PUNTAJE
           </span>
         </div>
       </div>

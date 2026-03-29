@@ -84,13 +84,13 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GeoTopBar(title: 'Initialize Scan', showBack: true, showSearch: false),
+      appBar: const GeoTopBar(title: 'Iniciar Escaneo', showBack: true, showSearch: false),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
         children: [
-          Text('Initialize\nScan', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5, height: 1.1)),
+          Text('Iniciar\nEscaneo', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5, height: 1.1)),
           const SizedBox(height: 8),
-          const Text('Define a territory and launch a geospatial intelligence scan.', style: TextStyle(fontSize: 14, color: GeoColors.onSurfaceVariant, height: 1.5)),
+          const Text('Define un territorio y lanza un escaneo de inteligencia geoespacial.', style: TextStyle(fontSize: 14, color: GeoColors.onSurfaceVariant, height: 1.5)),
           const SizedBox(height: 24),
 
           // Form
@@ -98,43 +98,43 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(color: GeoColors.surfaceContainerLow, borderRadius: BorderRadius.circular(16), border: Border.all(color: GeoColors.outlineVariant.withOpacity(0.1))),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _Label('TERRITORY NAME'),
+              _Label('NOMBRE DEL TERRITORIO'),
               const SizedBox(height: 8),
               TextField(onChanged: (v) => setState(() => _name = v), decoration: const InputDecoration(hintText: 'e.g. Miraflores Norte'), style: const TextStyle(color: GeoColors.onSurface)),
               const SizedBox(height: 16),
               Row(children: [
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  _Label('CITY'), const SizedBox(height: 8),
+                  _Label('CIUDAD'), const SizedBox(height: 8),
                   TextField(onChanged: (v) => setState(() => _city = v), controller: TextEditingController(text: _city), decoration: const InputDecoration(hintText: 'Lima'), style: const TextStyle(color: GeoColors.onSurface)),
                 ])),
                 const SizedBox(width: 12),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  _Label('RADIUS (KM)'), const SizedBox(height: 8),
+                  _Label('RADIO (KM)'), const SizedBox(height: 8),
                   TextField(onChanged: (v) => setState(() => _radiusKm = double.tryParse(v) ?? 1.0), controller: TextEditingController(text: _radiusKm.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '1.0'), style: const TextStyle(color: GeoColors.onSurface)),
                 ])),
               ]),
               const SizedBox(height: 16),
               Row(children: [
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  _Label('LATITUDE'), const SizedBox(height: 8),
+                  _Label('LATITUD'), const SizedBox(height: 8),
                   TextField(onChanged: (v) => setState(() => _lat = double.tryParse(v) ?? _lat), controller: TextEditingController(text: _lat.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '-12.0464'), style: const TextStyle(color: GeoColors.onSurface)),
                 ])),
                 const SizedBox(width: 12),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  _Label('LONGITUDE'), const SizedBox(height: 8),
+                  _Label('LONGITUD'), const SizedBox(height: 8),
                   TextField(onChanged: (v) => setState(() => _lng = double.tryParse(v) ?? _lng), controller: TextEditingController(text: _lng.toString()), keyboardType: TextInputType.number, decoration: const InputDecoration(hintText: '-77.0428'), style: const TextStyle(color: GeoColors.onSurface)),
                 ])),
               ]),
               const SizedBox(height: 16),
-              _Label('NICHE (OPTIONAL)'), const SizedBox(height: 8),
+              _Label('NICHO (OPCIONAL)'), const SizedBox(height: 8),
               TextField(onChanged: (v) => setState(() => _nicho = v), decoration: const InputDecoration(hintText: 'salud, gastronomia...'), style: const TextStyle(color: GeoColors.onSurface)),
               const SizedBox(height: 24),
 
               // Status
               if (_status.isNotEmpty) ...[
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('Status: ${_status.toUpperCase()}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: _status == 'done' ? GeoColors.tertiary : _status == 'failed' ? GeoColors.error : GeoColors.primary)),
-                  Text('Found: $_totalFound', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
+                  Text('Estado: ${_status.toUpperCase()}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: _status == 'done' ? GeoColors.tertiary : _status == 'failed' ? GeoColors.error : GeoColors.primary)),
+                  Text('Encontrados: $_totalFound', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
                 ]),
                 const SizedBox(height: 8),
                 if (_status == 'running') ClipRRect(borderRadius: BorderRadius.circular(6), child: const LinearProgressIndicator(minHeight: 8, color: GeoColors.primary, backgroundColor: GeoColors.surfaceContainerHighest)),
@@ -152,7 +152,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   alignment: Alignment.center,
-                  child: Text(_status == 'running' ? 'SCANNING...' : 'LAUNCH SCAN', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: _name.isNotEmpty ? GeoColors.onPrimary : GeoColors.onSurfaceVariant)),
+                  child: Text(_status == 'running' ? 'ESCANEANDO...' : 'LANZAR ESCANEO', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: _name.isNotEmpty ? GeoColors.onPrimary : GeoColors.onSurfaceVariant)),
                 ),
               ),
             ]),
@@ -161,7 +161,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
 
           // History
           if (_history.isNotEmpty) ...[
-            Text('SCAN HISTORY', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
+            Text('HISTORIAL DE ESCANEOS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
             const SizedBox(height: 12),
             ..._history.take(10).map((job) => Container(
               margin: const EdgeInsets.only(bottom: 8),

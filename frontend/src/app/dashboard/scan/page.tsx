@@ -78,10 +78,10 @@ export default function ScanPage() {
         {/* Header */}
         <div>
           <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">
-            Initialize Scan
+            Iniciar Escaneo
           </h2>
           <p className="text-on-surface-variant font-body">
-            Define a territory and launch a geospatial intelligence scan.
+            Define un territorio y lanza un escaneo de inteligencia geoespacial.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function ScanPage() {
           >
             <span className="flex items-center gap-2">
               <span className="material-symbols-outlined text-sm">radar</span>
-              Radius Scan
+              Escaneo por Radio
             </span>
           </button>
           <button
@@ -110,7 +110,7 @@ export default function ScanPage() {
           >
             <span className="flex items-center gap-2">
               <span className="material-symbols-outlined text-sm">draw</span>
-              Polygon Scan
+              Escaneo por Poligono
             </span>
           </button>
         </div>
@@ -123,7 +123,7 @@ export default function ScanPage() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                  Territory Name
+                  Nombre del Territorio
                 </label>
                 <input
                   value={form.name}
@@ -135,7 +135,7 @@ export default function ScanPage() {
               </div>
               <div>
                 <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                  City
+                  Ciudad
                 </label>
                 <input
                   value={form.city}
@@ -151,7 +151,7 @@ export default function ScanPage() {
               <div className="grid grid-cols-3 gap-6">
                 <div>
                   <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                    Latitude
+                    Latitud
                   </label>
                   <input
                     type="number" step="any" value={form.lat}
@@ -162,7 +162,7 @@ export default function ScanPage() {
                 </div>
                 <div>
                   <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                    Longitude
+                    Longitud
                   </label>
                   <input
                     type="number" step="any" value={form.lng}
@@ -173,7 +173,7 @@ export default function ScanPage() {
                 </div>
                 <div>
                   <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                    Radius (km)
+                    Radio (km)
                   </label>
                   <input
                     type="number" step="0.1" min="0.1" max="10" value={form.radius_km}
@@ -190,7 +190,7 @@ export default function ScanPage() {
               <div className="space-y-4">
                 <p className="text-on-surface-variant text-sm flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-base">info</span>
-                  Use the polygon tool on the map to define the scan area.
+                  Usa la herramienta de poligono en el mapa para definir el area de escaneo.
                 </p>
                 <div className="h-[400px] rounded-2xl overflow-hidden border border-outline-variant/10">
                   <DrawMapWrapper
@@ -201,7 +201,7 @@ export default function ScanPage() {
                 {polygon && (
                   <p className="text-tertiary text-sm flex items-center gap-2">
                     <span className="material-symbols-outlined text-sm">check_circle</span>
-                    Polygon defined with {polygon.length} vertices
+                    Poligono definido con {polygon.length} vertices
                   </p>
                 )}
               </div>
@@ -210,7 +210,7 @@ export default function ScanPage() {
             {/* Niche */}
             <div>
               <label className="text-on-surface-variant text-xs font-bold uppercase tracking-widest block mb-2">
-                Niche (optional)
+                Nicho (opcional)
               </label>
               <input
                 value={form.nicho}
@@ -236,7 +236,7 @@ export default function ScanPage() {
               <span className="material-symbols-outlined text-sm">
                 {polling ? "hourglass_empty" : "rocket_launch"}
               </span>
-              {polling ? "Scanning in progress..." : "Launch Scan"}
+              {polling ? "Escaneo en progreso..." : "Lanzar Escaneo"}
             </button>
           </div>
         </form>
@@ -248,15 +248,15 @@ export default function ScanPage() {
             <div className="relative z-10">
               <h3 className="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">monitoring</span>
-                Scan Status
+                Estado del Escaneo
               </h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-on-surface-variant text-sm">Status</span>
+                  <span className="text-on-surface-variant text-sm">Estado</span>
                   <ScanStatusBadge status={scanJob.status} />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-on-surface-variant text-sm">Businesses Found</span>
+                  <span className="text-on-surface-variant text-sm">Negocios Encontrados</span>
                   <span className="text-on-surface font-bold text-lg">{scanJob.total_found}</span>
                 </div>
                 {scanJob.status === "running" && (
@@ -269,13 +269,13 @@ export default function ScanPage() {
                 {scanJob.status === "done" && (
                   <div className="mt-4 bg-tertiary-container/20 text-tertiary px-4 py-3 rounded-xl text-sm flex items-center gap-2">
                     <span className="material-symbols-outlined text-sm">check_circle</span>
-                    Scan completed. {scanJob.total_found} businesses discovered.
+                    Escaneo completado. {scanJob.total_found} negocios descubiertos.
                   </div>
                 )}
                 {scanJob.status === "failed" && (
                   <div className="mt-4 bg-error-container/20 text-error px-4 py-3 rounded-xl text-sm flex items-center gap-2">
                     <span className="material-symbols-outlined text-sm">error</span>
-                    Scan failed. Please try again.
+                    Escaneo fallido. Por favor intenta de nuevo.
                   </div>
                 )}
               </div>
@@ -288,7 +288,7 @@ export default function ScanPage() {
           <div className="bg-surface-container-low rounded-3xl p-8">
             <h3 className="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">history</span>
-              Scan History
+              Historial de Escaneos
             </h3>
             <div className="space-y-3">
               {history.map((job) => (
@@ -306,14 +306,14 @@ export default function ScanPage() {
                         {job.nicho && <span className="text-on-surface-variant font-normal"> — {job.nicho}</span>}
                       </p>
                       <p className="text-[11px] text-on-surface-variant">
-                        {job.started_at ? new Date(job.started_at).toLocaleString() : "Pending"}
+                        {job.started_at ? new Date(job.started_at).toLocaleString() : "Pendiente"}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <p className="text-sm font-bold text-on-surface">{job.total_found}</p>
-                      <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">found</p>
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">encontrados</p>
                     </div>
                     <ScanStatusBadge status={job.status} />
                   </div>

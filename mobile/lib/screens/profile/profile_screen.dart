@@ -60,20 +60,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return const Scaffold(
-        appBar: GeoTopBar(title: 'Loading...', showBack: true, showSearch: false),
+        appBar: GeoTopBar(title: 'Cargando...', showBack: true, showSearch: false),
         body: Center(child: CircularProgressIndicator(color: GeoColors.primary)),
       );
     }
 
     if (_business == null) {
       return Scaffold(
-        appBar: const GeoTopBar(title: 'Not Found', showBack: true, showSearch: false),
-        body: const Center(child: Text('Business not found', style: TextStyle(color: GeoColors.onSurfaceVariant))),
+        appBar: const GeoTopBar(title: 'No Encontrado', showBack: true, showSearch: false),
+        body: const Center(child: Text('Negocio no encontrado', style: TextStyle(color: GeoColors.onSurfaceVariant))),
       );
     }
 
     final biz = _business!;
-    final name = biz['name'] as String? ?? 'Unknown';
+    final name = biz['name'] as String? ?? 'Desconocido';
     final category = biz['category'] as String? ?? 'otro';
     final address = biz['address'] as String?;
     final phone = biz['phone'] as String?;
@@ -90,7 +90,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final seoScore = _profile?['seo_score'] as int?;
 
     return Scaffold(
-      appBar: const GeoTopBar(title: 'Business Profile', showBack: true, showSearch: false),
+      appBar: const GeoTopBar(title: 'Perfil de Negocio', showBack: true, showSearch: false),
       body: Stack(
         children: [
           ListView(
@@ -111,7 +111,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     painter: _ScorePainter(score: score),
                     child: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Text('$score', style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w700, color: GeoColors.primary)),
-                      const Text('SCORE', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: GeoColors.onSurfaceVariant, letterSpacing: 0.5)),
+                      const Text('PUNTAJE', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: GeoColors.onSurfaceVariant, letterSpacing: 0.5)),
                     ])),
                   ),
                 ),
@@ -126,11 +126,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Row(children: [
                     const Icon(Icons.psychology, color: GeoColors.primary, size: 18),
                     const SizedBox(width: 8),
-                    Text('INTELLIGENCE SUMMARY', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
+                    Text('RESUMEN DE INTELIGENCIA', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
                   ]),
                   const SizedBox(height: 14),
                   Text(
-                    aiSummary ?? 'No intelligence summary yet. Tap "Enrich" to generate AI insights.',
+                    aiSummary ?? 'Aun no hay resumen de inteligencia. Toca "Enriquecer" para generar insights con IA.',
                     style: GoogleFonts.inter(fontSize: 14, color: GeoColors.onSurface, height: 1.6),
                   ),
                   if (_profile == null) ...[
@@ -141,7 +141,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(color: GeoColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                         alignment: Alignment.center,
-                        child: Text(_enriching ? 'ENRICHING...' : 'ENRICH BUSINESS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1)),
+                        child: Text(_enriching ? 'ENRIQUECIENDO...' : 'ENRIQUECER NEGOCIO', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1)),
                       ),
                     ),
                   ],
@@ -151,7 +151,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               // Contact Info
               if (phone != null || website != null || email != null) ...[
-                Text('CONTACT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
+                Text('CONTACTO', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
                 const SizedBox(height: 10),
                 if (phone != null) _ContactRow(icon: Icons.phone, value: phone, onTap: () => launchUrl(Uri.parse('tel:$phone'))),
                 if (website != null) _ContactRow(icon: Icons.language, value: website, onTap: () => launchUrl(Uri.parse(website))),
@@ -161,7 +161,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               // Tech Stack
               if (detected.isNotEmpty) ...[
-                Text('TECH STACK', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
+                Text('STACK TECNOLOGICO', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
                 const SizedBox(height: 10),
                 Wrap(spacing: 8, runSpacing: 8, children: detected.map((tech) => Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -173,10 +173,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               // Business Signals
               if (_profile != null) ...[
-                Text('BUSINESS SIGNALS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
+                Text('SENALES DE NEGOCIO', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: GeoColors.onSurfaceVariant)),
                 const SizedBox(height: 10),
                 Row(children: [
-                  Expanded(child: _SignalCard(icon: Icons.calendar_month, label: 'Booking', active: hasBooking)),
+                  Expanded(child: _SignalCard(icon: Icons.calendar_month, label: 'Reservas', active: hasBooking)),
                   const SizedBox(width: 10),
                   Expanded(child: _SignalCard(icon: Icons.smart_toy, label: 'Chatbot', active: hasChatbot)),
                   const SizedBox(width: 10),
@@ -209,7 +209,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Icon(Icons.send, color: GeoColors.onPrimary, size: 18),
                       const SizedBox(width: 8),
-                      Text('OUTREACH', style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 13, color: GeoColors.onPrimary, letterSpacing: 1.2)),
+                      Text('CONTACTO', style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 13, color: GeoColors.onPrimary, letterSpacing: 1.2)),
                     ]),
                   ),
                 ),
@@ -284,7 +284,7 @@ class _SignalCard extends StatelessWidget {
       child: Column(children: [
         Icon(icon, size: 20, color: active ? GeoColors.tertiary : GeoColors.onSurfaceVariant.withOpacity(0.3)),
         const SizedBox(height: 6),
-        Text(value ?? (active ? 'Yes' : 'No'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: active ? GeoColors.onSurface : GeoColors.onSurfaceVariant.withOpacity(0.3))),
+        Text(value ?? (active ? 'Si' : 'No'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: active ? GeoColors.onSurface : GeoColors.onSurfaceVariant.withOpacity(0.3))),
         Text(label, style: const TextStyle(fontSize: 9, color: GeoColors.onSurfaceVariant)),
       ]),
     );

@@ -40,7 +40,7 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GeoTopBar(title: 'Heat Map', showBack: true, showSearch: false),
+      appBar: const GeoTopBar(title: 'Mapa de Calor', showBack: true, showSearch: false),
       body: _loading
           ? const Center(child: CircularProgressIndicator(color: GeoColors.primary))
           : Stack(
@@ -114,17 +114,17 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('DENSITY MAP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
+                        Text('MAPA DE DENSIDAD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
                         const SizedBox(height: 10),
-                        _LegendDot(color: GeoColors.primary, label: 'Commerce'),
+                        _LegendDot(color: GeoColors.primary, label: 'Comercio'),
                         const SizedBox(height: 6),
-                        _LegendDot(color: GeoColors.tertiary, label: 'Health'),
+                        _LegendDot(color: GeoColors.tertiary, label: 'Salud'),
                         const SizedBox(height: 6),
-                        _LegendDot(color: GeoColors.secondary, label: 'Services'),
+                        _LegendDot(color: GeoColors.secondary, label: 'Servicios'),
                         const SizedBox(height: 6),
-                        _LegendDot(color: GeoColors.error, label: 'Food'),
+                        _LegendDot(color: GeoColors.error, label: 'Gastronomia'),
                         const SizedBox(height: 10),
-                        Text('${_businesses.length} businesses', style: const TextStyle(fontSize: 11, color: GeoColors.onSurfaceVariant)),
+                        Text('${_businesses.length} negocios', style: const TextStyle(fontSize: 11, color: GeoColors.onSurfaceVariant)),
                       ],
                     ),
                   ),

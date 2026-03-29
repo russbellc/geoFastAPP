@@ -40,7 +40,7 @@ export default function LeadsPage() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-on-surface-variant text-sm">Loading leads...</p>
+        <p className="text-on-surface-variant text-sm">Cargando leads...</p>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export default function LeadsPage() {
       <aside className="w-80 bg-surface-container-low flex flex-col border-r border-outline-variant/10 shrink-0">
         <div className="p-5 border-b border-outline-variant/10">
           <h2 className="font-headline font-bold text-lg text-on-surface mb-1">Leads</h2>
-          <p className="text-xs text-on-surface-variant">{leads.length} qualified leads</p>
+          <p className="text-xs text-on-surface-variant">{leads.length} leads calificados</p>
         </div>
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           {leads.map(({ business, profile }) => (
@@ -96,7 +96,7 @@ export default function LeadsPage() {
           <LeadProfile lead={selectedLead} />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-on-surface-variant">Select a lead to view details</p>
+            <p className="text-on-surface-variant">Selecciona un lead para ver detalles</p>
           </div>
         )}
       </div>
@@ -139,7 +139,7 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
                 </div>
                 <p className="text-on-surface-variant flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">location_on</span>
-                  {business.address || "Unknown location"} {business.category ? `\u2022 ${business.category}` : ""}
+                  {business.address || "Ubicacion desconocida"} {business.category ? `\u2022 ${business.category}` : ""}
                 </p>
               </div>
             </div>
@@ -159,17 +159,17 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
             <div className="space-y-8">
               <section>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-3">
-                  Intelligence Summary
+                  Resumen de Inteligencia
                 </h3>
                 <p className="text-on-surface-variant leading-relaxed font-body">
-                  {profile?.ai_summary || "No intelligence summary available yet. Enrich this business to generate AI-powered insights about their operations, market position, and opportunity potential."}
+                  {profile?.ai_summary || "Aun no hay resumen de inteligencia disponible. Enriquece este negocio para generar insights con IA sobre sus operaciones, posicion de mercado y potencial de oportunidad."}
                 </p>
               </section>
 
               {profile?.tech_stack && profile.tech_stack.detected.length > 0 && (
                 <section>
                   <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-4">
-                    Technology Detected
+                    Tecnologia Detectada
                   </h3>
                   <div className="flex flex-wrap gap-3">
                     {profile.tech_stack.detected.map((tech) => (
@@ -185,7 +185,7 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
               {/* Contact Info */}
               <section>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-4">
-                  Contact Information
+                  Informacion de Contacto
                 </h3>
                 <div className="space-y-3">
                   {business.phone && (
@@ -230,13 +230,13 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
                   <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full -z-10" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-headline font-bold text-on-surface">Opportunity Score</h4>
+                  <h4 className="text-lg font-headline font-bold text-on-surface">Puntaje de Oportunidad</h4>
                   <p className="text-xs text-on-surface-variant mt-1">
                     {score >= 80
-                      ? "High conversion probability. Contact this week."
+                      ? "Alta probabilidad de conversion. Contactar esta semana."
                       : score >= 50
-                      ? "Moderate potential. Nurture with content."
-                      : "Low priority. Monitor for changes."}
+                      ? "Potencial moderado. Nutrir con contenido."
+                      : "Baja prioridad. Monitorear cambios."}
                   </p>
                   <div className="mt-4 flex gap-1">
                     {[0, 1, 2, 3].map((i) => (
@@ -255,13 +255,13 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
               {profile && (
                 <section>
                   <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-4">
-                    Business Signals
+                    Senales de Negocio
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <SignalCard icon="calendar_month" label="Online Booking" active={profile.has_online_booking} />
+                    <SignalCard icon="calendar_month" label="Reserva Online" active={profile.has_online_booking} />
                     <SignalCard icon="smart_toy" label="Chatbot" active={profile.has_chatbot} />
-                    <SignalCard icon="search" label="SEO Score" value={profile.seo_score ? `${profile.seo_score}/100` : undefined} active={!!profile.seo_score} />
-                    <SignalCard icon="schedule" label="Enriched" active={!!profile.enriched_at} />
+                    <SignalCard icon="search" label="Puntaje SEO" value={profile.seo_score ? `${profile.seo_score}/100` : undefined} active={!!profile.seo_score} />
+                    <SignalCard icon="schedule" label="Enriquecido" active={!!profile.enriched_at} />
                   </div>
                 </section>
               )}
@@ -270,7 +270,7 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
               {profile && (profile.facebook_url || profile.instagram_url || profile.tiktok_url) && (
                 <section>
                   <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-4">
-                    Social Footprint
+                    Presencia Social
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     {profile.instagram_url && (
@@ -292,7 +292,7 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
           <div className="mt-12 flex gap-4 pt-8 border-t border-outline-variant/10">
             <button className="flex-1 gradient-primary text-on-primary-fixed py-3 rounded-xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20">
               <span className="material-symbols-outlined text-sm">rocket_launch</span>
-              Execute Outreach
+              Ejecutar Contacto
             </button>
             <button
               onClick={async () => {
@@ -321,7 +321,7 @@ function LeadProfile({ lead }: { lead: LeadRow }) {
               className="px-6 py-3 border border-outline-variant/20 rounded-xl font-bold uppercase tracking-wider text-sm text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
-              Report
+              Reporte
             </button>
           </div>
         </div>
@@ -351,7 +351,7 @@ function SignalCard({ icon, label, active, value }: { icon: string; label: strin
         {icon}
       </span>
       <span className={`text-xs font-bold ${active ? "text-on-surface" : "text-on-surface-variant/40"}`}>
-        {value || (active ? "Yes" : "No")}
+        {value || (active ? "Si" : "No")}
       </span>
       <span className="text-[10px] text-on-surface-variant uppercase tracking-tighter">{label}</span>
     </div>

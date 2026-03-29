@@ -32,7 +32,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-on-surface-variant text-sm">Loading competitive intelligence...</p>
+        <p className="text-on-surface-variant text-sm">Cargando inteligencia competitiva...</p>
       </div>
     );
   }
@@ -51,10 +51,10 @@ export default function AnalyticsPage() {
             </div>
             <div>
               <h2 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-1">
-                Competitive Radar
+                Radar Competitivo
               </h2>
               <p className="text-on-surface-variant font-body">
-                SaaS Health competitors in LATAM — market positioning & gap analysis.
+                Competidores SaaS de Salud en LATAM — posicionamiento de mercado y analisis de brechas.
               </p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
             <span className="material-symbols-outlined text-sm">
               {scanning ? "hourglass_empty" : "radar"}
             </span>
-            {scanning ? "Scanning..." : "Scan Competitors"}
+            {scanning ? "Escaneando..." : "Escanear Competidores"}
           </button>
         </div>
 
@@ -75,9 +75,9 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-center py-24">
             <div className="text-center space-y-4">
               <span className="material-symbols-outlined text-5xl text-on-surface-variant/30">radar</span>
-              <h3 className="font-headline font-bold text-on-surface text-lg">No competitors tracked</h3>
+              <h3 className="font-headline font-bold text-on-surface text-lg">Sin competidores rastreados</h3>
               <p className="text-on-surface-variant text-sm max-w-md">
-                Click &quot;Scan Competitors&quot; to seed known SaaS health competitors in LATAM and start tracking.
+                Haz clic en &quot;Escanear Competidores&quot; para sembrar competidores SaaS de salud conocidos en LATAM y comenzar el seguimiento.
               </p>
             </div>
           </div>
@@ -95,12 +95,12 @@ export default function AnalyticsPage() {
                   <div>
                     <h3 className="font-headline font-bold text-on-surface">{comp.name}</h3>
                     <p className="text-xs text-on-surface-variant">
-                      {comp.country || "Unknown"} — {comp.type}
+                      {comp.country || "Desconocido"} — {comp.type}
                     </p>
                   </div>
                   {comp.followers && (
                     <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">
-                      {comp.followers.toLocaleString()} followers
+                      {comp.followers.toLocaleString()} seguidores
                     </span>
                   )}
                 </div>
@@ -159,16 +159,16 @@ export default function AnalyticsPage() {
 
           <div className="space-y-1 text-sm">
             <div className="flex justify-between">
-              <span className="text-on-surface-variant">Country</span>
+              <span className="text-on-surface-variant">Pais</span>
               <span className="text-on-surface font-medium">{selected.country || "—"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-on-surface-variant">Type</span>
+              <span className="text-on-surface-variant">Tipo</span>
               <span className="text-on-surface font-medium">{selected.type}</span>
             </div>
             {selected.website && (
               <div className="flex justify-between">
-                <span className="text-on-surface-variant">Website</span>
+                <span className="text-on-surface-variant">Sitio Web</span>
                 <a href={selected.website} target="_blank" rel="noopener" className="text-primary hover:underline text-xs truncate max-w-[200px]">
                   {selected.website}
                 </a>
@@ -179,7 +179,7 @@ export default function AnalyticsPage() {
           {/* Markets */}
           {selected.markets && selected.markets.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Target Markets</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Mercados Objetivo</h4>
               <div className="flex flex-wrap gap-2">
                 {selected.markets.map((m) => (
                   <span key={m} className="text-xs px-3 py-1 rounded-lg bg-surface-container-highest text-on-surface capitalize">
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
           {/* AI Analysis */}
           {selected.ai_analysis && (
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">AI Analysis</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Analisis IA</h4>
               <p className="text-sm text-on-surface-variant leading-relaxed">{selected.ai_analysis}</p>
             </div>
           )}
@@ -201,7 +201,7 @@ export default function AnalyticsPage() {
           {/* Gap vs LiaFlow */}
           {selected.gap_vs_liaflow && (
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-tertiary mb-3">Gaps vs LiaFlow</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-tertiary mb-3">Brechas vs LiaFlow</h4>
               <div className="space-y-2">
                 {selected.gap_vs_liaflow.split(" | ").map((gap, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm">
@@ -215,7 +215,7 @@ export default function AnalyticsPage() {
 
           {selected.last_scanned_at && (
             <p className="text-[10px] text-on-surface-variant/50 uppercase tracking-wider">
-              Last scanned: {new Date(selected.last_scanned_at).toLocaleDateString()}
+              Ultimo escaneo: {new Date(selected.last_scanned_at).toLocaleDateString()}
             </p>
           )}
         </aside>

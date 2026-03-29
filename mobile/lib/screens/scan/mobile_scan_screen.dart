@@ -42,7 +42,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        setState(() { _locating = false; _status = 'Location services disabled'; });
+        setState(() { _locating = false; _status = 'Servicios de ubicacion desactivados'; });
         return;
       }
       LocationPermission perm = await Geolocator.checkPermission();
@@ -50,7 +50,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
         perm = await Geolocator.requestPermission();
       }
       if (perm == LocationPermission.deniedForever || perm == LocationPermission.denied) {
-        setState(() { _locating = false; _status = 'Location permission denied'; });
+        setState(() { _locating = false; _status = 'Permiso de ubicacion denegado'; });
         return;
       }
       final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -105,7 +105,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GeoTopBar(title: 'Scan from Location', showBack: true, showSearch: false),
+      appBar: const GeoTopBar(title: 'Escanear desde Ubicacion', showBack: true, showSearch: false),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
         children: [
@@ -128,7 +128,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _locating ? 'LOCATING...' : _position != null ? 'LOCATION ACQUIRED' : 'NO LOCATION',
+                    _locating ? 'LOCALIZANDO...' : _position != null ? 'UBICACION OBTENIDA' : 'SIN UBICACION',
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: _position != null ? GeoColors.tertiary : GeoColors.onSurfaceVariant),
                   ),
                 ]),
@@ -139,7 +139,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
                     style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500, color: GeoColors.onSurface),
                   ),
                   const SizedBox(height: 4),
-                  Text('Accuracy: ${_position!.accuracy.toStringAsFixed(0)}m', style: const TextStyle(fontSize: 11, color: GeoColors.onSurfaceVariant)),
+                  Text('Precision: ${_position!.accuracy.toStringAsFixed(0)}m', style: const TextStyle(fontSize: 11, color: GeoColors.onSurfaceVariant)),
                 ],
                 if (_locating)
                   const Padding(
@@ -152,13 +152,13 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
           const SizedBox(height: 24),
 
           // Scan config
-          Text('SCAN CONFIGURATION', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
+          Text('CONFIGURACION DE ESCANEO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
           const SizedBox(height: 12),
 
           // Territory name
           TextField(
             onChanged: (v) => setState(() => _name = v),
-            decoration: const InputDecoration(hintText: 'Territory name (e.g. Mi Zona)', prefixIcon: Icon(Icons.label, color: GeoColors.primary, size: 20)),
+            decoration: const InputDecoration(hintText: 'Nombre del territorio (ej. Mi Zona)', prefixIcon: Icon(Icons.label, color: GeoColors.primary, size: 20)),
             style: const TextStyle(color: GeoColors.onSurface),
           ),
           const SizedBox(height: 12),
@@ -166,13 +166,13 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
           // Niche
           TextField(
             onChanged: (v) => setState(() => _nicho = v),
-            decoration: const InputDecoration(hintText: 'Niche (optional: salud, retail...)', prefixIcon: Icon(Icons.category, color: GeoColors.primary, size: 20)),
+            decoration: const InputDecoration(hintText: 'Nicho (opcional: salud, retail...)', prefixIcon: Icon(Icons.category, color: GeoColors.primary, size: 20)),
             style: const TextStyle(color: GeoColors.onSurface),
           ),
           const SizedBox(height: 20),
 
           // Radius slider
-          Text('SCAN RADIUS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
+          Text('RADIO DE ESCANEO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: GeoColors.onSurfaceVariant)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -219,7 +219,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
                 Icon(_status == 'running' ? Icons.hourglass_top : Icons.radar, size: 20, color: (_position != null && _name.isNotEmpty) ? GeoColors.onPrimary : GeoColors.onSurfaceVariant),
                 const SizedBox(width: 8),
                 Text(
-                  _status == 'running' ? 'SCANNING...' : 'SCAN FROM HERE',
+                  _status == 'running' ? 'ESCANEANDO...' : 'ESCANEAR DESDE AQUI',
                   style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 1.5, color: (_position != null && _name.isNotEmpty) ? GeoColors.onPrimary : GeoColors.onSurfaceVariant),
                 ),
               ]),
@@ -238,12 +238,12 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
               ),
               child: Column(children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Text('Status', style: TextStyle(fontSize: 13, color: GeoColors.onSurfaceVariant)),
+                  const Text('Estado', style: TextStyle(fontSize: 13, color: GeoColors.onSurfaceVariant)),
                   _StatusChip(status: _status),
                 ]),
                 const SizedBox(height: 12),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Text('Businesses Found', style: TextStyle(fontSize: 13, color: GeoColors.onSurfaceVariant)),
+                  const Text('Negocios Encontrados', style: TextStyle(fontSize: 13, color: GeoColors.onSurfaceVariant)),
                   Text('$_totalFound', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w800, color: GeoColors.onSurface)),
                 ]),
                 if (_status == 'running') ...[
@@ -258,7 +258,7 @@ class _MobileScanScreenState extends ConsumerState<MobileScanScreen> {
                   Row(children: [
                     const Icon(Icons.check_circle, color: GeoColors.tertiary, size: 16),
                     const SizedBox(width: 8),
-                    Text('Scan completed. $_totalFound businesses discovered.', style: const TextStyle(fontSize: 13, color: GeoColors.tertiary)),
+                    Text('Escaneo completado. $_totalFound negocios descubiertos.', style: const TextStyle(fontSize: 13, color: GeoColors.tertiary)),
                   ]),
                 ],
               ]),

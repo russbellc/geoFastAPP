@@ -76,7 +76,7 @@ class _LeadsScreenState extends ConsumerState<LeadsScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: GeoColors.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
-                  child: Text('${_filtered.length} RESULTS', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1)),
+                  child: Text('${_filtered.length} RESULTADOS', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: GeoColors.primary, letterSpacing: 1)),
                 ),
               ]),
               const SizedBox(height: 12),
@@ -85,6 +85,7 @@ class _LeadsScreenState extends ConsumerState<LeadsScreen> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: ['All', 'Hot', 'Warm', 'Cold'].map((f) {
+                    final displayLabels = {'All': 'Todos', 'Hot': 'Caliente', 'Warm': 'Tibio', 'Cold': 'Frio'};
                     final active = _filter == f;
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -97,7 +98,7 @@ class _LeadsScreenState extends ConsumerState<LeadsScreen> {
                             color: active ? GeoColors.primary : GeoColors.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Text(f, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: active ? GeoColors.onPrimary : GeoColors.onSurfaceVariant)),
+                          child: Text(displayLabels[f] ?? f, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: active ? GeoColors.onPrimary : GeoColors.onSurfaceVariant)),
                         ),
                       ),
                     );
@@ -122,7 +123,7 @@ class _LeadsScreenState extends ConsumerState<LeadsScreen> {
                         final score = profile?['opportunity_score'] as int? ?? 0;
                         final status = profile?['lead_status'] as String? ?? 'cold';
                         return _LeadCard(
-                          name: biz['name'] as String? ?? 'Unknown',
+                          name: biz['name'] as String? ?? 'Desconocido',
                           category: biz['category'] as String? ?? 'otro',
                           address: biz['address'] as String?,
                           score: score,
@@ -177,7 +178,7 @@ class _LeadCard extends StatelessWidget {
             ])),
             Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
               Text('$score', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w900, color: _scoreColor)),
-              const Text('SCORE', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: GeoColors.onSurfaceVariant, letterSpacing: 0.5)),
+              const Text('PUNTAJE', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: GeoColors.onSurfaceVariant, letterSpacing: 0.5)),
             ]),
           ]),
           const SizedBox(height: 12),

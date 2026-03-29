@@ -69,15 +69,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
               children: [
-                Text('Settings', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5)),
+                Text('Configuracion', style: GoogleFonts.manrope(fontSize: 28, fontWeight: FontWeight.w800, color: GeoColors.onSurface, letterSpacing: -0.5)),
                 const SizedBox(height: 24),
 
                 // API Keys
                 _SectionCard(
-                  icon: Icons.key, iconColor: GeoColors.primary, title: 'API Keys',
+                  icon: Icons.key, iconColor: GeoColors.primary, title: 'Claves API',
                   children: [
                     Row(children: [
-                      Expanded(child: TextField(onChanged: (v) => setState(() => _newKeyName = v), controller: TextEditingController(text: _newKeyName), decoration: const InputDecoration(hintText: 'Key name...'), style: const TextStyle(color: GeoColors.onSurface, fontSize: 13))),
+                      Expanded(child: TextField(onChanged: (v) => setState(() => _newKeyName = v), controller: TextEditingController(text: _newKeyName), decoration: const InputDecoration(hintText: 'Nombre de la clave...'), style: const TextStyle(color: GeoColors.onSurface, fontSize: 13))),
                       const SizedBox(width: 8),
                       GestureDetector(
                         onTap: _createKey,
@@ -90,10 +90,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(color: GeoColors.tertiary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          const Text('Save this key (shown once):', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.tertiary)),
+                          const Text('Guarda esta clave (se muestra una vez):', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.tertiary)),
                           const SizedBox(height: 6),
                           GestureDetector(
-                            onTap: () { Clipboard.setData(ClipboardData(text: _createdKey!)); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied!'))); },
+                            onTap: () { Clipboard.setData(ClipboardData(text: _createdKey!)); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copiado!'))); },
                             child: Text(_createdKey!, style: GoogleFonts.firaCode(fontSize: 10, color: GeoColors.onSurface)),
                           ),
                         ]),
@@ -138,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(gradient: const LinearGradient(colors: [GeoColors.primary, GeoColors.primaryContainer]), borderRadius: BorderRadius.circular(10)),
                         alignment: Alignment.center,
-                        child: const Text('REGISTER WEBHOOK', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.onPrimary, letterSpacing: 1)),
+                        child: const Text('REGISTRAR WEBHOOK', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: GeoColors.onPrimary, letterSpacing: 1)),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -155,13 +155,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SizedBox(height: 20),
 
                 // App
-                _SectionCard(icon: Icons.phone_android, iconColor: GeoColors.secondary, title: 'App', children: [
-                  _SimpleTile(icon: Icons.delete_outline, label: 'Clear Offline Cache', onTap: () async {
+                _SectionCard(icon: Icons.phone_android, iconColor: GeoColors.secondary, title: 'Aplicacion', children: [
+                  _SimpleTile(icon: Icons.delete_outline, label: 'Limpiar Cache Offline', onTap: () async {
                     await OfflineCache.clearAll();
-                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cache cleared')));
+                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cache limpiado')));
                   }),
                   _SimpleTile(icon: Icons.info_outline, label: 'Version', trailing: '1.0.0'),
-                  _SimpleTile(icon: Icons.logout, label: 'Sign Out', textColor: GeoColors.error, onTap: () async {
+                  _SimpleTile(icon: Icons.logout, label: 'Cerrar Sesion', textColor: GeoColors.error, onTap: () async {
                     await ref.read(authProvider.notifier).logout();
                   }),
                 ]),
@@ -210,7 +210,7 @@ class _KeyTile extends StatelessWidget {
           Text(name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: GeoColors.onSurface)),
           Text('$prefix...', style: GoogleFonts.firaCode(fontSize: 10, color: GeoColors.onSurfaceVariant)),
         ])),
-        if (active) GestureDetector(onTap: onRevoke, child: const Text('Revoke', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.error))),
+        if (active) GestureDetector(onTap: onRevoke, child: const Text('Revocar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.error))),
       ]),
     );
   }
@@ -237,7 +237,7 @@ class _WebhookTile extends StatelessWidget {
             child: Text(e, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: GeoColors.tertiary)),
           )).toList()),
         ])),
-        GestureDetector(onTap: onDelete, child: const Text('Delete', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.error))),
+        GestureDetector(onTap: onDelete, child: const Text('Eliminar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: GeoColors.error))),
       ]),
     );
   }

@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/stats", icon: "insights", label: "Intelligence" },
-  { href: "/dashboard", icon: "map", label: "Territories" },
+  { href: "/dashboard/stats", icon: "insights", label: "Inteligencia" },
+  { href: "/dashboard", icon: "map", label: "Territorios" },
   { href: "/dashboard/leads", icon: "person_add", label: "Leads" },
-  { href: "/dashboard/health", icon: "local_hospital", label: "Health Niche" },
-  { href: "/dashboard/analytics", icon: "bar_chart", label: "Analytics" },
-  { href: "/dashboard/settings", icon: "settings", label: "Settings" },
+  { href: "/dashboard/health", icon: "local_hospital", label: "Nicho Salud" },
+  { href: "/dashboard/analytics", icon: "bar_chart", label: "Analitica" },
+  { href: "/dashboard/settings", icon: "settings", label: "Configuracion" },
 ];
 
 export default function Sidebar() {
@@ -37,7 +37,7 @@ export default function Sidebar() {
             GeoIntel
           </h1>
           <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-medium opacity-60">
-            Intelligence Core
+            Centro de Inteligencia
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function Sidebar() {
         className="w-full gradient-primary text-on-primary-fixed py-3 rounded-xl font-bold uppercase text-xs tracking-widest shadow-lg shadow-primary-container/20 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all"
       >
         <span className="material-symbols-outlined text-sm">add</span>
-        New Scan
+        Nuevo Escaneo
       </Link>
 
       {/* Footer */}
@@ -77,14 +77,14 @@ export default function Sidebar() {
           className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors"
         >
           <span className="material-symbols-outlined text-lg">help</span>
-          Support
+          Soporte
         </a>
         <a
           href="#"
           className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-colors"
         >
           <span className="material-symbols-outlined text-lg">manage_accounts</span>
-          Account
+          Cuenta
         </a>
       </footer>
     </aside>
