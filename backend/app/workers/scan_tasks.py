@@ -14,6 +14,7 @@ from app.models.territory import Territory
 from app.services.osm_categories import categorize_osm_tags
 from app.services.overpass import OverpassClient
 from app.scrapers.doctoralia_scraper import DoctoraliaClient
+from app.scrapers.gmaps_scraper import GMapsScraper
 from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
@@ -133,6 +134,51 @@ async def _run_scan(job_id: int):
                 except Exception as e:
                     logger.warning(f"Doctoralia scraping failed (non-fatal): {e}")
 
+            # 5c. Google Maps scraping (si hay nicho definido)
+            if job.nicho:
+                try:
+                    gmaps = GMapsScraper(headless=True, max_results=20)
+                    city = territory.city or "Lima"
+                    search_query = job.nicho if job.nicho.lower() != "salud" else "clinicas consultorios medicos"
+                    gmaps_results = await gmaps.search(search_query, city)
+                    logger.info(f"GMaps: {len(gmaps_results)} resultados para '{search_query}' en {city}")
+
+                    for gm_biz in gmaps_results:
+                        if not gm_biz.get("name"):
+                            continue
+                        # Deduplicar por nombre normalizado
+                        name_normalized = gm_biz["name"].strip().lower()
+                        existing = await db.execute(
+                            select(Business).where(
+                                Business.territory_id == territory.id,
+                                Business.name.ilike(f"%{name_normalized[:30]}%"),
+                            )
+                        )
+                        if existing.scalar_one_or_none():
+                            continue
+
+                        # Map GMaps category to internal
+                        cat, subcat = _map_gmaps_category(gm_biz.get("category", ""), job.nicho)
+
+                        business = Business(
+                            territory_id=territory.id,
+                            name=gm_biz["name"],
+                            category=cat,
+                            subcategory=subcat,
+                            lat=gm_biz.get("lat"),
+                            lng=gm_biz.get("lng"),
+                            address=gm_biz.get("address"),
+                            phone=gm_biz.get("phone"),
+                            website=gm_biz.get("website"),
+                            source="google_maps",
+                        )
+                        db.add(business)
+                        inserted += 1
+
+                    await db.commit()
+                except Exception as e:
+                    logger.warning(f"GMaps scraping failed (non-fatal): {e}")
+
             # 6. Actualizar scan_job
             job.status = "done"
             job.total_found = inserted
@@ -151,6 +197,52 @@ async def _run_scan(job_id: int):
             job.finished_at = datetime.now(timezone.utc)
             await db.commit()
             raise
+
+
+def _map_gmaps_category(gmaps_cat: str, nicho: str) -> tuple[str, str]:
+    """Mapea categoria de Google Maps a categoria interna."""
+    cat_lower = gmaps_cat.lower() if gmaps_cat else ""
+
+    health_keywords = ["médic", "clinic", "hospital", "farmacia", "dental", "doctor",
+                       "salud", "laboratorio", "óptic", "veterinar", "fisioter",
+                       "psicólog", "nutrici", "rehabilit", "consultorio"]
+    food_keywords = ["restaur", "café", "comida", "cevich", "pollería", "bar", "heladería"]
+    shop_keywords = ["tienda", "mercado", "bodega", "ferretería", "librería"]
+    edu_keywords = ["colegio", "universidad", "instituto", "escuela", "academia"]
+
+    for kw in health_keywords:
+        if kw in cat_lower:
+            subcat = "clinica"
+            if "farmacia" in cat_lower or "botica" in cat_lower:
+                subcat = "farmacia"
+            elif "dental" in cat_lower or "odonto" in cat_lower:
+                subcat = "dentista"
+            elif "hospital" in cat_lower:
+                subcat = "hospital"
+            elif "laboratorio" in cat_lower:
+                subcat = "laboratorio"
+            elif "veterinar" in cat_lower:
+                subcat = "veterinaria"
+            elif "óptic" in cat_lower:
+                subcat = "optica"
+            return ("salud", subcat)
+
+    for kw in food_keywords:
+        if kw in cat_lower:
+            return ("gastronomia", "restaurante")
+
+    for kw in shop_keywords:
+        if kw in cat_lower:
+            return ("comercio", cat_lower[:30])
+
+    for kw in edu_keywords:
+        if kw in cat_lower:
+            return ("educacion", "colegio")
+
+    # Default: use niche as category
+    if nicho.lower() in ("salud", "health"):
+        return ("salud", "consultorio")
+    return ("otro", cat_lower[:30] if cat_lower else "desconocido")
 
 
 @celery_app.task(name="scan_territory", bind=True, max_retries=2)
