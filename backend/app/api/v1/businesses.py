@@ -18,9 +18,10 @@ router = APIRouter(prefix="/businesses", tags=["Businesses"])
 async def list_businesses(
     territory_id: int | None = Query(None, description="Filtrar por territorio"),
     category: str | None = Query(None, description="Filtrar por categoria"),
+    subcategory: str | None = Query(None, description="Filtrar por subcategoria"),
     search: str | None = Query(None, description="Buscar por nombre"),
     page: int = Query(1, ge=1, description="Pagina"),
-    per_page: int = Query(20, ge=1, le=500, description="Resultados por pagina"),
+    per_page: int = Query(20, ge=1, le=1000, description="Resultados por pagina"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -35,6 +36,10 @@ async def list_businesses(
     if category:
         query = query.where(Business.category == category)
         count_query = count_query.where(Business.category == category)
+
+    if subcategory:
+        query = query.where(Business.subcategory == subcategory)
+        count_query = count_query.where(Business.subcategory == subcategory)
 
     if search:
         query = query.where(Business.name.ilike(f"%{search}%"))

@@ -101,6 +101,24 @@ async def get_territory_stats(
     )
 
 
+@router.get("/territory/{territory_id}/subcategories")
+async def get_subcategories(
+    territory_id: int,
+    category: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Obtener subcategorias de un territorio, opcionalmente filtradas por categoria."""
+    query = select(Business.category, Business.subcategory, func.count(Business.id)).where(
+        Business.territory_id == territory_id
+    )
+    if category:
+        query = query.where(Business.category == category)
+    query = query.group_by(Business.category, Business.subcategory).order_by(func.count(Business.id).desc())
+    result = await db.execute(query)
+    return [{"category": r[0], "subcategory": r[1], "count": r[2]} for r in result.all()]
+
+
 class SubcategoryCount(BaseModel):
     subcategory: str
     count: int
