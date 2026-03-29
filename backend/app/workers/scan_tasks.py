@@ -48,20 +48,22 @@ async def _run_scan(job_id: int):
             )
             territory = result.scalar_one()
 
-            # 4. Query Overpass API
-            client = OverpassClient()
-            if territory.geometry is not None:
-                # Modo poligono: usar filtro poly de Overpass
-                shapely_geom = to_shape(territory.geometry)
-                coords = [[y, x] for x, y in shapely_geom.exterior.coords[:-1]]
-                raw_businesses = await client.query_by_polygon(coords)
-            else:
-                # Modo radio
-                raw_businesses = await client.query_by_radius(
-                    lat=territory.lat,
-                    lng=territory.lng,
-                    radius_m=territory.radius_m or 1000,
-                )
+            # 4. Query Overpass API (non-fatal si falla)
+            raw_businesses = []
+            try:
+                client = OverpassClient()
+                if territory.geometry is not None:
+                    shapely_geom = to_shape(territory.geometry)
+                    coords = [[y, x] for x, y in shapely_geom.exterior.coords[:-1]]
+                    raw_businesses = await client.query_by_polygon(coords)
+                else:
+                    raw_businesses = await client.query_by_radius(
+                        lat=territory.lat,
+                        lng=territory.lng,
+                        radius_m=territory.radius_m or 1000,
+                    )
+            except Exception as e:
+                logger.warning(f"Overpass API failed (non-fatal): {e}")
 
             # 5. Deduplicar e insertar
             inserted = 0
