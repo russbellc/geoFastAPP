@@ -9,22 +9,45 @@ export default function DashboardPage() {
   const { businesses, setBusinesses, setTerritoryId, selectedBusiness, selectBusiness, categoryFilter, setCategoryFilter } = useMapStore();
   const [loading, setLoading] = useState(true);
 
+  const [territories, setTerritories] = useState<{id: number; name: string}[]>([]);
+  const [selectedTerritory, setSelectedTerritory] = useState<number | null>(null);
+
+  // Load scan history to get available territories
+  useEffect(() => {
+    async function loadTerritories() {
+      try {
+        const history = await api.getScanHistory();
+        const done = history.filter((h: any) => h.status === "done" && h.total_found > 0);
+        const terrs = done.map((h: any) => ({ id: h.territory_id, name: `Territory #${h.territory_id}${h.nicho ? ` — ${h.nicho}` : ""}` }));
+        setTerritories(terrs);
+        if (terrs.length > 0 && !selectedTerritory) {
+          setSelectedTerritory(terrs[0].id);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadTerritories();
+  }, []);
+
+  // Load businesses for selected territory
   useEffect(() => {
     async function loadData() {
+      setLoading(true);
       try {
-        const data = await api.getBusinesses({ per_page: 100 });
+        const params: any = { per_page: 100 };
+        if (selectedTerritory) params.territory_id = selectedTerritory;
+        const data = await api.getBusinesses(params);
         setBusinesses(data.items);
-        if (data.items.length > 0) {
-          setTerritoryId(data.items[0].territory_id);
-        }
+        if (selectedTerritory) setTerritoryId(selectedTerritory);
       } catch (err) {
         console.error("Error loading businesses:", err);
       } finally {
         setLoading(false);
       }
     }
-    loadData();
-  }, [setBusinesses, setTerritoryId]);
+    if (selectedTerritory !== null) loadData();
+  }, [selectedTerritory, setBusinesses, setTerritoryId]);
 
   const categories = Array.from(new Set(businesses.map((b) => b.category || "otro"))).sort();
   const filtered = categoryFilter
@@ -43,6 +66,23 @@ export default function DashboardPage() {
               {filtered.length} RESULTADOS
             </span>
           </div>
+          {/* Territory selector */}
+          {territories.length > 0 && (
+            <div className="relative mb-2">
+              <select
+                value={selectedTerritory || ""}
+                onChange={(e) => setSelectedTerritory(Number(e.target.value))}
+                className="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-3 pr-8 text-xs font-medium focus:ring-1 focus:ring-primary/40 appearance-none text-on-surface"
+              >
+                {territories.map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm">
+                map
+              </span>
+            </div>
+          )}
           <div className="flex gap-2">
             <div className="flex-1 relative">
               <select
