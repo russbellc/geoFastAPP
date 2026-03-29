@@ -34,7 +34,7 @@ export default function DashboardPage() {
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* Opportunities Sidebar */}
-      <aside className="w-96 bg-surface-container-low flex flex-col z-30 shadow-2xl shrink-0">
+      <aside data-onboarding="opportunities" className="w-96 bg-surface-container-low flex flex-col z-30 shadow-2xl shrink-0">
         {/* Filters Header */}
         <div className="p-5 space-y-4 bg-surface-container-low shadow-sm">
           <div className="flex justify-between items-center">
@@ -96,7 +96,7 @@ export default function DashboardPage() {
       </aside>
 
       {/* Map Area */}
-      <section className="flex-1 relative bg-surface-container-lowest">
+      <section data-onboarding="map" className="flex-1 relative bg-surface-container-lowest">
         <MapWrapper />
 
         {/* Map Legend */}

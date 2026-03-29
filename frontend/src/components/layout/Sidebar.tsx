@@ -21,7 +21,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="flex flex-col h-screen w-64 bg-surface-container-low p-4 space-y-8 font-headline tracking-tight font-bold shrink-0">
+    <aside data-onboarding="sidebar" className="flex flex-col h-screen w-64 bg-surface-container-low p-4 space-y-8 font-headline tracking-tight font-bold shrink-0">
       {/* Logo */}
       <div className="flex items-center gap-3 px-2">
         <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
@@ -62,6 +62,7 @@ export default function Sidebar() {
 
       {/* New Scan Button */}
       <Link
+        data-onboarding="new-scan"
         href="/dashboard/scan"
         className="w-full gradient-primary text-on-primary-fixed py-3 rounded-xl font-bold uppercase text-xs tracking-widest shadow-lg shadow-primary-container/20 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all"
       >

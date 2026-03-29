@@ -25,7 +25,7 @@ export default function Header() {
     <header className="flex justify-between items-center h-16 px-8 bg-background/80 backdrop-blur-md shadow-sm shadow-blue-900/10 z-40 shrink-0">
       {/* Search */}
       <div className="flex items-center gap-8 flex-1 max-w-2xl">
-        <div className="relative w-full group">
+        <div data-onboarding="search" className="relative w-full group">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary">
             search
           </span>

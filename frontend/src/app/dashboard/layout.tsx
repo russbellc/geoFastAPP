@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/stores/auth";
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
+import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading, checkAuth } = useAuth();
@@ -44,6 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Header />
         <main className="flex-1 overflow-hidden">{children}</main>
       </div>
+      <OnboardingOverlay />
     </div>
   );
 }
