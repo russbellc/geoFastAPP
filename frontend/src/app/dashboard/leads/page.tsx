@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import { api, Business, BusinessProfile } from "@/lib/api";
+import ScoreExplainer from "@/components/ScoreExplainer";
 
 const MiniMap = dynamic(() => import("@/components/map/MiniMap"), {
   ssr: false,
@@ -156,7 +157,10 @@ export default function LeadsPage() {
       {/* Header + Filters */}
       <div className="px-6 pt-6 pb-4 bg-surface-dim shrink-0 space-y-3">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-headline font-extrabold text-on-surface tracking-tight">Leads</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-headline font-extrabold text-on-surface tracking-tight">Leads</h2>
+            <ScoreExplainer />
+          </div>
           <div className="flex items-center gap-3">
             <button
               onClick={async () => {
@@ -372,6 +376,7 @@ export default function LeadsPage() {
                     </div>
                   </div>
                   <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       selectedProfile.lead_status === "hot" ? "bg-error-container/30 text-error" :
                       selectedProfile.lead_status === "warm" ? "bg-secondary/10 text-secondary" :
@@ -379,6 +384,8 @@ export default function LeadsPage() {
                     }`}>
                       {selectedProfile.lead_status === "hot" ? "Caliente" : selectedProfile.lead_status === "warm" ? "Tibio" : "Frio"}
                     </span>
+                    <ScoreExplainer />
+                    </div>
                     {selectedProfile.enriched_at && (
                       <p className="text-[10px] text-on-surface-variant mt-2">
                         Enriquecido: {new Date(selectedProfile.enriched_at).toLocaleString()}
