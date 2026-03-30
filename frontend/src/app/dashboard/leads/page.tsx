@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import { api, Business, BusinessProfile } from "@/lib/api";
+
+const MiniMap = dynamic(() => import("@/components/map/MiniMap"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-surface-container-lowest rounded-xl flex items-center justify-center"><p className="text-on-surface-variant text-xs">Cargando mapa...</p></div>,
+});
 
 export default function LeadsPage() {
   const [items, setItems] = useState<Business[]>([]);
@@ -59,13 +65,14 @@ export default function LeadsPage() {
     }
   }, [selectedTerritory]);
 
-  // Load subcategories when category changes
+  // Load subcategories when category changes (global endpoint)
   useEffect(() => {
     setSubcategoryFilter([]);
     if (!categoryFilter) { setSubcategories([]); return; }
-    const tid = selectedTerritory || "1";
     const token = api.getToken();
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/stats/territory/${tid}/subcategories?category=${categoryFilter}`, {
+    const params = new URLSearchParams({ category: categoryFilter });
+    if (selectedTerritory) params.set("territory_id", selectedTerritory);
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/stats/subcategories?${params}`, {
       headers: { Authorization: `Bearer ${token}` },
     }).then(r => r.json()).then(data => {
       setSubcategories(data.map((d: any) => ({ subcategory: d.subcategory, count: d.count })));
@@ -242,6 +249,13 @@ export default function LeadsPage() {
               </div>
             </div>
 
+            {/* Mini Map */}
+            {selectedBiz.lat && selectedBiz.lng && (
+              <div className="h-48 rounded-xl overflow-hidden mb-6 border border-outline-variant/10">
+                <MiniMap lat={selectedBiz.lat} lng={selectedBiz.lng} name={selectedBiz.name} />
+              </div>
+            )}
+
             {/* Info grid */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <InfoRow icon="location_on" label="Direccion" value={selectedBiz.address} />
@@ -290,11 +304,11 @@ export default function LeadsPage() {
                 )}
 
                 {/* Tech Stack */}
-                {selectedProfile.tech_stack?.detected?.length > 0 && (
+                {selectedProfile.tech_stack && Array.isArray((selectedProfile.tech_stack as any).detected) && (selectedProfile.tech_stack as any).detected.length > 0 && (
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Tecnologia Detectada</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProfile.tech_stack.detected.map((t: string) => (
+                      {((selectedProfile.tech_stack as any).detected as string[]).map((t: string) => (
                         <span key={t} className="text-xs px-3 py-1 bg-surface-container-highest rounded-lg text-on-surface">{t}</span>
                       ))}
                     </div>
