@@ -16,9 +16,9 @@ export default function ScoreExplainer() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/70" onClick={() => setOpen(false)} />
-          <div className="relative bg-surface-container-low rounded-3xl p-8 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto custom-scrollbar shadow-2xl border border-outline-variant/10 z-[101]">
+        <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="absolute inset-0 bg-black/80" onClick={() => setOpen(false)} />
+          <div className="relative bg-surface-container-low rounded-3xl p-8 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto custom-scrollbar shadow-2xl border border-outline-variant/10" style={{ zIndex: 99999 }}>
             <button onClick={() => setOpen(false)} className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface">
               <span className="material-symbols-outlined">close</span>
             </button>
