@@ -29,6 +29,9 @@ export default function LeadsPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [subcategories, setSubcategories] = useState<{ subcategory: string; count: number }[]>([]);
 
+  // Profiles cache (for grid cards)
+  const [profiles, setProfiles] = useState<Record<number, BusinessProfile>>({});
+
   // Modal
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<BusinessProfile | null>(null);
@@ -94,6 +97,23 @@ export default function LeadsPage() {
       setItems(newItems);
       setTotal(data.total);
       setHasMore(newItems.length < data.total);
+
+      // Load profiles for new items (non-blocking)
+      const newIds = data.items.map((b: Business) => b.id).filter((id: number) => !profiles[id]);
+      if (newIds.length > 0) {
+        Promise.all(newIds.map(async (id: number) => {
+          try {
+            const p = await api.getBusinessProfile(id);
+            return { id, profile: p };
+          } catch { return null; }
+        })).then((results) => {
+          const newProfiles = { ...profiles };
+          for (const r of results) {
+            if (r) newProfiles[r.id] = r.profile;
+          }
+          setProfiles(newProfiles);
+        });
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); setLoadingMore(false); }
   }, [selectedTerritory, categoryFilter, subcategoryFilter, searchQuery, items]);
@@ -230,20 +250,60 @@ export default function LeadsPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pt-2">
-              {items.map(biz => (
-                <div key={biz.id} onDoubleClick={() => handleDoubleClick(biz)}
-                  className="bg-surface-container-high p-4 rounded-xl hover:bg-surface-container-highest transition-all cursor-pointer group">
-                  <h3 className="font-headline font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate mb-1">{biz.name}</h3>
-                  <p className="text-[11px] text-on-surface-variant truncate mb-3">{biz.address || "Ubicacion desconocida"}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {biz.category && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase">{biz.category}</span>}
-                    {biz.subcategory && biz.subcategory !== biz.category && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase">{biz.subcategory}</span>}
-                    {biz.website && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 uppercase">web</span>}
-                    {biz.phone && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 uppercase">tel</span>}
-                    {biz.source !== "osm" && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-error/10 text-error border border-error/20 uppercase">{biz.source}</span>}
+              {items.map(biz => {
+                const profile = profiles[biz.id];
+                const score = profile?.opportunity_score;
+                const status = profile?.lead_status;
+                const gmaps = (profile?.tech_stack as any)?.gmaps;
+                const isEnriched = !!profile?.enriched_at;
+
+                return (
+                  <div key={biz.id} onDoubleClick={() => handleDoubleClick(biz)}
+                    className={`p-4 rounded-xl hover:bg-surface-container-highest transition-all cursor-pointer group ${isEnriched ? "bg-surface-container-high ring-1 ring-primary/10" : "bg-surface-container-high"}`}>
+                    {/* Header: name + score */}
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="font-headline font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate flex-1 mr-2">{biz.name}</h3>
+                      {score != null && (
+                        <div className="flex flex-col items-end shrink-0">
+                          <span className={`font-black text-lg leading-none ${score >= 80 ? "text-tertiary" : score >= 50 ? "text-primary" : "text-on-surface-variant"}`}>{score}</span>
+                          <span className="text-[7px] uppercase text-on-surface-variant tracking-wider">PTS</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-on-surface-variant truncate mb-2">{biz.address || "Ubicacion desconocida"}</p>
+
+                    {/* GMaps rating */}
+                    {gmaps?.rating && (
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <span className="material-symbols-outlined text-yellow-400 text-xs" style={{ fontVariationSettings: '"FILL" 1' }}>star</span>
+                        <span className="text-xs font-bold text-on-surface">{gmaps.rating}</span>
+                        {gmaps.reviews_count != null && <span className="text-[10px] text-on-surface-variant">({gmaps.reviews_count})</span>}
+                      </div>
+                    )}
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {status && (
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase ${
+                          status === "hot" ? "bg-error/10 text-error border border-error/20" :
+                          status === "warm" ? "bg-secondary/10 text-secondary border border-secondary/20" :
+                          "bg-outline-variant/20 text-on-surface-variant border border-outline-variant/20"
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${status === "hot" ? "bg-error" : status === "warm" ? "bg-secondary" : "bg-outline-variant"}`} />
+                          {status === "hot" ? "Caliente" : status === "warm" ? "Tibio" : "Frio"}
+                        </span>
+                      )}
+                      {biz.category && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 uppercase">{biz.category}</span>}
+                      {biz.subcategory && biz.subcategory !== biz.category && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase">{biz.subcategory}</span>}
+                      {biz.website && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 uppercase">web</span>}
+                      {biz.phone && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 uppercase">tel</span>}
+                      {biz.source !== "osm" && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-error/10 text-error border border-error/20 uppercase">{biz.source}</span>}
+                      {isEnriched && <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-tertiary/10 text-tertiary border border-tertiary/20 uppercase">enriquecido</span>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             {loadingMore && <p className="text-center text-on-surface-variant text-xs py-4">Cargando mas...</p>}
             {!hasMore && items.length > 0 && <p className="text-center text-on-surface-variant/50 text-[10px] py-3">Mostrando {items.length} de {total}</p>}
