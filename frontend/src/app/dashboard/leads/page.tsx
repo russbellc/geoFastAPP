@@ -183,6 +183,40 @@ export default function LeadsPage() {
               <span className="material-symbols-outlined text-sm">auto_fix_high</span>
               Enriquecer Todos
             </button>
+            <button
+              onClick={async () => {
+                try {
+                  const params: Record<string, string | number> = {};
+                  if (selectedTerritory) params.territory_id = Number(selectedTerritory);
+                  if (categoryFilter) params.category = categoryFilter;
+                  const blob = await api.exportCsv(params);
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `leads_export_${new Date().toISOString().slice(0, 10)}.csv`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                } catch { alert("Error al exportar CSV"); }
+              }}
+              className="bg-surface-container-highest text-on-surface-variant hover:text-on-surface px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors border border-outline-variant/20"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              CSV
+            </button>
+            <button
+              onClick={() => {
+                const params: Record<string, string | number> = {};
+                if (selectedTerritory) params.territory_id = Number(selectedTerritory);
+                if (categoryFilter) params.category = categoryFilter;
+                window.open(api.exportPdfUrl(params), "_blank");
+              }}
+              className="bg-surface-container-highest text-on-surface-variant hover:text-on-surface px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors border border-outline-variant/20"
+            >
+              <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
+              PDF
+            </button>
             <span className="text-[10px] font-bold bg-surface-container-highest px-2 py-1 rounded text-primary tracking-widest">
               {total} RESULTADOS
             </span>

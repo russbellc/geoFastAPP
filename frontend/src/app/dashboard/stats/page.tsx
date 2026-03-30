@@ -12,9 +12,54 @@ const PIE_COLORS = ["#b4c5ff", "#4edea3", "#adc8f5", "#2d3449"];
 export default function StatsPage() {
   const [stats, setStats] = useState<TerritoryStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [scanCount, setScanCount] = useState(0);
 
   useEffect(() => {
-    api.getTerritoryStats(1).then(setStats).catch(console.error).finally(() => setLoading(false));
+    // Load global stats by aggregating across all territories from scan history
+    (async () => {
+      try {
+        const history = await api.getScanHistory();
+        const doneScans = history.filter((s: any) => s.status === "done" && s.total_found > 0);
+        setScanCount(doneScans.length);
+
+        // Try loading stats from first available territory, then aggregate
+        const territoryIds = Array.from(new Set(doneScans.map((s: any) => s.territory_id)));
+        let aggregated: TerritoryStats | null = null;
+
+        for (const tid of territoryIds) {
+          try {
+            const tStats = await api.getTerritoryStats(tid);
+            if (!aggregated) {
+              aggregated = { ...tStats, territory_name: "Global" };
+            } else {
+              aggregated.total_businesses += tStats.total_businesses;
+              aggregated.total_enriched += tStats.total_enriched;
+              // Merge categories
+              for (const cat of tStats.categories) {
+                const existing = aggregated.categories.find((c) => c.category === cat.category);
+                if (existing) existing.count += cat.count;
+                else aggregated.categories.push({ ...cat });
+              }
+              // Merge lead distribution
+              for (const ld of tStats.lead_distribution) {
+                const existing = aggregated.lead_distribution.find((l) => l.status === ld.status);
+                if (existing) existing.count += ld.count;
+                else aggregated.lead_distribution.push({ ...ld });
+              }
+            }
+          } catch { /* skip territory */ }
+        }
+
+        if (aggregated) {
+          aggregated.categories.sort((a, b) => b.count - a.count);
+          setStats(aggregated);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   if (loading) {
@@ -27,9 +72,9 @@ export default function StatsPage() {
 
   const kpis = stats
     ? [
-        { icon: "storefront", label: "Total Negocios", value: stats.total_businesses.toLocaleString(), trend: "+5.2%", color: "primary" },
-        { icon: "ads_click", label: "Leads Generados", value: stats.total_enriched.toLocaleString(), trend: "+12%", color: "secondary" },
-        { icon: "public", label: "Territorios Escaneados", value: stats.categories.length.toString(), trend: "2 nuevos", color: "tertiary" },
+        { icon: "storefront", label: "Total Negocios", value: stats.total_businesses.toLocaleString(), trend: "", color: "primary" },
+        { icon: "ads_click", label: "Leads Generados", value: stats.total_enriched.toLocaleString(), trend: "", color: "secondary" },
+        { icon: "public", label: "Territorios Escaneados", value: scanCount.toString(), trend: "", color: "tertiary" },
       ]
     : [
         { icon: "storefront", label: "Total Negocios", value: "0", trend: "--", color: "primary" },
@@ -72,10 +117,12 @@ export default function StatsPage() {
               <div className={`p-2 bg-${kpi.color}/10 rounded-lg text-${kpi.color}`}>
                 <span className="material-symbols-outlined">{kpi.icon}</span>
               </div>
-              <span className="text-tertiary text-xs font-bold flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">trending_up</span>
-                {kpi.trend}
-              </span>
+              {kpi.trend && (
+                <span className="text-tertiary text-xs font-bold flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">trending_up</span>
+                  {kpi.trend}
+                </span>
+              )}
             </div>
             <h3 className="text-on-surface-variant text-sm font-medium mb-1">{kpi.label}</h3>
             <div className="flex items-baseline gap-2">

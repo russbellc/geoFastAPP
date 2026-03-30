@@ -1,14 +1,18 @@
 import asyncio
 import logging
+import math
+import unicodedata
+import re
 from datetime import datetime, timezone
 
-from sqlalchemy import select
+from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from geoalchemy2.shape import to_shape
 
 from app.core.config import settings
 from app.models.business import Business
+from app.models.business_profile import BusinessProfile
 from app.models.scan_job import ScanJob
 from app.models.territory import Territory
 from app.services.osm_categories import categorize_osm_tags
@@ -18,6 +22,78 @@ from app.scrapers.gmaps_scraper import GMapsScraper
 from app.workers.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_name(name: str) -> str:
+    """Normaliza nombre para comparacion: lowercase, sin acentos, sin puntuacion extra."""
+    name = name.strip().lower()
+    # Remove accents
+    name = unicodedata.normalize("NFD", name)
+    name = "".join(c for c in name if unicodedata.category(c) != "Mn")
+    # Remove extra punctuation and whitespace
+    name = re.sub(r"[^\w\s]", "", name)
+    name = re.sub(r"\s+", " ", name).strip()
+    return name
+
+
+def _haversine_distance(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    """Calcula distancia en metros entre dos puntos usando formula de Haversine."""
+    R = 6371000  # radio de la tierra en metros
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lng2 - lng1)
+    a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+async def _is_duplicate(
+    db: AsyncSession,
+    name: str,
+    lat: float | None,
+    lng: float | None,
+    osm_id: str | None = None,
+    territory_id: int | None = None,
+    check_all_territories: bool = False,
+) -> bool:
+    """Verifica si un negocio es duplicado por osm_id O por nombre+coordenadas cercanas (<200m).
+
+    Args:
+        check_all_territories: Si True, busca duplicados en TODOS los territorios (para GMaps).
+    """
+    # 1. Check by osm_id
+    if osm_id:
+        existing = await db.execute(
+            select(Business.id).where(Business.osm_id == osm_id).limit(1)
+        )
+        if existing.scalar_one_or_none():
+            return True
+
+    # 2. Check by normalized name + nearby coordinates
+    normalized = _normalize_name(name)
+    if not normalized:
+        return False
+
+    # Search by name similarity
+    query = select(Business.id, Business.lat, Business.lng).where(
+        func.lower(Business.name).ilike(f"%{normalized[:30]}%")
+    )
+    if not check_all_territories and territory_id:
+        query = query.where(Business.territory_id == territory_id)
+
+    result = await db.execute(query)
+    candidates = result.all()
+
+    for _id, blat, blng in candidates:
+        if lat and lng and blat and blng:
+            dist = _haversine_distance(lat, lng, blat, blng)
+            if dist < 200:  # menos de 200 metros
+                return True
+        elif not lat or not lng:
+            # Sin coordenadas, nombre coincide => duplicado
+            return True
+
+    return False
 
 
 def _make_session():
@@ -68,11 +144,11 @@ async def _run_scan(job_id: int):
             # 5. Deduplicar e insertar
             inserted = 0
             for biz in raw_businesses:
-                # Verificar si ya existe por osm_id
-                existing = await db.execute(
-                    select(Business).where(Business.osm_id == biz["osm_id"])
-                )
-                if existing.scalar_one_or_none():
+                # Dedup: osm_id OR nombre+coordenadas cercanas
+                if await _is_duplicate(
+                    db, biz["name"], biz["lat"], biz["lng"],
+                    osm_id=biz["osm_id"], territory_id=territory.id
+                ):
                     continue
 
                 category, subcategory = categorize_osm_tags(biz["tags"])
@@ -108,15 +184,11 @@ async def _run_scan(job_id: int):
                     logger.info(f"Doctoralia: {len(doctoralia_results)} resultados para {city}")
 
                     for doc_biz in doctoralia_results:
-                        # Deduplicar por nombre normalizado en misma ciudad
-                        name_normalized = doc_biz["name"].strip().lower()
-                        existing = await db.execute(
-                            select(Business).where(
-                                Business.territory_id == territory.id,
-                                Business.name.ilike(f"%{name_normalized[:30]}%"),
-                            )
-                        )
-                        if existing.scalar_one_or_none():
+                        # Dedup: nombre+coordenadas cercanas en territorio actual
+                        if await _is_duplicate(
+                            db, doc_biz["name"], doc_biz.get("lat"), doc_biz.get("lng"),
+                            territory_id=territory.id
+                        ):
                             continue
 
                         business = Business(
@@ -156,15 +228,11 @@ async def _run_scan(job_id: int):
                     for gm_biz in gmaps_results:
                         if not gm_biz.get("name"):
                             continue
-                        # Deduplicar por nombre normalizado
-                        name_normalized = gm_biz["name"].strip().lower()
-                        existing = await db.execute(
-                            select(Business).where(
-                                Business.territory_id == territory.id,
-                                Business.name.ilike(f"%{name_normalized[:30]}%"),
-                            )
-                        )
-                        if existing.scalar_one_or_none():
+                        # Dedup: nombre+coordenadas en TODOS los territorios (global)
+                        if await _is_duplicate(
+                            db, gm_biz["name"], gm_biz.get("lat"), gm_biz.get("lng"),
+                            territory_id=territory.id, check_all_territories=True
+                        ):
                             continue
 
                         # Map GMaps category to internal
@@ -200,6 +268,27 @@ async def _run_scan(job_id: int):
             await db.commit()
 
             logger.info(f"ScanJob {job_id}: {inserted} negocios insertados")
+
+            # 8. Auto-enrich: trigger enrichment for first 20 businesses without profiles
+            try:
+                from app.workers.enrich_tasks import enrich_business as enrich_business_task
+
+                unenriched = await db.execute(
+                    select(Business.id)
+                    .outerjoin(BusinessProfile, Business.id == BusinessProfile.business_id)
+                    .where(
+                        Business.territory_id == territory.id,
+                        BusinessProfile.id.is_(None),
+                    )
+                    .limit(20)
+                )
+                biz_ids = [row[0] for row in unenriched.all()]
+                for biz_id in biz_ids:
+                    enrich_business_task.delay(biz_id)
+                if biz_ids:
+                    logger.info(f"ScanJob {job_id}: auto-enrich triggered for {len(biz_ids)} businesses")
+            except Exception as e:
+                logger.warning(f"Auto-enrich dispatch failed (non-fatal): {e}")
 
         except Exception as e:
             logger.error(f"ScanJob {job_id} fallo: {e}")
@@ -260,3 +349,41 @@ def scan_territory(self, job_id: int):
     """Celery task que ejecuta el escaneo de un territorio."""
     logger.info(f"Iniciando escaneo ScanJob {job_id}")
     asyncio.run(_run_scan(job_id))
+
+
+async def _run_rescan_stale():
+    """Encuentra territorios sin escanear en 30+ dias y lanza re-escaneos."""
+    from datetime import timedelta
+
+    session_factory = _make_session()
+    async with session_factory() as db:
+        threshold = datetime.now(timezone.utc) - timedelta(days=30)
+        result = await db.execute(
+            select(Territory).where(
+                (Territory.last_scan_at < threshold) | (Territory.last_scan_at.is_(None))
+            )
+        )
+        stale_territories = result.scalars().all()
+
+        for territory in stale_territories:
+            # Create a new scan job for each stale territory
+            scan_job = ScanJob(
+                territory_id=territory.id,
+                status="pending",
+            )
+            db.add(scan_job)
+            await db.flush()
+            scan_territory.delay(scan_job.id)
+            logger.info(
+                f"Re-scan scheduled for territory {territory.id} ({territory.name}), "
+                f"last scanned: {territory.last_scan_at}"
+            )
+
+        await db.commit()
+        logger.info(f"Rescan check: {len(stale_territories)} stale territories queued")
+
+
+@celery_app.task(name="rescan_stale_territories")
+def rescan_stale_territories():
+    """Celery Beat task: re-scan territories not scanned in 30+ days."""
+    asyncio.run(_run_rescan_stale())

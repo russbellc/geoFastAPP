@@ -34,14 +34,32 @@ class OverpassClient:
         self._last_request_time = asyncio.get_event_loop().time()
 
     async def _execute_query(self, query: str) -> dict:
-        await self._rate_limit()
-        async with httpx.AsyncClient(timeout=90.0) as client:
-            response = await client.post(
-                OVERPASS_URL,
-                data={"data": query},
-            )
-            response.raise_for_status()
-            return response.json()
+        max_retries = 3
+        backoff_times = [5, 15, 45]  # exponential backoff in seconds
+
+        for attempt in range(max_retries):
+            try:
+                await self._rate_limit()
+                async with httpx.AsyncClient(timeout=90.0) as client:
+                    response = await client.post(
+                        OVERPASS_URL,
+                        data={"data": query},
+                    )
+                    response.raise_for_status()
+                    return response.json()
+            except (httpx.HTTPStatusError, httpx.RequestError, httpx.TimeoutException) as e:
+                if attempt < max_retries - 1:
+                    wait_time = backoff_times[attempt]
+                    logger.warning(
+                        f"Overpass query failed (attempt {attempt + 1}/{max_retries}): {e}. "
+                        f"Retrying in {wait_time}s..."
+                    )
+                    await asyncio.sleep(wait_time)
+                else:
+                    logger.error(
+                        f"Overpass query failed after {max_retries} attempts: {e}"
+                    )
+                    raise
 
     def _build_query(self, area_filter: str) -> str:
         """Construye query Overpass para extraer negocios."""

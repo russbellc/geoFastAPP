@@ -137,6 +137,69 @@ async def get_subcategories(
     return [{"category": r[0], "subcategory": r[1], "count": r[2]} for r in result.all()]
 
 
+class GlobalStatsResponse(BaseModel):
+    total_territories: int
+    total_businesses: int
+    total_enriched: int
+    categories: list[CategoryCount]
+    lead_distribution: list[LeadCount]
+    avg_opportunity_score: float | None
+
+
+@router.get("/global", response_model=GlobalStatsResponse)
+async def get_global_stats(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Obtener estadisticas globales de todos los territorios."""
+    # Total territories
+    territory_count = await db.execute(select(func.count(Territory.id)))
+    total_territories = territory_count.scalar()
+
+    # Total businesses
+    biz_count = await db.execute(select(func.count(Business.id)))
+    total_businesses = biz_count.scalar()
+
+    # Categories
+    cat_result = await db.execute(
+        select(Business.category, func.count(Business.id))
+        .group_by(Business.category)
+        .order_by(func.count(Business.id).desc())
+    )
+    categories = [
+        CategoryCount(category=row[0] or "sin_categoria", count=row[1])
+        for row in cat_result.all()
+    ]
+
+    # Enriched count
+    enriched_result = await db.execute(select(func.count(BusinessProfile.id)))
+    total_enriched = enriched_result.scalar()
+
+    # Lead distribution
+    lead_result = await db.execute(
+        select(BusinessProfile.lead_status, func.count(BusinessProfile.id))
+        .group_by(BusinessProfile.lead_status)
+    )
+    lead_distribution = [
+        LeadCount(status=row[0], count=row[1]) for row in lead_result.all()
+    ]
+
+    # Average opportunity score
+    avg_result = await db.execute(
+        select(func.avg(BusinessProfile.opportunity_score))
+    )
+    avg_score = avg_result.scalar()
+
+    return GlobalStatsResponse(
+        total_territories=total_territories,
+        total_businesses=total_businesses,
+        total_enriched=total_enriched,
+        categories=categories,
+        lead_distribution=lead_distribution,
+        avg_opportunity_score=round(avg_score, 1) if avg_score else None,
+    )
+
+
 class SubcategoryCount(BaseModel):
     subcategory: str
     count: int
