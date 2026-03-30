@@ -29,8 +29,8 @@ export default function LeadsPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [subcategories, setSubcategories] = useState<{ subcategory: string; count: number }[]>([]);
 
-  // Profiles cache (for grid cards)
-  const [profiles, setProfiles] = useState<Record<number, BusinessProfile>>({});
+  // Items with profiles included
+  const [profileMap, setProfileMap] = useState<Record<number, any>>({});
 
   // Modal
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
@@ -92,28 +92,32 @@ export default function LeadsPage() {
       if (subcategoryFilter.length > 0) params.subcategory = subcategoryFilter.join(",");
       if (searchQuery) params.search = searchQuery;
 
-      const data = await api.getBusinesses(params);
-      const newItems = append ? [...items, ...data.items] : data.items;
+      // Use with-profiles endpoint for single query
+      const token = api.getToken();
+      const queryStr = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/businesses/with-profiles?${queryStr}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+
+      // Extract businesses and profiles
+      const bizItems: Business[] = data.items.map((item: any) => ({
+        id: item.id, territory_id: item.territory_id, name: item.name,
+        category: item.category, subcategory: item.subcategory,
+        lat: item.lat, lng: item.lng, address: item.address,
+        phone: item.phone, website: item.website, email: item.email,
+        source: item.source, osm_id: item.osm_id,
+      }));
+      const newProfileMap = append ? { ...profileMap } : {};
+      for (const item of data.items) {
+        if (item.profile) newProfileMap[item.id] = item.profile;
+      }
+
+      const newItems = append ? [...items, ...bizItems] : bizItems;
       setItems(newItems);
       setTotal(data.total);
       setHasMore(newItems.length < data.total);
-
-      // Load profiles for new items (non-blocking)
-      const newIds = data.items.map((b: Business) => b.id).filter((id: number) => !profiles[id]);
-      if (newIds.length > 0) {
-        Promise.all(newIds.map(async (id: number) => {
-          try {
-            const p = await api.getBusinessProfile(id);
-            return { id, profile: p };
-          } catch { return null; }
-        })).then((results) => {
-          const newProfiles = { ...profiles };
-          for (const r of results) {
-            if (r) newProfiles[r.id] = r.profile;
-          }
-          setProfiles(newProfiles);
-        });
-      }
+      setProfileMap(newProfileMap);
     } catch (err) { console.error(err); }
     finally { setLoading(false); setLoadingMore(false); }
   }, [selectedTerritory, categoryFilter, subcategoryFilter, searchQuery, items]);
@@ -251,7 +255,7 @@ export default function LeadsPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pt-2">
               {items.map(biz => {
-                const profile = profiles[biz.id];
+                const profile = profileMap[biz.id];
                 const score = profile?.opportunity_score;
                 const status = profile?.lead_status;
                 const gmaps = (profile?.tech_stack as any)?.gmaps;

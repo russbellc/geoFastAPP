@@ -9,6 +9,7 @@ from app.models.business_profile import BusinessProfile
 from app.models.user import User
 from app.schemas.business import BusinessListResponse, BusinessResponse
 from app.schemas.profile import BusinessProfileResponse
+from pydantic import BaseModel
 from app.workers.enrich_tasks import enrich_business, enrich_territory, enrich_batch
 
 router = APIRouter(prefix="/businesses", tags=["Businesses"])
@@ -67,6 +68,79 @@ async def list_businesses(
         page=page,
         per_page=per_page,
     )
+
+
+@router.get("/with-profiles")
+async def list_businesses_with_profiles(
+    territory_id: int | None = Query(None),
+    category: str | None = Query(None),
+    subcategory: str | None = Query(None),
+    search: str | None = Query(None),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Listar negocios con perfil enriquecido incluido (una sola query)."""
+    query = select(Business, BusinessProfile).outerjoin(
+        BusinessProfile, Business.id == BusinessProfile.business_id
+    )
+    count_query = select(func.count(Business.id))
+
+    if territory_id:
+        query = query.where(Business.territory_id == territory_id)
+        count_query = count_query.where(Business.territory_id == territory_id)
+    if category:
+        query = query.where(Business.category == category)
+        count_query = count_query.where(Business.category == category)
+    if subcategory:
+        subs = [s.strip() for s in subcategory.split(",") if s.strip()]
+        if len(subs) == 1:
+            query = query.where(Business.subcategory == subs[0])
+            count_query = count_query.where(Business.subcategory == subs[0])
+        elif len(subs) > 1:
+            query = query.where(Business.subcategory.in_(subs))
+            count_query = count_query.where(Business.subcategory.in_(subs))
+    if search:
+        query = query.where(Business.name.ilike(f"%{search}%"))
+        count_query = count_query.where(Business.name.ilike(f"%{search}%"))
+
+    total_result = await db.execute(count_query)
+    total = total_result.scalar()
+
+    offset = (page - 1) * per_page
+    query = query.offset(offset).limit(per_page).order_by(Business.id)
+    result = await db.execute(query)
+    rows = result.all()
+
+    items = []
+    for biz, profile in rows:
+        item = {
+            "id": biz.id, "territory_id": biz.territory_id, "name": biz.name,
+            "category": biz.category, "subcategory": biz.subcategory,
+            "lat": biz.lat, "lng": biz.lng, "address": biz.address,
+            "phone": biz.phone, "website": biz.website, "email": biz.email,
+            "source": biz.source, "osm_id": biz.osm_id,
+        }
+        if profile:
+            item["profile"] = {
+                "opportunity_score": profile.opportunity_score,
+                "lead_status": profile.lead_status,
+                "ai_summary": profile.ai_summary,
+                "seo_score": profile.seo_score,
+                "has_online_booking": profile.has_online_booking,
+                "has_chatbot": profile.has_chatbot,
+                "tech_stack": profile.tech_stack,
+                "facebook_url": profile.facebook_url,
+                "instagram_url": profile.instagram_url,
+                "tiktok_url": profile.tiktok_url,
+                "enriched_at": profile.enriched_at.isoformat() if profile.enriched_at else None,
+            }
+        else:
+            item["profile"] = None
+        items.append(item)
+
+    return {"items": items, "total": total, "page": page, "per_page": per_page}
 
 
 @router.get("/{business_id}/profile", response_model=BusinessProfileResponse)
