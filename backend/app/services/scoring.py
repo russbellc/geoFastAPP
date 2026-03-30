@@ -92,6 +92,28 @@ def calculate_opportunity_score(
         if business.website and not detected_lower.intersection(clinical_systems):
             score += 3
 
+    # --- Bonus GMaps (negocios sin web tambien se benefician) ---
+    gmaps = tech.get("gmaps", {})
+    if gmaps:
+        rating = gmaps.get("rating")
+        reviews = gmaps.get("reviews_count")
+
+        # +5: Tiene telefono pero no website (facil de contactar, necesita digitalizacion)
+        if business.phone and not business.website:
+            score += 5
+
+        # +3: Rating bajo en GMaps (< 4.0 = oportunidad de mejora)
+        if rating and rating < 4.0:
+            score += 3
+
+        # +5: Pocas reviews (< 10 = poca presencia digital)
+        if reviews is not None and reviews < 10:
+            score += 5
+
+        # +3: No tiene horario publicado en GMaps
+        if not gmaps.get("hours"):
+            score += 3
+
     return min(score, 100)
 
 

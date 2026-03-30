@@ -133,9 +133,32 @@ export default function LeadsPage() {
       <div className="px-6 pt-6 pb-4 bg-surface-dim shrink-0 space-y-3">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-headline font-extrabold text-on-surface tracking-tight">Leads</h2>
-          <span className="text-[10px] font-bold bg-surface-container-highest px-2 py-1 rounded text-primary tracking-widest">
-            {total} RESULTADOS
-          </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={async () => {
+                const params: Record<string, string | number> = {};
+                if (selectedTerritory) params.territory_id = Number(selectedTerritory);
+                if (categoryFilter) params.category = categoryFilter;
+                const query = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString();
+                try {
+                  const token = api.getToken();
+                  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/businesses/enrich/batch?${query}`, {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  const data = await res.json();
+                  alert(`Enriquecimiento lanzado: ${data.pending} negocios pendientes`);
+                } catch {}
+              }}
+              className="gradient-primary text-on-primary-fixed px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-primary-container/20"
+            >
+              <span className="material-symbols-outlined text-sm">auto_fix_high</span>
+              Enriquecer Todos
+            </button>
+            <span className="text-[10px] font-bold bg-surface-container-highest px-2 py-1 rounded text-primary tracking-widest">
+              {total} RESULTADOS
+            </span>
+          </div>
         </div>
 
         {/* Row 1: Territory + Search */}
@@ -271,7 +294,7 @@ export default function LeadsPage() {
               <p className="text-on-surface-variant text-sm py-4">Cargando perfil...</p>
             ) : selectedProfile ? (
               <div className="space-y-5 border-t border-outline-variant/10 pt-6">
-                {/* Score */}
+                {/* Score + Status */}
                 <div className="flex items-center gap-6">
                   <div className="relative w-20 h-20 shrink-0">
                     <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
@@ -284,7 +307,7 @@ export default function LeadsPage() {
                       <span className="text-[8px] text-on-surface-variant uppercase">Puntaje</span>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       selectedProfile.lead_status === "hot" ? "bg-error-container/30 text-error" :
                       selectedProfile.lead_status === "warm" ? "bg-secondary/10 text-secondary" :
@@ -292,8 +315,59 @@ export default function LeadsPage() {
                     }`}>
                       {selectedProfile.lead_status === "hot" ? "Caliente" : selectedProfile.lead_status === "warm" ? "Tibio" : "Frio"}
                     </span>
+                    {selectedProfile.enriched_at && (
+                      <p className="text-[10px] text-on-surface-variant mt-2">
+                        Enriquecido: {new Date(selectedProfile.enriched_at).toLocaleString()}
+                      </p>
+                    )}
                   </div>
                 </div>
+
+                {/* GMaps Data */}
+                {(() => {
+                  const gmaps = (selectedProfile.tech_stack as any)?.gmaps;
+                  if (!gmaps) return null;
+                  return (
+                    <div className="bg-surface-container-high/50 p-4 rounded-xl">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">map</span> Google Maps
+                      </h4>
+                      <div className="grid grid-cols-3 gap-4">
+                        {gmaps.rating && (
+                          <div className="text-center">
+                            <div className="flex items-center justify-center gap-1 mb-1">
+                              <span className="text-lg font-bold text-on-surface">{gmaps.rating}</span>
+                              <span className="material-symbols-outlined text-yellow-400 text-sm" style={{ fontVariationSettings: '"FILL" 1' }}>star</span>
+                            </div>
+                            <p className="text-[9px] text-on-surface-variant uppercase">Rating</p>
+                          </div>
+                        )}
+                        {gmaps.reviews_count != null && (
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-on-surface">{gmaps.reviews_count}</p>
+                            <p className="text-[9px] text-on-surface-variant uppercase">Reviews</p>
+                          </div>
+                        )}
+                        {gmaps.gmaps_category && (
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-on-surface truncate">{gmaps.gmaps_category}</p>
+                            <p className="text-[9px] text-on-surface-variant uppercase">Categoria</p>
+                          </div>
+                        )}
+                      </div>
+                      {gmaps.hours && (
+                        <p className="text-xs text-on-surface-variant mt-3 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">schedule</span> {gmaps.hours}
+                        </p>
+                      )}
+                      {gmaps.gmaps_url && (
+                        <a href={gmaps.gmaps_url} target="_blank" rel="noopener" className="text-xs text-primary hover:underline mt-2 inline-flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">open_in_new</span> Ver en Google Maps
+                        </a>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* AI Summary */}
                 {selectedProfile.ai_summary && (
@@ -336,11 +410,30 @@ export default function LeadsPage() {
               <div className="border-t border-outline-variant/10 pt-6">
                 <p className="text-on-surface-variant text-sm mb-3">Este negocio aun no ha sido enriquecido.</p>
                 <button onClick={async () => {
-                  try { await api.enrichBusiness(selectedBiz.id); } catch {}
-                }} className="gradient-primary text-on-primary-fixed px-4 py-2 rounded-lg text-xs font-bold">
-                  <span className="material-symbols-outlined text-sm mr-1">auto_fix_high</span>
-                  Enriquecer Negocio
+                  try {
+                    await api.enrichBusiness(selectedBiz.id);
+                    // Poll for completion
+                    const pollEnrich = setInterval(async () => {
+                      try {
+                        const p = await api.getBusinessProfile(selectedBiz.id);
+                        if (p && p.enriched_at) {
+                          clearInterval(pollEnrich);
+                          setSelectedProfile(p);
+                          setLoadingProfile(false);
+                        }
+                      } catch {}
+                    }, 5000);
+                    setLoadingProfile(true);
+                    // Timeout after 3 min
+                    setTimeout(() => { clearInterval(pollEnrich); setLoadingProfile(false); }, 180000);
+                  } catch {}
+                }} className="gradient-primary text-on-primary-fixed px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm">auto_fix_high</span>
+                  Enriquecer Negocio (GMaps + Web + IA)
                 </button>
+                <p className="text-[10px] text-on-surface-variant/50 mt-2">
+                  Busca en Google Maps, scrapea el sitio web (si tiene) y genera resumen con IA.
+                </p>
               </div>
             )}
           </div>

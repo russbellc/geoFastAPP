@@ -9,7 +9,7 @@ from app.models.business_profile import BusinessProfile
 from app.models.user import User
 from app.schemas.business import BusinessListResponse, BusinessResponse
 from app.schemas.profile import BusinessProfileResponse
-from app.workers.enrich_tasks import enrich_business, enrich_territory
+from app.workers.enrich_tasks import enrich_business, enrich_territory, enrich_batch
 
 router = APIRouter(prefix="/businesses", tags=["Businesses"])
 
@@ -110,3 +110,32 @@ async def enrich_all_territory(
     """Lanzar enriquecimiento masivo de todos los negocios de un territorio."""
     enrich_territory.delay(territory_id)
     return {"message": "Enriquecimiento masivo lanzado", "territory_id": territory_id}
+
+
+@router.post("/enrich/batch", status_code=status.HTTP_202_ACCEPTED)
+async def enrich_batch_businesses(
+    territory_id: int | None = Query(None),
+    category: str | None = Query(None),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Enriquecer negocios no enriquecidos en lote (max 200)."""
+    # Count pending
+    query = select(func.count(Business.id)).outerjoin(
+        BusinessProfile, Business.id == BusinessProfile.business_id
+    ).where(BusinessProfile.id.is_(None))
+    if territory_id:
+        query = query.where(Business.territory_id == territory_id)
+    if category:
+        query = query.where(Business.category == category)
+    result = await db.execute(query)
+    pending = result.scalar() or 0
+
+    filters = {}
+    if territory_id:
+        filters["territory_id"] = territory_id
+    if category:
+        filters["category"] = category
+
+    enrich_batch.delay(filters)
+    return {"message": "Enriquecimiento por lote lanzado", "pending": min(pending, 200)}
